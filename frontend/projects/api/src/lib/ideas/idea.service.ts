@@ -31,6 +31,33 @@ export type CaptureResult =
   | { outcome: 'rejected'; errors: Record<string, string> }
   | { outcome: 'failed' };
 
+export interface IdeaDetail extends Idea {
+  strengths: string;
+  risks: string;
+  nextStep: string;
+  version: number;
+  archived: boolean;
+  history: { description: string; at: number }[];
+}
+
+export interface IdeaChanges {
+  title: string;
+  summary: string;
+  category: string;
+  score: number | string | null;
+  strengths: string;
+  risks: string;
+  nextStep: string;
+}
+
+export type UpdateResult =
+  | { outcome: 'ok'; idea: IdeaDetail }
+  | { outcome: 'rejected'; errors: Record<string, string> }
+  | { outcome: 'changed'; current: IdeaDetail }
+  | { outcome: 'archived' | 'failed' };
+
+export type SetStatusResult = { outcome: 'ok'; idea: IdeaDetail } | { outcome: 'failed' };
+
 export interface TodayIdea extends Idea {
   bestOfToday: boolean;
 }
@@ -53,6 +80,7 @@ export interface IdeaCriteria {
 
 export interface IdeaPage {
   items: Idea[];
+  allIds: string[];
   page: number;
   pageSize: number;
   total: number;
@@ -77,6 +105,38 @@ export class IdeaService {
         ? (error.error as { errors?: Record<string, string> } | null)?.errors
         : undefined;
       return errors ? { outcome: 'rejected', errors } : { outcome: 'failed' };
+    }
+  }
+
+  get(id: string): Promise<IdeaDetail> {
+    return firstValueFrom(this.http.get<IdeaDetail>(`/api/ideas/${id}`, { context: context() }));
+  }
+
+  async update(id: string, changes: IdeaChanges, version: number, overwrite: boolean): Promise<UpdateResult> {
+    try {
+      const idea = await firstValueFrom(
+        this.http.put<IdeaDetail>(`/api/ideas/${id}`, { ...changes, version, overwrite }, { context: context() }),
+      );
+      return { outcome: 'ok', idea };
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        const body = error.error as { errors?: Record<string, string>; current?: IdeaDetail } | null;
+        if (error.status === 400 && body?.errors) return { outcome: 'rejected', errors: body.errors };
+        if (error.status === 409 && body?.current) return { outcome: 'changed', current: body.current };
+        if (error.status === 422) return { outcome: 'archived' };
+      }
+      return { outcome: 'failed' };
+    }
+  }
+
+  async setStatus(id: string, status: IdeaStatus): Promise<SetStatusResult> {
+    try {
+      const idea = await firstValueFrom(
+        this.http.put<IdeaDetail>(`/api/ideas/${id}/status`, { status }, { context: context() }),
+      );
+      return { outcome: 'ok', idea };
+    } catch {
+      return { outcome: 'failed' };
     }
   }
 

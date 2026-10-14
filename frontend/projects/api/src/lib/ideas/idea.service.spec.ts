@@ -66,4 +66,49 @@ describe('IdeaService', () => {
     bareReq.flush({ items: [] });
     await bare;
   });
+
+  it('Given an id, When the idea is requested, Then it gets that idea', async () => {
+    const idea = ideas.get('a1');
+    http.expectOne('/api/ideas/a1').flush({ id: 'a1' });
+
+    expect(await idea).toEqual({ id: 'a1' });
+  });
+
+  const changes = { title: 'T', summary: '', category: 'Product', score: null, strengths: '', risks: '', nextStep: '' };
+
+  it('Given changes and a version, When updating, Then it puts them and returns the updated idea', async () => {
+    const result = ideas.update('a1', changes, 3, false);
+    const req = http.expectOne('/api/ideas/a1');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ ...changes, version: 3, overwrite: false });
+    req.flush({ id: 'a1', version: 4 });
+
+    expect(await result).toEqual({ outcome: 'ok', idea: { id: 'a1', version: 4 } });
+  });
+
+  it('Given the server answers 400, 409, 422 or 500, When updating, Then the outcome says rejected, changed, archived or failed', async () => {
+    const run = async (status: number, body: object) => {
+      const result = ideas.update('a1', changes, 1, false);
+      http.expectOne('/api/ideas/a1').flush(body, { status, statusText: 'x' });
+      return result;
+    };
+
+    expect(await run(400, { errors: { title: 'Enter a title for this idea' } })).toEqual({ outcome: 'rejected', errors: { title: 'Enter a title for this idea' } });
+    expect(await run(409, { current: { id: 'a1' } })).toEqual({ outcome: 'changed', current: { id: 'a1' } });
+    expect(await run(422, {})).toEqual({ outcome: 'archived' });
+    expect(await run(500, {})).toEqual({ outcome: 'failed' });
+  });
+
+  it('Given a status, When it is set, Then it puts the status and returns the idea, or failed on error', async () => {
+    const ok = ideas.setStatus('a1', 'Building');
+    const req = http.expectOne('/api/ideas/a1/status');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ status: 'Building' });
+    req.flush({ id: 'a1', status: 'Building' });
+    expect(await ok).toEqual({ outcome: 'ok', idea: { id: 'a1', status: 'Building' } });
+
+    const failed = ideas.setStatus('a1', 'Built');
+    http.expectOne('/api/ideas/a1/status').flush({}, { status: 500, statusText: 'x' });
+    expect(await failed).toEqual({ outcome: 'failed' });
+  });
 });
