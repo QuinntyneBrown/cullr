@@ -1,7 +1,7 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category, CATEGORIES, IdeaCriteria, IdeaPage, IdeaSort, IdeaStatus, IdeaService } from '@cullr/api';
-import { Badge, Button, Card, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField, TabItem } from '@cullr/components';
+import { Badge, Button, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField, TabItem } from '@cullr/components';
 import { CaptureIdeaDialogService } from '../../core/capture/capture-idea-dialog.service';
 import { categoryTone, statusTone } from '../../core/ideas/tones';
 
@@ -9,7 +9,7 @@ const SEARCH_DELAY_MS = 300;
 
 @Component({
   selector: 'app-ideas-page',
-  imports: [Badge, Button, Card, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField],
+  imports: [Badge, Button, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField],
   template: `
     <div class="page-header">
       <div>
