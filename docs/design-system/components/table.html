@@ -102,7 +102,7 @@
 </section>
 
 <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="table-wrap"><table class="table"><caption class="visually-hidden">Ideas</caption><thead><tr><th scope="col">Idea</th><th scope="col">Category</th><th scope="col">Logged</th></tr></thead><tbody><tr><td>Porch Light</td><td><span class="badge badge--info">Toronto &amp; GTA</span></td><td>Tue 14 Oct</td></tr><tr><td>Honk If You&rsquo;re Late</td><td><span class="badge">Product</span></td><td>Mon 13 Oct</td></tr></tbody></table></div></figure><ol class="ds-anatomy__list"><li><div><b>Caption</b><small>Visually hidden name for the table.</small></div></li><li><div><b>Header cells</b><small><code>scope="col"</code>.</small></div></li><li><div><b>Rows</b><small>Hover highlight; selected rows tinted.</small></div></li><li><div><b>Wrapper</b><small><code>.table-wrap</code> scrolls sideways on phones.</small></div></li></ol></div>
+<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="table-wrap"><table class="table"><caption class="visually-hidden">Ideas</caption><thead><tr><th scope="col">Idea</th><th scope="col">Category</th><th scope="col">Logged</th></tr></thead><tbody><tr><td>Porch Light</td><td><span class="badge badge--info">Toronto &amp; GTA</span></td><td>Tue 14 Oct</td></tr><tr><td>Honk If You&rsquo;re Late</td><td><span class="badge">Product</span></td><td>Mon 13 Oct</td></tr></tbody></table></div></figure><ol class="ds-anatomy__list"><li><div><b>Caption</b><small>Visually hidden name for the table.</small></div></li><li><div><b>Header cells</b><small><code>scope="col"</code>.</small></div></li><li><div><b>Rows</b><small>Hover highlight; selected rows tinted.</small></div></li><li><div><b>Wrapper</b><small><code>.table-wrap</code> scrolls sideways on phones.</small></div></li><li><div><b>Numeric column</b><small><code>.num</code> on <code>th</code> and <code>td</code> right-aligns figures; <code>.row-actions</code> on the last <code>td</code> holds the row's buttons.</small></div></li></ol></div>
 </section>
 
 <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
@@ -144,7 +144,11 @@
 <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
 <pre><code>&lt;div class="table-wrap" tabindex="0"&gt;
   &lt;table class="table"&gt;&lt;caption class="visually-hidden"&gt;Ideas&lt;/caption&gt;…&lt;/table&gt;
-&lt;/div&gt;</code></pre>
+&lt;/div&gt;
+
+&lt;th scope="col" class="num"&gt;Score&lt;/th&gt;
+&lt;td class="num"&gt;9&lt;/td&gt;
+&lt;td class="row-actions"&gt;&lt;button class="btn btn--sm"&gt;Edit&lt;/button&gt;&lt;/td&gt;</code></pre>
 </section>
 
 <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>

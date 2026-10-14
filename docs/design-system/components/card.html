@@ -102,7 +102,7 @@
 </section>
 
 <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><article class="card "><h3 class="card__title">Porch Light</h3><p class="text-muted">A free notice board for your street.</p><div class="cluster"><span class="badge badge--info">Toronto &amp; GTA</span></div></article></figure><ol class="ds-anatomy__list"><li><div><b>Container</b><small><code>--radius-lg</code>, 1px border, <code>--space-6</code> padding (<code>--space-4</code> on phones).</small></div></li><li><div><b>Title</b><small>Heading element at the correct level.</small></div></li><li><div><b>Body</b><small>Text and metadata.</small></div></li><li><div><b>Footer (optional)</b><small>Actions, <code>.card__footer</code>.</small></div></li></ol></div>
+<div class="ds-anatomy"><figure class="ds-anatomy__figure"><article class="card "><h3 class="card__title">Porch Light</h3><p class="text-muted">A free notice board for your street.</p><div class="cluster"><span class="badge badge--info">Toronto &amp; GTA</span></div></article></figure><ol class="ds-anatomy__list"><li><div><b>Container</b><small><code>--radius-lg</code>, 1px border, <code>--space-6</code> padding (<code>--space-4</code> on phones).</small></div></li><li><div><b>Title</b><small>Heading element at the correct level.</small></div></li><li><div><b>Body</b><small>Text and metadata.</small></div></li><li><div><b>Footer (optional)</b><small>Actions, <code>.card__footer</code>.</small></div></li><li><div><b>Header (optional)</b><small><code>.card__header</code> puts the title block and a trailing <code>.stat__value</code> (for example a score) on one row.</small></div></li></ol></div>
 </section>
 
 <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
@@ -145,6 +145,14 @@
 <pre><code>&lt;article class="card card--interactive"&gt;
   &lt;h3 class="card__title"&gt;&lt;a href="/ideas/1"&gt;Porch Light&lt;/a&gt;&lt;/h3&gt;
   &lt;p&gt;…&lt;/p&gt;
+&lt;/article&gt;
+
+&lt;article class="card"&gt;
+  &lt;div class="card__header"&gt;
+    &lt;div&gt;…title and badges…&lt;/div&gt;
+    &lt;span class="stat__value"&gt;9&lt;span class="text-caption"&gt;/10&lt;/span&gt;&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="card__footer"&gt;…&lt;/div&gt;
 &lt;/article&gt;</code></pre>
 </section>
 

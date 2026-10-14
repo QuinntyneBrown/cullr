@@ -27,12 +27,10 @@ marked **Local**.
 
 | Class(es) | Used on | Documented component | Gap |
 |---|---|---|---|
-| `.card__header` | Today idea cards | `card` | Anatomy documents `card__footer` only; `card__header` is undocumented. |
 | `.toast__action`, `.toast__progress`, `.toast__text` | Idea toast, Curation toast | `toast` | Undo action, auto-dismiss progress bar and body text node aren't in the component's anatomy/Code. |
 | `.topbar__menu`, `.topbar__nav` | every dashboard page's top bar | `top-bar` | Mobile nav-toggle button and nav slot aren't documented. |
 | `.sidebar__group` | sidebar's "Account" divider | `sidebar-navigation` | Group label isn't documented. |
-| `.num`, `.row-actions` | Ideas, Archive tables | `table` | Numeric-column and reveal-on-hover row-action modifiers aren't in the Code section. |
-| `.cluster--between`, `.cluster--end`, `.container--narrow` | several pages | `layout-primitives` | Only the four base primitives (`container`, `stack`, `cluster`, `grid`) are documented; modifiers aren't. |
+| `.cluster--end` | several pages | `layout-primitives` | Modifier isn't documented (`.cluster--between` and `.container--narrow` now are). |
 
 ## Shell
 
