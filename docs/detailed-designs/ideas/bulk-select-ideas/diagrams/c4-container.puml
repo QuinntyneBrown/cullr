@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Bulk select ideas
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Selection bar on the Ideas screen")
+  Container(api, "Cullr API", "Next.js route handlers", "Applies a bulk action idea by idea")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas, status history and notes")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Posts bulk action to", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

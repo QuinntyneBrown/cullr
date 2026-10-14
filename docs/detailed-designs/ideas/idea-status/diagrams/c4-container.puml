@@ -1,15 +1,16 @@
 @startuml
 !include <C4/C4_Container>
 LAYOUT_WITH_LEGEND()
-title Containers — Idea status lifecycle
+title Containers — Idea status
 
 Person(owner, "Owner", "Sole user of Cullr")
 System_Boundary(cullr, "Cullr") {
-  Container(spa, "Cullr web app", "Angular single-page app", "Hosts the status control on Idea detail")
-  Container(api, "Cullr API", "Next.js route handlers", "Applies manual and automatic status changes")
-  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Idea status and append-only status history")
+  Container(spa, "Cullr web app", "Angular single-page app", "Status control on Idea detail")
+  Container(api, "Cullr API", "Next.js route handlers", "Applies status changes and history")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas, status history and notes")
 }
+
 Rel(owner, spa, "Uses", "HTTPS")
-Rel(spa, api, "Sends status choice to", "JSON/HTTPS")
+Rel(spa, api, "Sends status change to", "JSON/HTTPS")
 Rel(api, db, "Reads and writes", "<TO SUPPLY>")
 @enduml

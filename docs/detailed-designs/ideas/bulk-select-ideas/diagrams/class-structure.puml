@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Bulk select ideas
+
+class SelectionBarComponent {
+  +selection: SelectionState
+  +curateDisabled: boolean
+  +curateSelected(): void
+  +archiveSelected(): void
+  +clearSelection(): void
+}
+class SelectionState {
+  +ids: Set<string>
+  +selectAll(ids: string[]): void
+  +keepOnly(ids: string[]): void
+  +clear(): void
+}
+class IdeasApiClient {
+  +bulk(action: BulkAction, ids: string[], options: BulkOptions): Observable<BulkResult>
+}
+class BulkRouteHandler {
+  +POST(request: Request): Response
+}
+class BulkIdeaActionUseCase {
+  +execute(action: BulkAction, ids: string[], options: BulkOptions): BulkResult
+}
+class BulkResult {
+  +succeeded: string[]
+  +failed: BulkFailure[]
+}
+class BulkFailure {
+  +ideaId: string
+  +title: string
+  +reason: string
+}
+interface IdeaRepository {
+  +findMany(ids: string[]): Idea[]
+}
+SelectionBarComponent --> SelectionState
+SelectionBarComponent --> IdeasApiClient : calls
+IdeasApiClient ..> BulkRouteHandler : HTTPS
+BulkRouteHandler --> BulkIdeaActionUseCase : invokes
+BulkIdeaActionUseCase --> IdeaRepository
+BulkIdeaActionUseCase --> BulkResult : returns
+BulkResult "1" o-- "*" BulkFailure
+@enduml

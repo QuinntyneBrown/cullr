@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Bulk action on selected ideas
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "SelectionBarComponent" as bar
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "bulk route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "BulkIdeaActionUseCase" as uc
+  participant "Single-idea use case" as one
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> bar : Select rows
+bar --> owner : Show "N selected" with bulk actions
+alt more than 5 selected
+  bar --> owner : Disable Curate selected, show "Select up to 5 ideas to curate" (L2-011)
+else 1 to 5 selected
+  owner -> bar : Choose Curate selected or Archive selected
+  bar --> owner : Open the dialog of the action
+  owner -> bar : Confirm
+end
+bar -> client : Build bulk request
+client -> route : POST /api/ideas/bulk
+route -> uc : Invoke BulkIdeaActionUseCase
+loop each selected idea
+  uc -> one : Apply action to idea
+  one -> db : Save change
+  db --> one : Saved or failed
+  one --> uc : Success or reason
+end
+uc --> route : BulkResult
+route --> client : 200 with succeeded and failed
+client --> bar : Result
+bar --> owner : Report failures by title, keep selection for failures only (L2-011)
+owner -> bar : Clear selection
+bar --> owner : Hide the bar
+@enduml

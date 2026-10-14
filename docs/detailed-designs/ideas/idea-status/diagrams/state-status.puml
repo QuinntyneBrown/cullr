@@ -1,0 +1,23 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam state {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title State diagram — Idea status
+
+[*] --> Logged : Capture idea
+Logged --> Critiquing : Notes saved (automatic)
+Logged --> Curating : Curated (automatic)
+Critiquing --> Curating : Curated (automatic)
+Logged --> Building : Owner sets Building
+Critiquing --> Building : Owner sets Building
+Curating --> Building : Owner sets Building
+Building --> Built : Owner sets Built
+Curating --> Built : Owner sets Built
+@enduml

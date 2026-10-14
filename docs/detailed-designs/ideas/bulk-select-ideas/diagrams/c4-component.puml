@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Bulk select ideas
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "SelectionBarComponent", "Angular component", "Shows the selection and the bulk actions")
+  Component(f1, "IdeasApiClient", "Typed API client service", "Posts the bulk action")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "bulk route handler", "Next.js route handler", "POST /api/ideas/bulk")
+  Component(a1, "BulkIdeaActionUseCase", "Application", "Runs the action for each idea and collects results")
+  Component(a2, "BulkResult", "Domain value object", "Successes and failures")
+  Component(r, "IdeaRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, f1, "Calls")
+Rel(f1, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

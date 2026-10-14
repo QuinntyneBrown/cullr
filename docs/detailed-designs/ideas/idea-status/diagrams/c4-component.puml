@@ -1,28 +1,26 @@
 @startuml
 !include <C4/C4_Component>
 LAYOUT_WITH_LEGEND()
-title Components — Idea status lifecycle
+title Components — Idea status
 
 Container_Boundary(spa, "Cullr web app") {
-  Component(page, "IdeaDetailPage", "Angular page component", "Hosts the status control and shows history")
-  Component(control, "StatusControl", "Angular component", "Offers Building and Built and confirms the choice")
-  Component(client, "IdeasApiClient", "Typed Angular HTTP service", "Sends the status request")
+  Component(f0, "StatusControlComponent", "Angular component", "Building and Built choice")
+  Component(f1, "IdeasApiClient", "Typed API client service", "Sends the status change")
 }
 Container_Boundary(api, "Cullr API") {
-  Component(route, "PUT /api/ideas/[id]/status route handler", "Next.js route handler", "Authenticates and maps results to HTTP")
-  Component(usecase, "SetIdeaStatusUseCase", "Application use case", "Applies a manual status and saves once")
-  Component(entity, "Idea", "Domain entity", "Owns the status, history and transition rules")
-  Component(repo, "IdeaRepository", "Infrastructure repository", "Loads and saves an idea and its history")
-  Component(other, "EditIdeaUseCase and CurateIdeaUseCase", "Application use cases", "Trigger the automatic rules on the entity")
+  Component(a0, "status route handler", "Next.js route handler", "PUT /api/ideas/:id/status")
+  Component(a1, "SetIdeaStatusUseCase", "Application", "Sets status and appends history")
+  Component(a2, "Idea", "Domain entity", "Holds status and history")
+  Component(a3, "StatusPolicy", "Domain policy", "Automatic transition rules")
+  Component(r, "IdeaRepository", "Infrastructure", "Persist and load state")
 }
-ComponentDb(db, "Cullr database", "<TO SUPPLY>", "Persists ideas and history")
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
 
-Rel(page, control, "Hosts")
-Rel(control, client, "Submits through")
-Rel(client, route, "PUT", "JSON/HTTPS")
-Rel(route, usecase, "Invokes")
-Rel(usecase, repo, "Loads and saves through")
-Rel(usecase, entity, "Calls setStatusManually on")
-Rel(other, entity, "Call applyCritiqueSaved and applyCurated on")
-Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+Rel(f0, f1, "Calls")
+Rel(f1, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
 @enduml

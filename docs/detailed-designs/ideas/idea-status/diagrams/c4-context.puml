@@ -1,10 +1,10 @@
 @startuml
 !include <C4/C4_Context>
 LAYOUT_WITH_LEGEND()
-title System Context — Idea status lifecycle
+title System Context — Idea status
 
 Person(owner, "Owner", "Sole user of Cullr")
 System(cullr, "Cullr", "Personal idea-curation application")
 
-Rel(owner, cullr, "Marks ideas Building or Built using", "HTTPS")
+Rel(owner, cullr, "Marks an idea as Building or Built in")
 @enduml
