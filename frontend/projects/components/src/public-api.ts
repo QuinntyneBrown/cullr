@@ -16,6 +16,7 @@ export * from './lib/dialog/dialog.service';
 export * from './lib/empty-state/empty-state';
 export * from './lib/list/list';
 export * from './lib/pagination/pagination';
+export * from './lib/radio-group/radio-group';
 export * from './lib/select/select';
 export * from './lib/sidebar-navigation/sidebar-navigation';
 export * from './lib/skeleton/skeleton';
