@@ -10,6 +10,7 @@ import { Skeleton } from '../skeleton/skeleton';
     <div cuCard class="auth-card">Inside</div>
     <cu-alert title="Sign-in service is unreachable">Check your connection.</cu-alert>
     <cu-alert title="Fix 1 error to continue" [summary]="true"><ul><li>Enter your password</li></ul></cu-alert>
+    <cu-alert title="Archived" tone="warning">Editing is off.</cu-alert>
     <cu-skeleton variant="title" width="60%" />
     <cu-skeleton variant="control" />
   `,
@@ -38,6 +39,12 @@ describe('Card, Alert and Skeleton', () => {
 
   it('Given a summary alert, When rendered, Then it has the form-summary class', () => {
     expect(el.querySelectorAll('.alert.form-summary')).toHaveLength(1);
+  });
+
+  it('Given a warning alert, When rendered, Then it is a warning status alert', () => {
+    const warning = el.querySelector('.alert.alert--warning') as HTMLElement;
+    expect(warning.getAttribute('role')).toBe('status');
+    expect(warning.querySelector('.alert__title')?.textContent).toBe('Archived');
   });
 
   it('Given skeletons, When rendered, Then they use the skeleton classes and sizes', () => {
