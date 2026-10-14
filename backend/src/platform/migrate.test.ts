@@ -31,7 +31,7 @@ describe('runMigrations', () => {
     const db = new DatabaseSync(path);
     const applied = db.prepare('SELECT id FROM schema_migrations').all();
     db.close();
-    expect(applied).toEqual([{ id: '0001_initial' }, { id: '0002_access' }, { id: '0003_ideas' }, { id: '0004_idea_detail' }]);
+    expect(applied).toEqual([{ id: '0001_initial' }, { id: '0002_access' }, { id: '0003_ideas' }, { id: '0004_idea_detail' }, { id: '0005_curation' }]);
   });
 
   it('Given pending migrations, When the database is merely opened or health-checked, Then nothing is applied', async () => {

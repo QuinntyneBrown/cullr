@@ -65,6 +65,19 @@ const migrations = [
       CREATE INDEX status_history_idea ON status_history (idea_id);
     `,
   },
+  {
+    id: '0005_curation',
+    sql: `
+      CREATE TABLE best_of_entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        idea_id TEXT NOT NULL REFERENCES ideas(id),
+        period TEXT NOT NULL,
+        curated_at INTEGER NOT NULL,
+        ended_at INTEGER
+      );
+      CREATE INDEX best_of_entries_period ON best_of_entries (period);
+    `,
+  },
 ];
 
 export function runMigrations(path: string): void {
