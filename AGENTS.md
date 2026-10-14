@@ -81,7 +81,55 @@ formatter, and review. A test suite exists to prove behavior.
 ## Conventions
 
 - **Angular HTTP services are named `<Domain>Service`**, for example `AuthService`, `IdeasService`, `SettingsService`. Never use an `ApiClient` or `Api` suffix (`AuthApiClient`, `IdeasApi`). The class lives in `<domain>.service.ts` and wraps the HTTP calls for that domain.
-- **Detailed designs follow `docs/screen-composition.md`.** Every design of a screen, dialog or notification carries a "Screen composition" subsection in its Description that lists the library and local components exactly as that file does. Change the composition map and the designs together.
+
+- **Detailed designs follow `docs/screen-composition.md`.** Every design of a screen, dialog or notification carries a "Screen composition" subsection in its Description that lists the library and local components exactly as that file does. Change the composition map and the designs together.
+
+## Expected folder structure
+
+The code lives in one repository with two top-level code folders beside
+`docs/`: `frontend/` and `backend/`. Features are vertical slices, mirroring
+`docs/detailed-designs/<subsystem>/<feature>/`: one folder per feature in the
+frontend and the backend, named as in the designs.
+
+```
+cullr/
+├── frontend/                        Angular workspace
+│   ├── projects/
+│   │   ├── cullr/                   application
+│   │   │   └── src/app/
+│   │   │       ├── core/            shell, routing, guards, interceptors, viewport
+│   │   │       ├── <subsystem>/<feature>/   pages, dialogs, feature components, specs
+│   │   │       └── shared/          local UI that the library does not provide
+│   │   ├── api/                     library: `<Domain>Service` HTTP services,
+│   │   │                            request and response types
+│   │   └── components/              library: `@cullr/components`
+│   └── e2e/                         Playwright tests (see below)
+├── backend/                         Next.js backend
+│   └── src/
+│       ├── app/api/                 route handlers, one folder per endpoint
+│       ├── <subsystem>/<feature>/   use cases, domain types, repositories
+│       ├── platform/                withOwnerSession, withErrorHandling,
+│       │                            RateLimiter, CorrelationId, ErrorLogger
+│       └── db/                      schema and migrations
+├── docs/                            specs, detailed-designs, mocks, design-system,
+│                                    screen-composition.md
+└── .claude/skills, .agents/skills   mirrored project skills
+```
+
+- The frontend is an Angular workspace with at least three projects: `api`
+  (library), `components` (library) and `cullr` (application). The `cullr`
+  application imports HTTP services from `api` and UI from `components`.
+- Playwright end-to-end tests live in `frontend/e2e/`. They run with the backend
+  mocked out (network routes are stubbed; no real backend runs) and use the page
+  object model: one page object per page, dialog or shell part, and the specs
+  call page-object methods rather than raw locators.
+- Subsystems are `access`, `ideas`, `curation`, `archive`, `notifications`,
+  `settings`, `account` and `platform`.
+- Unit and acceptance tests sit next to the code they prove. Acceptance tests are
+  named after the feature and its L2 ids.
+- Until `frontend/projects/components` exists, the design system in
+  `docs/design-system` stands in for it.
+- Do not add other top-level folders without asking.
 
 ## Skills
 
