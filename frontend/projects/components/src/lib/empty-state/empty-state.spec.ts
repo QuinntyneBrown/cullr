@@ -8,7 +8,30 @@ import { EmptyState } from './empty-state';
 })
 class Host {}
 
+@Component({
+  imports: [EmptyState],
+  template: `
+    <cu-empty-state title="You're offline">
+      Reconnect.
+      <svg icon viewBox="0 0 24 24"><path d="M3 3" /></svg>
+      <div actions><a class="btn" href="/">Back to Today</a></div>
+    </cu-empty-state>
+  `,
+})
+class HostWithIconAndActions {}
+
 describe('EmptyState', () => {
+  it('Given an icon and actions, When rendered, Then the icon is decorative and the actions sit in the actions row', async () => {
+    const fixture = TestBed.createComponent(HostWithIconAndActions);
+    await fixture.whenStable();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const icon = el.querySelector('.empty__icon');
+    expect(icon?.getAttribute('aria-hidden')).toBe('true');
+    expect(icon?.querySelector('svg')).not.toBeNull();
+    expect(el.querySelector('.empty__actions a.btn')?.textContent).toBe('Back to Today');
+  });
+
   it('Given a title and content, When rendered, Then it shows the title as a heading and the projected text', async () => {
     const fixture = TestBed.createComponent(Host);
     await fixture.whenStable();

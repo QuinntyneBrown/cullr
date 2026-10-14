@@ -4,8 +4,10 @@ import { Component, input } from '@angular/core';
   selector: 'cu-empty-state',
   template: `
     <div class="empty">
+      <div class="empty__icon" aria-hidden="true"><ng-content select="[icon]" /></div>
       <h2 class="empty__title">{{ title() }}</h2>
       <p class="empty__text"><ng-content /></p>
+      <div class="empty__actions"><ng-content select="[actions]" /></div>
     </div>
   `,
 })

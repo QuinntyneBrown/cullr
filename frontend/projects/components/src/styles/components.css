@@ -349,6 +349,7 @@ legend { font: var(--text-label); padding: 0; margin-bottom: var(--space-2); }
 .empty__icon { width: 4rem; height: 4rem; border-radius: var(--radius-full); display: grid; place-items: center; background: var(--color-accent-subtle); color: var(--color-fg-accent); margin-bottom: var(--space-2); }
 .empty__title { font: var(--text-h3); } .empty__text { color: var(--color-fg-muted); max-width: 36ch; }
 .empty__actions { display: flex; gap: var(--space-3); margin-top: var(--space-2); flex-wrap: wrap; justify-content: center; }
+.empty__icon:empty, .empty__actions:empty { display: none; }
 .empty--compact { padding: var(--space-8) var(--space-4); }
 .empty--error .empty__icon { background: var(--color-danger-bg); color: var(--color-danger-icon); }
 .inline-status { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--text-body-sm); color: var(--color-fg-muted); }
