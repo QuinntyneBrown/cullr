@@ -5,7 +5,7 @@ title Components — Reset password
 
 Container_Boundary(spa, "Cullr web app") {
   Component(page, "ResetPasswordPageComponent", "Angular page component", "Renders the form and its states")
-  Component(client, "AuthApiClient", "Typed API client service", "Checks the link and submits the new password")
+  Component(client, "AuthService", "Typed HTTP service", "Checks the link and submits the new password")
 }
 Container_Boundary(api, "Cullr API") {
   Component(route, "reset-password route handlers", "Next.js route handlers", "GET and POST /api/auth/reset-password")

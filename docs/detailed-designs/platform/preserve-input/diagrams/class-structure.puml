@@ -50,7 +50,7 @@ class DialogComponent {
   +boolean isOpen
 }
 
-class ApiClient {
+class ApiService {
   +save(values): Observable<Result>
 }
 
@@ -64,7 +64,7 @@ DialogComponent *-- SaveController : owns
 SaveController --> SaveState : has
 SaveController --> SaveFailure : holds latest
 SaveController ..> SaveFailureMapper : maps with
-SaveController ..> ApiClient : calls
+SaveController ..> ApiService : calls
 SaveFailure --> SaveFailureKind : has
 SaveFailureMapper ..> ProblemResponse : reads
 @enduml

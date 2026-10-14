@@ -5,7 +5,7 @@ title Components — Archive an idea
 
 Container_Boundary(web, "Cullr web app") {
   Component(dialog, "ArchiveIdeaDialogComponent", "Angular dialog component", "Collects the optional reason and shows busy and failure states")
-  Component(client, "IdeasApiClient", "Typed Angular service", "Sends the archive request")
+  Component(client, "IdeasService", "Typed Angular service", "Sends the archive request")
 }
 
 Container_Boundary(api, "Cullr API") {

@@ -67,7 +67,7 @@ class IdeaDetailPage {
   +retry(): void
 }
 
-class IdeasApiClient {
+class IdeasService {
   +getIdea(id: string): Observable<IdeaDetail>
 }
 
@@ -77,6 +77,6 @@ Idea "1" *-- "*" StatusHistoryEntry
 GetIdeaUseCase --> IdeaRepository : loads through
 GetIdeaUseCase ..> IdeaDetail : returns
 IdeaRepository ..> Idea : returns
-IdeaDetailPage --> IdeasApiClient : calls
-IdeasApiClient ..> IdeaDetail : receives
+IdeaDetailPage --> IdeasService : calls
+IdeasService ..> IdeaDetail : receives
 @enduml

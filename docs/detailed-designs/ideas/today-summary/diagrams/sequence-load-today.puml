@@ -17,7 +17,7 @@ skinparam package {
 actor "Owner" as owner
 box "Frontend — Cullr web app" #E0F2FE
   participant "TodayPage" as page
-  participant "TodayApi" as client
+  participant "TodayService" as client
 end box
 box "Backend — Cullr API" #D1FADF
   participant "GET /api/today route handler" as handler

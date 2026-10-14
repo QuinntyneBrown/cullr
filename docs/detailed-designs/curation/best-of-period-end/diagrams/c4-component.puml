@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Best-of period end
+
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "PeriodEndTrigger", "<TO SUPPLY>", "Starts the roll-over at each period boundary")
+  Component(a1, "RollOverPeriodsUseCase", "Application", "Lapses entries and evaluates carry-over")
+  Component(a2, "PeriodCalendar", "Domain function", "Finds the periods that ended")
+  Component(a3, "BestOfPolicy", "Domain function", "Decides carry-over")
+  Component(a4, "NotificationEvents", "Application service", "Creates carry-over notifications")
+  Component(r, "BestOfRepository, PeriodRunRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, a4, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

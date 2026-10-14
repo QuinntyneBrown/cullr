@@ -5,7 +5,7 @@ title Components — Idea status
 
 Container_Boundary(spa, "Cullr web app") {
   Component(f0, "StatusControlComponent", "Angular component", "Building and Built choice")
-  Component(f1, "IdeasApiClient", "Typed API client service", "Sends the status change")
+  Component(f1, "IdeasService", "Typed HTTP service", "Sends the status change")
 }
 Container_Boundary(api, "Cullr API") {
   Component(a0, "status route handler", "Next.js route handler", "PUT /api/ideas/:id/status")

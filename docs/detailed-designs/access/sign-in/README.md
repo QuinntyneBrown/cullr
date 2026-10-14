@@ -13,7 +13,7 @@ The feature covers the Sign in screen (`/sign-in`) and the server-side check beh
 The feature is a vertical slice from the Sign in screen to the Cullr database.
 
 - **`SignInPageComponent`** — Angular page component in the Cullr web app. It renders the email and password form and the mock states `default`, `loading`, `submitting`, `invalid` and `error`. When a signed-in owner opens `/sign-in`, the component redirects to Today (`L2-001`, criterion 6).
-- **`AuthApiClient`** — typed API client service. It posts the credentials and returns a typed `SignInResult`.
+- **`AuthService`** — typed HTTP service. It posts the credentials and returns a typed `SignInResult`.
 - **sign-in route handler** — Next.js route handler in the Cullr API at `POST /api/auth/sign-in`. It parses the request, invokes the use case and sets the session cookie. Cookie attributes are `<TO SUPPLY>`.
 - **`SignInUseCase`** — application-layer use case. It checks lockout, loads the account, verifies the password, records the outcome and creates the session.
 - **`OwnerAccount`** — domain entity holding the owner email and password hash. Its `verifyPassword` method compares a candidate password. The hashing algorithm is `<TO SUPPLY>`.
@@ -56,7 +56,7 @@ The Cullr web app posts credentials to the Cullr API, which reads the account an
 
 ### Components
 
-The page component and API client run in the browser. The route handler, use case, domain types and repositories run in the Cullr API.
+The page component and HTTP service run in the browser. The route handler, use case, domain types and repositories run in the Cullr API.
 
 ![C4 component view for sign in](diagrams/c4-component.png)
 

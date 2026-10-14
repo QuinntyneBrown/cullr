@@ -11,7 +11,7 @@ This feature ends sessions and protects the application when no valid session ex
 The feature spans the browser and the Cullr API.
 
 - **Shell sign-out action** — control in the application shell that starts sign out from any protected page. After sign out it navigates to Sign in (`/sign-in`).
-- **`AuthApiClient`** — typed API client service. It calls the sign-out endpoint.
+- **`AuthService`** — typed HTTP service. It calls the sign-out endpoint.
 - **`AuthGuard`** — Angular route guard. It redirects a visitor without a session to Sign in.
 - **`UnauthorizedInterceptor`** — Angular HTTP interceptor. On a 401 response it redirects to Sign in and passes the original page as a return URL, so the owner returns there after signing in.
 - **authenticate wrapper** — Next.js route helper applied to every protected route handler. It invokes `AuthenticateRequestUseCase` and returns 401 without data when the request is unauthenticated.

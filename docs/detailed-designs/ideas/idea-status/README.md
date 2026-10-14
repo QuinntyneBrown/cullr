@@ -13,7 +13,7 @@ The feature is a vertical slice that spans the domain rules and the manual contr
 - **`StatusPolicy`** — domain policy that holds the automatic rules. `afterNotesSaved` moves `Logged` to `Critiquing`. `afterCurated` moves `Logged` or `Critiquing` to `Curating`. No automatic rule moves an idea to an earlier status.
 - **`StatusHistoryEntry`** — immutable record with a description and a time. The `Idea` entity only appends entries.
 - **`StatusControlComponent`** — Angular component on Idea detail. It offers exactly Building and Built, asks for confirmation, and shows the success notification, or the failure message with a retry action while the previous status stays shown.
-- **`IdeasApiClient`** — typed API client service for `PUT /api/ideas/:id/status`.
+- **`IdeasService`** — typed HTTP service for `PUT /api/ideas/:id/status`.
 - **status route handler** — Next.js route handler.
 - **`SetIdeaStatusUseCase`** — application-layer use case. It rejects an archived idea, ignores a request for the current status, and otherwise sets the status and appends a history entry.
 - **`IdeaRepository`** — persistence interface. The database technology is `<TO SUPPLY>`.

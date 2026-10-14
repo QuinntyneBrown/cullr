@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Notification center
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "NotificationsPageComponent", "Angular page component", "List and read actions")
+  Component(f1, "NotificationBellComponent", "Angular component", "Unread count in the top bar")
+  Component(f2, "NotificationsService", "Typed HTTP service", "Calls the notification endpoints")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "notifications route handlers", "Next.js route handlers", "List, mark read and mark all read")
+  Component(a1, "Notification use cases", "Application", "List, mark read, mark all read")
+  Component(a2, "Notification", "Domain entity", "Message, time and read state")
+  Component(r, "NotificationRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, f1, "Calls")
+Rel(f1, f2, "Calls")
+Rel(f2, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

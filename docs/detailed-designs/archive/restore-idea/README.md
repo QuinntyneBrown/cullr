@@ -9,7 +9,7 @@ The owner restores an idea when the reason for archiving no longer applies. The 
 ## Description
 
 - **`RestoreIdeaDialogComponent`** — Angular dialog component. It names the idea, states that it goes back to Logged in the active idea log, notes that the idea may be archived again at any time, and offers Cancel and Restore idea. It has three states in the mocks: default, busy and failed.
-- **`IdeasApiClient`** — typed Angular service that sends the restore request.
+- **`IdeasService`** — typed Angular service that sends the restore request.
 - **`RestoreIdeaRouteHandler`** — Next.js route handler for `POST /api/ideas/{id}/restore`. It authenticates the owner and invokes the use case.
 - **`RestoreIdeaUseCase`** — application use case. It loads the idea, calls `Idea.Restore`, and saves it in one unit of work.
 - **`Idea`** — domain entity. `Restore()` sets the state to `Active` and the status to `Logged`.

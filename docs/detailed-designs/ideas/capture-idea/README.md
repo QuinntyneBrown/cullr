@@ -19,7 +19,7 @@ The feature belongs to the `ideas` subsystem. Its results appear in the Today su
 The feature is a vertical slice from the dialog to the database. The mocks in `docs/mocks/dialogs/capture-idea/` show five states: `default`, `invalid`, `busy`, `failed` and `success`.
 
 - **`CaptureIdeaDialog`** — Angular dialog component. It shows Title, Summary, Category and Score, places focus on Title, and offers "Capture idea" as the primary action. It shows a visible counter and rejects input at the limit (`L2-006` criterion 6). It generates one capture request key when it opens and reuses that key for every retry.
-- **`IdeasApi`** — typed Angular client service. It sends the capture request and returns the saved idea or the typed field errors.
+- **`IdeasService`** — typed Angular client service. It sends the capture request and returns the saved idea or the typed field errors.
 - **`POST /api/ideas` route handler** — Next.js route handler in the Cullr API. It authenticates the session, passes the body to the use case and maps the result to a status code.
 - **`CaptureIdea`** — application use case. It looks up the capture request key, creates the entity, and saves the idea and key in one unit of work.
 - **`Idea`** — domain entity. Its `create` function enforces the field rules and sets the status to `Logged` and `loggedAt` to the current time.

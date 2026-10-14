@@ -1,0 +1,58 @@
+@startuml
+title UML sequence behaviour — Save the profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "AccountPageComponent" as page
+  participant "AccountService" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "account route handlers" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "UpdateProfileUseCase" as uc
+  participant "OwnerProfile" as profile
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+  participant "Email provider" as email
+end box
+owner -> page : Change fields and save
+alt empty name or malformed email
+  page --> owner : Show inline error, send no request (L2-030)
+else valid
+  page -> page : Disable Save changes, show busy state
+  page -> client : Build request
+  client -> route : PUT /api/account
+  route -> uc : Invoke UpdateProfileUseCase
+  uc -> profile : Validate and apply name and expertise
+  uc -> db : Save profile
+  alt email changed
+    uc -> db : Save pending change with token hash
+    uc -> email : Send confirmation link to the new address
+    email --> uc : Accepted
+  end
+  db --> uc : Saved
+  uc --> route : Result
+  route --> client : 200
+  client --> page : Success
+  page --> owner : Show success, update top bar initials, say the new address needs confirming
+end
+opt save fails
+  client --> page : Failure
+  page --> owner : Keep entered values, show error with retry (L2-030)
+end
+@enduml

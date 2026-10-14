@@ -53,12 +53,12 @@ class CuratedPageComponent {
   +clearFilter(): void
 }
 
-class CurationApiClient {
+class CurationService {
   +getCurated(): Observable<CuratedList>
 }
 
-CuratedPageComponent ..> CurationApiClient : calls
-CurationApiClient ..> CuratedList : returns
+CuratedPageComponent ..> CurationService : calls
+CurationService ..> CuratedList : returns
 GetCuratedUseCase --> BestOfRepository : reads through
 GetCuratedUseCase ..> CuratedOrdering : orders with
 GetCuratedUseCase --> CuratedList : returns

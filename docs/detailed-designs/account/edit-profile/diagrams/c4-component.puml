@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Edit profile
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "AccountPageComponent", "Angular page component", "Profile form and states")
+  Component(f1, "AccountService", "Typed HTTP service", "Loads and saves the profile")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "account route handlers", "Next.js route handlers", "GET and PUT /api/account, POST /api/account/email/confirm")
+  Component(a1, "UpdateProfileUseCase", "Application", "Validates and saves the profile")
+  Component(a2, "OwnerProfile", "Domain entity", "Name, email, expertise and initials")
+  Component(a3, "ConfirmEmailChangeUseCase", "Application", "Applies a confirmed email change")
+  Component(r, "OwnerRepository, PendingEmailChangeRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, f1, "Calls")
+Rel(f1, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

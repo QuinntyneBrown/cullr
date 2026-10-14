@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Confirm an email change
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Confirmation link target" as page
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "account route handlers" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "ConfirmEmailChangeUseCase" as uc
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+  participant "Email provider" as email
+end box
+owner -> page : Open the confirmation link
+page -> route : POST /api/account/email/confirm with token
+route -> uc : Invoke ConfirmEmailChangeUseCase
+uc -> db : Find pending change by token hash
+db --> uc : Pending change or none
+alt token valid and not expired
+  uc -> db : Replace sign-in email and remove pending change (L2-030)
+  db --> uc : Saved
+  uc --> route : Confirmed
+  route --> page : 200
+  page --> owner : Say the new address is now the sign-in email
+else token unknown or expired
+  uc --> route : Rejected
+  route --> page : 400
+  page --> owner : Say the link is no longer valid
+end
+@enduml

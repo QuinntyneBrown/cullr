@@ -21,7 +21,7 @@ box "Frontend — Cullr web app" #E0F2FE
   participant "CaptureIdeaDialog" as dialog
   participant "ErrorSummaryComponent" as summary
   participant "LiveAnnouncer" as live
-  participant "IdeasApi" as client
+  participant "IdeasService" as client
 end box
 box "Backend — Cullr API" #D1FADF
   participant "POST /api/ideas route handler" as handler

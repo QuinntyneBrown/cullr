@@ -1,0 +1,63 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Best-of period end
+
+class PeriodEndTrigger {
+  +fire(now: Date): void
+}
+class RollOverPeriodsUseCase {
+  +execute(now: Date): RollOverResult
+}
+class PeriodCalendar {
+  +endedPeriods(lastRun: Date, now: Date, timeZone: string): PeriodEnd[]
+}
+class BestOfPolicy {
+  +{static} PERIOD_CAPACITY: 5
+  +carryOver(entry: BestOfEntry, higher: BestOfEntry[]): boolean
+}
+class BestOfEntry {
+  +ideaId: string
+  +period: BestOfPeriod
+  +curatedAt: Date
+  +endedAt: Date | null
+}
+enum BestOfPeriod {
+  Today
+  ThisWeek
+  ThisMonth
+  YearSoFar
+}
+class PeriodEnd {
+  +period: BestOfPeriod
+  +endedAt: Date
+}
+class NotificationEvents {
+  +ideaCarriedOver(idea: Idea, period: BestOfPeriod): void
+}
+interface BestOfRepository {
+  +activeEntries(period: BestOfPeriod): BestOfEntry[]
+  +lapse(entry: BestOfEntry, endedAt: Date): void
+}
+interface PeriodRunRepository {
+  +hasRun(end: PeriodEnd): boolean
+  +record(end: PeriodEnd): void
+}
+PeriodEndTrigger --> RollOverPeriodsUseCase : invokes
+RollOverPeriodsUseCase ..> PeriodCalendar : uses
+RollOverPeriodsUseCase ..> BestOfPolicy : uses
+RollOverPeriodsUseCase --> NotificationEvents : notifies
+RollOverPeriodsUseCase --> BestOfRepository
+RollOverPeriodsUseCase --> PeriodRunRepository
+BestOfRepository "1" --> "*" BestOfEntry
+BestOfEntry --> BestOfPeriod
+PeriodCalendar ..> PeriodEnd : returns
+@enduml

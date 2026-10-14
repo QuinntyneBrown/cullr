@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Delete idea
+
+class DeleteIdeaDialogComponent {
+  +idea: IdeaSummary
+  +typedTitle: string
+  +canDelete: boolean
+  +state: default | mismatch | submitting | error
+  +confirm(): void
+}
+class IdeasService {
+  +deleteIdea(id: string, typedTitle: string): Observable<void>
+}
+class DeleteRouteHandler {
+  +DELETE(request: Request, id: string): Response
+}
+class DeleteIdeaUseCase {
+  +execute(id: string, typedTitle: string): void
+}
+class Idea {
+  +title: string
+  +archivedAt: Date | null
+  +assertDeletable(): void
+}
+interface IdeaRepository {
+  +find(id: string): Idea | null
+  +deleteWithHistory(id: string): void
+}
+DeleteIdeaDialogComponent --> IdeasService : calls
+IdeasService ..> DeleteRouteHandler : HTTPS
+DeleteRouteHandler --> DeleteIdeaUseCase : invokes
+DeleteIdeaUseCase --> Idea : checks
+DeleteIdeaUseCase --> IdeaRepository
+@enduml

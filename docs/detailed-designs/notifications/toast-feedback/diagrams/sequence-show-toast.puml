@@ -1,0 +1,34 @@
+@startuml
+title UML sequence behaviour — Show and dismiss toasts
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Feature component" as feature
+  participant "ToastService" as svc
+  participant "ToastHostComponent" as host
+end box
+feature -> svc : show(success, message)
+svc -> host : Add toast with autoDismiss true
+host --> owner : Render toast and announce through live region (L2-025)
+host -> host : Wait for the dismiss delay <TO SUPPLY>
+host -> svc : dismiss(id)
+feature -> svc : show(danger, message)
+svc -> host : Add toast with autoDismiss false
+host --> owner : Render toast beside the others without covering the primary action (L2-025)
+owner -> host : Dismiss toast
+host -> svc : dismiss(id)
+host --> owner : Remove toast
+@enduml

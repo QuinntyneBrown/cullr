@@ -15,7 +15,7 @@ This feature is read-only. Changing an idea belongs to the `edit-idea` design, a
 The feature is a vertical slice from the Angular page to the database.
 
 - **`IdeaDetailPage`** — Angular page component at `/ideas/:id`. It renders four states: loading skeleton, loaded, error with retry, and not found. In the loaded state it shows the title, category, status, best-of marker, summary, critique notes and status history. It places Curate, Archive and Edit idea in the page header for an active idea.
-- **`IdeasApiClient`** — typed Angular HTTP service. It requests one idea by id and returns an `IdeaDetail`.
+- **`IdeasService`** — typed Angular HTTP service. It requests one idea by id and returns an `IdeaDetail`.
 - **`GET /api/ideas/[id]` route handler** — Next.js route handler in the Cullr API. It authenticates the session and maps the use case result to `200`, `404` or an error status.
 - **`GetIdeaUseCase`** — application use case. It loads the idea through the repository and returns an `IdeaDetail` whose history is ordered newest first.
 - **`Idea`** — domain entity holding title, category, status, summary, critique notes, archived flag and status history.
@@ -55,7 +55,7 @@ The Cullr web app requests one idea from the Cullr API, which reads it from the 
 
 ### Components
 
-`IdeaDetailPage` calls `IdeasApiClient`; in the API the route handler invokes `GetIdeaUseCase`, which reads the `Idea` through `IdeaRepository`.
+`IdeaDetailPage` calls `IdeasService`; in the API the route handler invokes `GetIdeaUseCase`, which reads the `Idea` through `IdeaRepository`.
 
 ![C4 component view for viewing an idea](diagrams/c4-component.png)
 

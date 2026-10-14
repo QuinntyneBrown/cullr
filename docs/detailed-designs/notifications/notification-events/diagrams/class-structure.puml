@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Notification events
+
+class NotificationEvents {
+  +ideaCurated(idea: Idea, period: BestOfPeriod): void
+  +headsUpReached(loggedToday: number, day: Date): void
+  +ideaCarriedOver(idea: Idea, period: BestOfPeriod): void
+  +exportFinished(count: number): void
+  +exportFailed(): void
+}
+class HeadsUpPolicy {
+  +shouldNotify(loggedToday: number, threshold: number, existing: Notification | null): boolean
+}
+class Notification {
+  +id: string
+  +kind: Curated | HeadsUp | CarriedOver | ExportFinished | ExportFailed
+  +message: string
+  +dayKey: string | null
+  +retryAction: string | null
+  +createdAt: Date
+  +readAt: Date | null
+}
+interface NotificationRepository {
+  +add(notification: Notification): void
+  +findHeadsUp(dayKey: string): Notification | null
+}
+interface IdeaReadRepository {
+  +loggedTodayCount(): number
+}
+interface SettingsRepository {
+  +load(): OwnerSettings
+}
+NotificationEvents ..> HeadsUpPolicy : uses
+NotificationEvents --> NotificationRepository
+NotificationEvents --> IdeaReadRepository
+NotificationEvents --> SettingsRepository
+NotificationRepository "1" --> "*" Notification
+@enduml

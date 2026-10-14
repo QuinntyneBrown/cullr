@@ -70,11 +70,11 @@ class CaptureIdeaDialog {
   +cancel(): void
 }
 
-class IdeasApi {
+class IdeasService {
   +capture(input: CaptureIdeaInput): Observable<Idea>
 }
 
-CaptureIdeaDialog ..> IdeasApi : calls
+CaptureIdeaDialog ..> IdeasService : calls
 CaptureIdeaDialog ..> CaptureIdeaInput : builds
 CaptureIdea ..> CaptureIdeaInput : receives
 CaptureIdea --> CaptureIdeaResult : returns

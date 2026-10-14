@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Change password
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "ChangePasswordFormComponent", "Angular component", "Three password fields and states")
+  Component(f1, "AccountService", "Typed HTTP service", "Posts the change")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "change password route handler", "Next.js route handler", "POST /api/account/password")
+  Component(a1, "ChangePasswordUseCase", "Application", "Verifies, applies policy, stores hash, revokes sessions")
+  Component(a2, "OwnerAccount", "Domain entity", "Verifies and replaces the password")
+  Component(a3, "PasswordPolicy", "Domain function", "Applies L2-046")
+  Component(a4, "PasswordHasher", "Infrastructure service", "Salted adaptive hash")
+  Component(r, "OwnerRepository, SessionRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, f1, "Calls")
+Rel(f1, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, a4, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

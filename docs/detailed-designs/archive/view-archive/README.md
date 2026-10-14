@@ -10,7 +10,7 @@ This feature has two parts. The first lists archived ideas so that the owner can
 
 - **`ArchivePageComponent`** — Angular page component at `/archive`. It shows a subtitle with the count ("3 archived ideas"), a category filter, and a table with columns Idea, Reason, Archived and Actions. Each row shows title, category, reason, archived date, and the Restore and Delete actions. It renders the states in the mocks: default, loading, empty, error, no-results and long.
 - **`IdeaDetailPageComponent`** — Angular page component. For an archived idea it renders the read-only view in place of the edit view.
-- **`IdeasApiClient`** — typed Angular service that calls the list and detail endpoints.
+- **`IdeasService`** — typed Angular service that calls the list and detail endpoints.
 - **`ListArchivedIdeasRouteHandler`** — Next.js route handler for `GET /api/ideas?state=archived`. It authenticates the owner and invokes the use case.
 - **`ListArchivedIdeasUseCase`** — application use case that returns an `ArchivedIdeaPage` of at most 50 rows with the total count.
 - **`ArchivedIdeaPage`** and **`ArchivedIdeaSummary`** — response types carrying the rows and the range data for "Showing 1–50 of N".

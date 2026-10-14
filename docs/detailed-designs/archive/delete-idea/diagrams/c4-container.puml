@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Delete idea
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Delete idea dialog")
+  Container(api, "Cullr API", "Next.js route handlers", "Removes archived ideas and their history")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and history")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Sends delete request to", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

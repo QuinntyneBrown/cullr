@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Best-of period end
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Today and Curated screens show the result")
+  Container(api, "Cullr API", "Next.js route handlers", "Lapses best-of entries and carries ideas over")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Best-of entries, period runs and notifications")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

@@ -78,6 +78,11 @@ no structure, layout, or naming tests; no banned-API scans; no traceability test
 that parse the specifications. Those constraints belong to the compiler, the
 formatter, and review. A test suite exists to prove behavior.
 
+## Conventions
+
+- **Angular HTTP services are named `<Domain>Service`**, for example `AuthService`, `IdeasService`, `SettingsService`. Never use an `ApiClient` or `Api` suffix (`AuthApiClient`, `IdeasApi`). The class lives in `<domain>.service.ts` and wraps the HTTP calls for that domain.
+- **Detailed designs follow `docs/screen-composition.md`.** Every design of a screen, dialog or notification carries a "Screen composition" subsection in its Description that lists the library and local components exactly as that file does. Change the composition map and the designs together.
+
 ## Skills
 
 Project skills live in `.claude/skills/` and are mirrored in `.agents/skills/`

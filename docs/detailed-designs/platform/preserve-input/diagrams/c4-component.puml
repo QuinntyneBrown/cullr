@@ -8,7 +8,7 @@ Container_Boundary(spa, "Cullr web app") {
   Component(form, "Form pages", "Angular components", "Account and Settings forms")
   Component(controller, "SaveController", "Shared Angular helper", "Holds SaveState and the entered values across a save")
   Component(mapper, "SaveFailureMapper", "Angular service", "Maps a failed request to a SaveFailure with a next step")
-  Component(client, "Typed API clients", "Angular services", "Send requests and surface typed errors")
+  Component(client, "Typed HTTP services", "Angular services", "Send requests and surface typed errors")
 }
 
 Container_Boundary(api, "Cullr API") {

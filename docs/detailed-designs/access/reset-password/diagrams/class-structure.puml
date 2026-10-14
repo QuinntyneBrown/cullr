@@ -17,7 +17,7 @@ class ResetPasswordPageComponent {
   +state: default | submitting | invalid | success | error
   +submit(): void
 }
-class AuthApiClient {
+class AuthService {
   +checkResetLink(token: string): Observable<void>
   +resetPassword(token: string, newPassword: string): Observable<void>
 }
@@ -49,8 +49,8 @@ interface SessionRepository {
   +deleteAll(): void
 }
 
-ResetPasswordPageComponent --> AuthApiClient : calls
-AuthApiClient ..> ResetPasswordUseCase : via route handlers
+ResetPasswordPageComponent --> AuthService : calls
+AuthService ..> ResetPasswordUseCase : via route handlers
 ResetPasswordUseCase --> PasswordResetToken : checks
 ResetPasswordUseCase ..> PasswordPolicy : uses
 ResetPasswordUseCase --> OwnerAccount : changes

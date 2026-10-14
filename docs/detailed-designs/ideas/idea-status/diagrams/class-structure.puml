@@ -19,7 +19,7 @@ class StatusControlComponent {
   +confirm(): void
   +retry(): void
 }
-class IdeasApiClient {
+class IdeasService {
   +setStatus(id: string, status: Status): Observable<Idea>
 }
 class StatusRouteHandler {
@@ -52,8 +52,8 @@ interface IdeaRepository {
   +find(id: string): Idea | null
   +save(idea: Idea): void
 }
-StatusControlComponent --> IdeasApiClient : calls
-IdeasApiClient ..> StatusRouteHandler : HTTPS
+StatusControlComponent --> IdeasService : calls
+IdeasService ..> StatusRouteHandler : HTTPS
 StatusRouteHandler --> SetIdeaStatusUseCase : invokes
 SetIdeaStatusUseCase --> Idea : updates
 SetIdeaStatusUseCase --> IdeaRepository

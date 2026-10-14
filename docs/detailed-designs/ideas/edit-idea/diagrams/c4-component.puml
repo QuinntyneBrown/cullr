@@ -6,7 +6,7 @@ title Components — Edit an idea
 Container_Boundary(spa, "Cullr web app") {
   Component(page, "IdeaDetailPage", "Angular page component", "Opens the dialog and refreshes after a save")
   Component(dialog, "EditIdeaDialog", "Angular dialog component", "Holds the form and its default, invalid, busy, failed and changed states")
-  Component(client, "IdeasApiClient", "Typed Angular HTTP service", "Sends the update request")
+  Component(client, "IdeasService", "Typed Angular HTTP service", "Sends the update request")
 }
 Container_Boundary(api, "Cullr API") {
   Component(route, "PUT /api/ideas/[id] route handler", "Next.js route handler", "Authenticates and maps results to HTTP")

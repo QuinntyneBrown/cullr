@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Toast feedback
+
+class ToastService {
+  +toasts: Toast[]
+  +show(variant: Variant, message: string): Toast
+  +dismiss(id: string): void
+}
+class ToastHostComponent {
+  +toasts: Toast[]
+  +liveRegion: polite | assertive
+}
+class ToastComponent {
+  +toast: Toast
+  +dismiss(): void
+}
+class Toast {
+  +id: string
+  +variant: Variant
+  +message: string
+  +autoDismiss: boolean
+}
+enum Variant {
+  Info
+  Success
+  Warning
+  Danger
+}
+ToastService "1" o-- "*" Toast
+ToastHostComponent --> ToastService : reads
+ToastHostComponent o-- ToastComponent
+Toast --> Variant
+@enduml

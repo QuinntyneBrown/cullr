@@ -17,7 +17,7 @@ skinparam package {
 actor "Owner" as owner
 box "Frontend — Cullr web app" #E0F2FE
   participant "SignInPageComponent" as page
-  participant "AuthApiClient" as client
+  participant "AuthService" as client
 end box
 box "Backend — Cullr API" #D1FADF
   participant "sign-in route handler" as route

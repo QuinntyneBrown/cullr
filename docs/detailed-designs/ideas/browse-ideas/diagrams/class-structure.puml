@@ -70,12 +70,12 @@ class IdeasPage {
   +setQuery(text: string): void
 }
 
-class IdeasApi {
+class IdeasService {
   +list(criteria: IdeaCriteria): Observable<IdeasPageResult>
 }
 
 IdeasPage --> IdeasQueryState : holds
-IdeasPage ..> IdeasApi : calls
+IdeasPage ..> IdeasService : calls
 IdeasQueryState ..> IdeaCriteria : maps to
 IdeaCriteria --> SortOrder
 ListIdeas ..> IdeaCriteria : receives

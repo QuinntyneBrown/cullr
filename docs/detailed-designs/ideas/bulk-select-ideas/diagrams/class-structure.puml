@@ -24,7 +24,7 @@ class SelectionState {
   +keepOnly(ids: string[]): void
   +clear(): void
 }
-class IdeasApiClient {
+class IdeasService {
   +bulk(action: BulkAction, ids: string[], options: BulkOptions): Observable<BulkResult>
 }
 class BulkRouteHandler {
@@ -46,8 +46,8 @@ interface IdeaRepository {
   +findMany(ids: string[]): Idea[]
 }
 SelectionBarComponent --> SelectionState
-SelectionBarComponent --> IdeasApiClient : calls
-IdeasApiClient ..> BulkRouteHandler : HTTPS
+SelectionBarComponent --> IdeasService : calls
+IdeasService ..> BulkRouteHandler : HTTPS
 BulkRouteHandler --> BulkIdeaActionUseCase : invokes
 BulkIdeaActionUseCase --> IdeaRepository
 BulkIdeaActionUseCase --> BulkResult : returns

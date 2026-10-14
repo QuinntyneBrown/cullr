@@ -52,11 +52,11 @@ class TodayPage {
   +toggleCategory(category: string): void
 }
 
-class TodayApi {
+class TodayService {
   +getToday(category: string): Observable<TodaySummary>
 }
 
-TodayPage ..> TodayApi : calls
+TodayPage ..> TodayService : calls
 GetTodaySummary ..> IdeaRepository : uses
 GetTodaySummary ..> TodaySummary : builds
 TodaySummary "1" *-- "*" IdeaCardDto

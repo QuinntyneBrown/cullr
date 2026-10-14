@@ -14,11 +14,11 @@ This feature decides which theme the interface shows and applies it. The decisio
 
 ## Description
 
-- **`ThemeService`** — Angular service in the Cullr web app. It loads the automatic dark theme preference through `SettingsApi`, gathers the inputs, calls `resolveTheme`, and applies the result to the document root. It re-evaluates when the saved preference changes, when the system preference changes, and when local time crosses sunrise or sunset.
+- **`ThemeService`** — Angular service in the Cullr web app. It loads the automatic dark theme preference through `SettingsService`, gathers the inputs, calls `resolveTheme`, and applies the result to the document root. It re-evaluates when the saved preference changes, when the system preference changes, and when local time crosses sunrise or sunset.
 - **`resolveTheme`** — pure function. It returns `Dark` or `Light` from a `ThemeInputs` value.
 - **`ThemeInputs`** — value holding `autoDarkEnabled`, `systemPrefersDark`, the current time, and the sunrise and sunset times.
 - **`SunTimesSource`** — provider of local sunrise and sunset times. The source (a location input, a browser capability, or a calculation library) is `<TO SUPPLY>`, as is the location it uses.
-- **`SettingsApi`** — typed API client from `manage-settings`; it supplies `autoDarkThemeEnabled`.
+- **`SettingsService`** — typed HTTP service from `manage-settings`; it supplies `autoDarkThemeEnabled`.
 
 Rules, by criterion of L2-028:
 

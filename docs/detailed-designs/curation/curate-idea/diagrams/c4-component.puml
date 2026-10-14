@@ -5,7 +5,7 @@ title Components — Curate an idea
 
 Container_Boundary(web, "Cullr web app") {
   Component(dialog, "CurateIdeaDialogComponent", "Angular dialog component", "Offers the four periods and confirms")
-  Component(client, "CurationApiClient", "Typed Angular HTTP client", "Sends the curate request")
+  Component(client, "CurationService", "Typed Angular HTTP service", "Sends the curate request")
 }
 Container_Boundary(api, "Cullr API") {
   Component(handler, "curate route handler", "Next.js route handler", "Authenticates and parses the request")

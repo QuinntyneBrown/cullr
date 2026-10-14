@@ -13,7 +13,7 @@ The password policy that a new password shall satisfy is defined by `L2-046` and
 The feature is a vertical slice from the Reset password screen to the Cullr database.
 
 - **`ResetPasswordPageComponent`** — Angular page component in the Cullr web app. It checks the link on open, then renders the new password and confirmation fields and the mock states `default`, `submitting`, `invalid`, `success` and `error`.
-- **`AuthApiClient`** — typed API client service. It checks the link and submits the new password.
+- **`AuthService`** — typed HTTP service. It checks the link and submits the new password.
 - **reset-password route handlers** — Next.js route handlers at `GET /api/auth/reset-password` (link check) and `POST /api/auth/reset-password` (password change).
 - **`ResetPasswordUseCase`** — application-layer use case. It validates the token, applies the password policy, changes the password, invalidates the token and deletes all sessions in one unit of work.
 - **`PasswordResetToken`** — domain entity. Its `isUsable` method returns false when the token has expired or has been used.

@@ -16,7 +16,7 @@ class ForgotPasswordPageComponent {
   +state: default | submitting | invalid | success | error
   +submit(): void
 }
-class AuthApiClient {
+class AuthService {
   +requestPasswordReset(email: string): Observable<void>
 }
 class RequestPasswordResetUseCase {
@@ -43,8 +43,8 @@ class OwnerAccount {
   +email: string
 }
 
-ForgotPasswordPageComponent --> AuthApiClient : calls
-AuthApiClient ..> RequestPasswordResetUseCase : via route handler
+ForgotPasswordPageComponent --> AuthService : calls
+AuthService ..> RequestPasswordResetUseCase : via route handler
 RequestPasswordResetUseCase --> OwnerRepository
 RequestPasswordResetUseCase --> PasswordResetTokenRepository
 RequestPasswordResetUseCase --> EmailSender

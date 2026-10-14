@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Roll over ended periods
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Backend — Cullr API" #D1FADF
+  participant "PeriodEndTrigger" as trigger
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "RollOverPeriodsUseCase" as uc
+  participant "PeriodCalendar" as cal
+  participant "BestOfPolicy" as policy
+  participant "NotificationEvents" as events
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+trigger -> uc : Fire at a period boundary or at startup
+uc -> db : Load time of last run
+db --> uc : Last run
+uc -> cal : Find periods ended since last run in owner's time zone
+cal --> uc : Ended periods
+loop each ended period not yet run
+  uc -> db : Load active entries of the period
+  db --> uc : Entries
+  loop each entry
+    uc -> policy : Is the idea still best of the next higher period? (L2-017)
+    policy --> uc : Carried over or not
+    uc -> db : Mark entry lapsed
+    alt carried over
+      uc -> events : Create carry-over notification (L2-017, L2-024)
+      events -> db : Save notification
+    else not carried over
+      uc -> uc : Create no notification (L2-017)
+    end
+  end
+  uc -> db : Record the period run
+end
+db --> uc : Saved
+@enduml

@@ -5,7 +5,7 @@ title Components — Sign in
 
 Container_Boundary(spa, "Cullr web app") {
   Component(page, "SignInPageComponent", "Angular page component", "Renders the form and its states")
-  Component(client, "AuthApiClient", "Typed API client service", "Posts the sign-in request")
+  Component(client, "AuthService", "Typed HTTP service", "Posts the sign-in request")
 }
 Container_Boundary(api, "Cullr API") {
   Component(route, "sign-in route handler", "Next.js route handler", "POST /api/auth/sign-in")

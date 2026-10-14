@@ -11,7 +11,7 @@ Cullr is a personal idea-curation application with a single user, the owner. Whe
 The feature is a vertical slice from the Forgot password screen to an external email provider.
 
 - **`ForgotPasswordPageComponent`** — Angular page component in the Cullr web app. It renders the email form and the mock states `default`, `submitting`, `invalid`, `success` and `error`.
-- **`AuthApiClient`** — typed API client service. It posts the email to the API.
+- **`AuthService`** — typed HTTP service. It posts the email to the API.
 - **forgot-password route handler** — Next.js route handler at `POST /api/auth/forgot-password`. It invokes the use case and returns the same response for any well-formed email.
 - **`RequestPasswordResetUseCase`** — application-layer use case. It loads the owner account by email. When the email is the owner's, it issues a token, stores it and sends the email.
 - **`PasswordResetToken`** — domain entity for a single-use token. It expires 60 minutes after issue. Only a hash of the token is stored; the hashing method is `<TO SUPPLY>`.

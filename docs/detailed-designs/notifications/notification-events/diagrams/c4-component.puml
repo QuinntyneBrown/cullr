@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Notification events
+
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "Event callers", "Application", "Curate, capture, roll-over and export use cases")
+  Component(a1, "NotificationEvents", "Application service", "Builds and saves one notification per event")
+  Component(a2, "HeadsUpPolicy", "Domain function", "Limits the heads-up to once a day")
+  Component(r, "NotificationRepository, IdeaReadRepository, SettingsRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

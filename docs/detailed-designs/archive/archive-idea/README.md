@@ -13,7 +13,7 @@ The Archive idea dialog opens from Today, Ideas (single and bulk, see L2-011) an
 The feature is a vertical slice from the dialog to the database.
 
 - **`ArchiveIdeaDialogComponent`** — Angular dialog component in the Cullr web app. It shows the idea title, the text "moves to the Archive. You can restore it any time.", an optional reason field, and the actions Cancel and Archive idea. It has three states in the mocks: default, busy and failed.
-- **`IdeasApiClient`** — typed Angular service. It sends the archive request and returns a typed result.
+- **`IdeasService`** — typed Angular service. It sends the archive request and returns a typed result.
 - **`ArchiveIdeaRouteHandler`** — Next.js route handler for `POST /api/ideas/{id}/archive`. It authenticates the owner, validates that the reason holds at most 500 characters and invokes the use case.
 - **`ArchiveIdeaUseCase`** — application use case. It loads the idea, calls `Idea.Archive`, and saves the result in one unit of work.
 - **`Idea`** — domain entity. `Archive(reason, now)` sets the state to `Archived`, stores the reason and the archive date, and clears every best-of selection of the idea.

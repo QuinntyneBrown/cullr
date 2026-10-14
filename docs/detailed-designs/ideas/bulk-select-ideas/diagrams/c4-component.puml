@@ -5,7 +5,7 @@ title Components — Bulk select ideas
 
 Container_Boundary(spa, "Cullr web app") {
   Component(f0, "SelectionBarComponent", "Angular component", "Shows the selection and the bulk actions")
-  Component(f1, "IdeasApiClient", "Typed API client service", "Posts the bulk action")
+  Component(f1, "IdeasService", "Typed HTTP service", "Posts the bulk action")
 }
 Container_Boundary(api, "Cullr API") {
   Component(a0, "bulk route handler", "Next.js route handler", "POST /api/ideas/bulk")

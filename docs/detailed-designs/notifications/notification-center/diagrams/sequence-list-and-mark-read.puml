@@ -1,0 +1,70 @@
+@startuml
+title UML sequence behaviour — List notifications and mark read
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "NotificationsPageComponent" as page
+  participant "NotificationsService" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "notifications route handlers" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "Notification use cases" as uc
+  participant "Notification" as note
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Open Notifications
+page -> client : Request list
+client -> route : GET /api/notifications
+route -> uc : List
+uc -> db : Load notifications and unread count
+db --> uc : Notifications
+uc --> route : List with unread first by time
+route --> client : 200
+client --> page : List
+alt no notifications
+  page --> owner : Show empty state (L2-023)
+else notifications present
+  page --> owner : Show rows and bell with unread count
+end
+alt owner chooses Mark read
+  owner -> page : Mark read
+  page -> client : Mark one
+  client -> route : POST /api/notifications/:id/read
+  route -> uc : Mark read
+  uc -> note : markRead
+  uc -> db : Save
+  db --> uc : Saved
+  route --> client : 204
+  page --> owner : Row becomes read, count decreases (L2-023)
+else owner chooses Mark all read
+  owner -> page : Mark all read
+  page -> client : Mark all
+  client -> route : POST /api/notifications/read-all
+  route -> uc : Mark all read
+  uc -> db : Set read time on every unread notification
+  db --> uc : Saved
+  route --> client : 204
+  page --> owner : All read, count shows none (L2-023)
+end
+opt load fails
+  client --> page : Failure
+  page --> owner : Show error with retry
+end
+@enduml

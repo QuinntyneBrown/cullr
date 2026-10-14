@@ -17,7 +17,7 @@ skinparam package {
 actor "Owner" as owner
 box "Frontend — Cullr web app" #E0F2FE
   participant "CuratedPageComponent" as page
-  participant "CurationApiClient" as client
+  participant "CurationService" as client
 end box
 box "Backend — Cullr API" #D1FADF
   participant "curated route handler" as handler

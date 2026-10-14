@@ -1,0 +1,67 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Edit profile
+
+class AccountPageComponent {
+  +name: string
+  +email: string
+  +expertise: string
+  +initials: string
+  +state: loading | default | submitting | invalid | success | error
+  +save(): void
+}
+class AccountService {
+  +getProfile(): Observable<OwnerProfile>
+  +saveProfile(request: ProfileRequest): Observable<ProfileResult>
+}
+class AccountRouteHandlers {
+  +GET(request: Request): Response
+  +PUT(request: Request): Response
+  +POST(request: Request): Response
+}
+class UpdateProfileUseCase {
+  +execute(request: ProfileRequest): ProfileResult
+}
+class ConfirmEmailChangeUseCase {
+  +execute(token: string): void
+}
+class OwnerProfile {
+  +name: string
+  +email: string
+  +expertise: string
+  +initials(): string
+}
+class PendingEmailChange {
+  +newEmail: string
+  +tokenHash: string
+  +expiresAt: Date
+}
+interface OwnerRepository {
+  +load(): OwnerProfile
+  +save(profile: OwnerProfile): void
+}
+interface PendingEmailChangeRepository {
+  +save(change: PendingEmailChange): void
+  +findByTokenHash(hash: string): PendingEmailChange | null
+  +remove(change: PendingEmailChange): void
+}
+AccountPageComponent --> AccountService : calls
+AccountService ..> AccountRouteHandlers : HTTPS
+AccountRouteHandlers --> UpdateProfileUseCase
+AccountRouteHandlers --> ConfirmEmailChangeUseCase
+UpdateProfileUseCase --> OwnerProfile
+UpdateProfileUseCase --> OwnerRepository
+UpdateProfileUseCase --> PendingEmailChangeRepository
+ConfirmEmailChangeUseCase --> PendingEmailChangeRepository
+ConfirmEmailChangeUseCase --> OwnerRepository
+PendingEmailChangeRepository "1" --> "*" PendingEmailChange
+@enduml

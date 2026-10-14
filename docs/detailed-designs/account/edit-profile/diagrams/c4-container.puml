@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Edit profile
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Account screen")
+  Container(api, "Cullr API", "Next.js route handlers", "Saves the profile and confirms email changes")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Owner profile and pending email changes")
+}
+System_Ext(email, "Email provider", "Delivers email messages")
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Loads and saves the profile through", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+Rel(api, email, "Sends the email-change confirmation link through", "<TO SUPPLY>")
+@enduml

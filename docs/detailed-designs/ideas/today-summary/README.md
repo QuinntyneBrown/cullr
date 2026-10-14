@@ -17,7 +17,7 @@ The feature belongs to the `ideas` subsystem. It reads ideas created by the capt
 The feature is a vertical slice from the Today page to the database. The mocks in `docs/mocks/pages/today/` show six states: `default`, `loading`, `empty`, `error`, `no-results` and `edge`.
 
 - **`TodayPage`** — Angular page component. It renders the subtitle, the category filter chips, the idea cards and the loading, empty, no-results and error states.
-- **`TodayApi`** — typed Angular client service. It requests the summary, with an optional category.
+- **`TodayService`** — typed Angular client service. It requests the summary, with an optional category.
 - **`GET /api/today` route handler** — Next.js route handler in the Cullr API. It authenticates the session and calls the use case.
 - **`GetTodaySummary`** — application use case. It resolves the start and end of today in the owner's time zone, reads the ideas logged in that window and builds the summary.
 - **`TodaySummary`** — domain function and result. It counts the ideas, finds today's best idea and marks each best-of-today idea.

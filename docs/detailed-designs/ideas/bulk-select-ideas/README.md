@@ -12,7 +12,7 @@ The feature is a vertical slice that adds a selection bar to the Ideas screen an
 
 - **`SelectionBarComponent`** — Angular component. It shows "N selected" with "Curate selected", "Archive selected" and "Clear selection". "Select all" selects every row currently listed, not only the visible page, and the bar says so.
 - **`SelectionState`** — client state holding the selected ids. After a partial failure it keeps only the failed ids.
-- **`IdeasApiClient`** — typed API client service for `POST /api/ideas/bulk`.
+- **`IdeasService`** — typed HTTP service for `POST /api/ideas/bulk`.
 - **bulk route handler** — Next.js route handler. It validates the action and the ids.
 - **`BulkIdeaActionUseCase`** — application-layer use case. It runs the single-idea use case for each id (`CurateIdeaUseCase` or `ArchiveIdeaUseCase`) and collects a `BulkResult` with the succeeded ids and the failed ids with reasons.
 - **`BulkResult`** — result type listing successes and failures by title.

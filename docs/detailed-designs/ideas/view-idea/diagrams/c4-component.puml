@@ -5,7 +5,7 @@ title Components — View an idea
 
 Container_Boundary(spa, "Cullr web app") {
   Component(page, "IdeaDetailPage", "Angular page component", "Renders loading, loaded, error and not-found states")
-  Component(client, "IdeasApiClient", "Typed Angular HTTP service", "Requests one idea by id")
+  Component(client, "IdeasService", "Typed Angular HTTP service", "Requests one idea by id")
 }
 Container_Boundary(api, "Cullr API") {
   Component(route, "GET /api/ideas/[id] route handler", "Next.js route handler", "Authenticates and maps the result to HTTP")

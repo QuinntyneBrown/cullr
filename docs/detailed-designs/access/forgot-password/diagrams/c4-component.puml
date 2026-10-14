@@ -5,7 +5,7 @@ title Components — Forgot password
 
 Container_Boundary(spa, "Cullr web app") {
   Component(page, "ForgotPasswordPageComponent", "Angular page component", "Renders the form and its states")
-  Component(client, "AuthApiClient", "Typed API client service", "Posts the reset request")
+  Component(client, "AuthService", "Typed HTTP service", "Posts the reset request")
 }
 Container_Boundary(api, "Cullr API") {
   Component(route, "forgot-password route handler", "Next.js route handler", "POST /api/auth/forgot-password")

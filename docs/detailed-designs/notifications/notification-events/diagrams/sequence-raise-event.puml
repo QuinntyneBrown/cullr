@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Raise a notification event
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Backend — Cullr API" #D1FADF
+  participant "Event caller" as caller
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "NotificationEvents" as events
+  participant "HeadsUpPolicy" as policy
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+alt idea curated or carried over
+  caller -> events : ideaCurated or ideaCarriedOver (L2-024)
+  events -> db : Save notification with the message of the event
+else idea captured
+  caller -> events : headsUpReached
+  events -> db : Load threshold, today's count and today's heads-up
+  db --> events : Values
+  events -> policy : Reached and not yet created today? (L2-024)
+  policy --> events : Yes or no
+  opt yes
+    events -> db : Save one heads-up notification for the day
+  end
+else export ended
+  caller -> events : exportFinished or exportFailed
+  events -> db : Save "Export finished: N ideas" or failure with retry action (L2-024)
+end
+db --> events : Saved
+@enduml

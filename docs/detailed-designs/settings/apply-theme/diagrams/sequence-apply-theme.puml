@@ -17,7 +17,7 @@ skinparam package {
 actor "Owner" as owner
 box "Frontend — Cullr web app" #E0F2FE
   participant "ThemeService" as theme
-  participant "SettingsApi" as client
+  participant "SettingsService" as client
   participant "SunTimesSource <TO SUPPLY>" as sun
   participant "Browser document" as doc
 end box

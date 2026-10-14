@@ -5,7 +5,7 @@ title Components — Curated screen
 
 Container_Boundary(web, "Cullr web app") {
   Component(page, "CuratedPageComponent", "Angular page component", "Renders list, filter chips and the loading, empty, error and no-results states")
-  Component(client, "CurationApiClient", "Typed Angular HTTP client", "Fetches the curated list")
+  Component(client, "CurationService", "Typed Angular HTTP service", "Fetches the curated list")
 }
 Container_Boundary(api, "Cullr API") {
   Component(handler, "curated route handler", "Next.js route handler", "Authenticates and returns the list")

@@ -64,7 +64,7 @@ class IdeaDetailPageComponent {
   +readOnly: boolean
 }
 
-class IdeasApiClient {
+class IdeasService {
   +listArchived(category?: string, offset?: int): Observable<ArchivedIdeaPage>
   +get(id: string): Observable<Idea>
 }
@@ -74,6 +74,6 @@ ArchivedIdeaPage "1" *-- "*" ArchivedIdeaSummary : holds
 ListArchivedIdeasUseCase --> IdeaRepository : uses
 ListArchivedIdeasUseCase ..> ArchivedIdeaPage : returns
 Idea ..> IdeaArchivedConflictError : throws when archived
-ArchivePageComponent --> IdeasApiClient : uses
-IdeaDetailPageComponent --> IdeasApiClient : uses
+ArchivePageComponent --> IdeasService : uses
+IdeaDetailPageComponent --> IdeasService : uses
 @enduml

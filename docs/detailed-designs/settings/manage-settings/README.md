@@ -19,7 +19,7 @@ The screen also hosts the entry point for the Export ideas dialog, which the `ex
 The feature is a vertical slice from the Settings screen to the database. Cullr has one owner, so the slice carries no user identifier.
 
 - **`SettingsPage`** — Angular page component at `/settings`. It renders the states shown in the mocks (`loading`, `default`, `invalid`, `submitting`, `success`, `error`), keeps entered values on failure, and offers the Try again action.
-- **`SettingsApi`** — typed Angular API client service. It calls `GET /api/settings` and `PUT /api/settings` and returns typed results or typed errors to the page.
+- **`SettingsService`** — typed Angular HTTP service. It calls `GET /api/settings` and `PUT /api/settings` and returns typed results or typed errors to the page.
 - **`SettingsRouteHandler`** — Next.js route handler in the Cullr API. It maps HTTP requests to the two use cases and maps results to responses.
 - **`GetSettingsUseCase`** — application use case that loads the saved `OwnerSettings`.
 - **`SaveSettingsUseCase`** — application use case that builds `OwnerSettings` from a `SettingsInput`, rejects invalid input, and persists valid settings.

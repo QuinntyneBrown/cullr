@@ -51,7 +51,7 @@ class ArchiveIdeaDialogComponent {
   +confirm(): void
 }
 
-class IdeasApiClient {
+class IdeasService {
   +archive(id: string, reason?: string): Observable<void>
 }
 
@@ -60,5 +60,5 @@ ArchiveIdeaUseCase --> IdeaRepository : uses
 ArchiveIdeaUseCase --> Idea : loads / mutates
 Idea --> IdeaState : has
 Idea "1" --> "*" BestOfSelection : clears
-ArchiveIdeaDialogComponent --> IdeasApiClient : uses
+ArchiveIdeaDialogComponent --> IdeasService : uses
 @enduml

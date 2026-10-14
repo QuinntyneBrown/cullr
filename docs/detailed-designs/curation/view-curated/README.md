@@ -11,7 +11,7 @@ The screen sits at the read side of the curation subsystem. The `curation/curate
 The feature is a read-only vertical slice from the page to the database.
 
 - **`CuratedPageComponent`** — Angular page component. It shows a skeleton while loading, then one card per best-of entry. Each card carries the period label (for example "Best of today"), the idea title as a link to Idea detail, the category and status badges, and the summary. A row of category chips narrows the list. Long titles wrap so the layout does not overflow (`L2-016` criterion 5, mock `edge`).
-- **`CurationApiClient`** — typed Angular HTTP client with a `getCurated()` call.
+- **`CurationService`** — typed Angular HTTP service with a `getCurated()` call.
 - **curated route handler** — Next.js route handler in the Cullr API. It authenticates the owner and invokes the use case. The route path is `<TO SUPPLY>`.
 - **`GetCuratedUseCase`** — application use case. It reads the current entries through `BestOfRepository`, orders them with `CuratedOrdering`, and returns a `CuratedList`.
 - **`CuratedOrdering`** — domain function. It orders periods as today, this week, this month, year so far, and orders ideas within one period by score, highest first, with unscored ideas last.

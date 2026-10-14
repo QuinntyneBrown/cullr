@@ -43,7 +43,7 @@ class RestoreIdeaDialogComponent {
   +confirm(): void
 }
 
-class IdeasApiClient {
+class IdeasService {
   +restore(id: string): Observable<void>
 }
 
@@ -51,5 +51,5 @@ RestoreIdeaUseCase --> IdeaRepository : uses
 RestoreIdeaUseCase --> Idea : loads / mutates
 Idea --> IdeaState : has
 Idea --> IdeaStatus : has
-RestoreIdeaDialogComponent --> IdeasApiClient : uses
+RestoreIdeaDialogComponent --> IdeasService : uses
 @enduml

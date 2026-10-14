@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Edit profile
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation application")
+System_Ext(email, "Email provider", "Delivers email messages")
+
+Rel(owner, cullr, "Edits the profile in")
+Rel(cullr, email, "Sends the email-change confirmation link through")
+@enduml

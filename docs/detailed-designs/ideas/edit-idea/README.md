@@ -13,7 +13,7 @@ The owner opens the dialog from the Edit idea action on Idea detail or from the 
 The feature is a vertical slice from the dialog to the database.
 
 - **`EditIdeaDialog`** — Angular dialog component. It prefills the saved values, validates input, and presents the default, invalid, busy, failed and changed states. It keeps the `Version` read at open time and sends it with the save.
-- **`IdeasApiClient`** — typed Angular HTTP service. Its `updateIdea` method sends the changes and the expected version and returns a typed result.
+- **`IdeasService`** — typed Angular HTTP service. Its `updateIdea` method sends the changes and the expected version and returns a typed result.
 - **`PUT /api/ideas/[id]` route handler** — Next.js route handler. It authenticates the session, calls the use case and maps each outcome to an HTTP response.
 - **`EditIdeaUseCase`** — application use case. It loads the idea, rejects an archived idea, compares versions, applies the edit and saves in one unit of work.
 - **`Idea`** — domain entity. Its `edit(changes)` method validates the fields and applies the Logged-to-Critiquing rule owned by `idea-status`. It carries an integer `Version` that increases on each save.
@@ -56,7 +56,7 @@ The Cullr web app sends the edit to the Cullr API, which reads and writes the Cu
 
 ### Components
 
-`EditIdeaDialog` submits through `IdeasApiClient`; in the API the route handler invokes `EditIdeaUseCase`, which edits the `Idea` and saves it through `IdeaRepository`.
+`EditIdeaDialog` submits through `IdeasService`; in the API the route handler invokes `EditIdeaUseCase`, which edits the `Idea` and saves it through `IdeaRepository`.
 
 ![C4 component view for editing an idea](diagrams/c4-component.png)
 

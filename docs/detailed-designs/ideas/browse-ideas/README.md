@@ -18,7 +18,7 @@ The feature is a vertical slice from the Ideas page to the database. The mocks i
 
 - **`IdeasPage`** — Angular page component. It renders the status tabs, category chips, Sort control, search box, the rows, pagination and the loading, empty, no-results and error states. At the XS viewport it presents rows as stacked cards with no horizontal page scroll (`L2-009` criterion 5).
 - **`IdeasQueryState`** — Angular service. It holds the selected tab, chips, sort and query, keeps the sort choice while the owner stays on the screen, and mirrors the query in the URL so that the query is addressable (`L2-010` criteria 3 and 4).
-- **`IdeasApi`** — typed Angular client service. It requests one page of ideas for a set of criteria.
+- **`IdeasService`** — typed Angular client service. It requests one page of ideas for a set of criteria.
 - **`GET /api/ideas` route handler** — Next.js route handler in the Cullr API. It authenticates the session, parses the query parameters and calls the use case.
 - **`ListIdeas`** — application use case. It builds the criteria and returns one page with the counts.
 - **`IdeaCriteria`** — domain value object. It combines tab, chips, sort and query with AND semantics (`L2-010` criterion 6).

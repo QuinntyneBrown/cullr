@@ -7,7 +7,7 @@ Container_Boundary(spa, "Cullr web app") {
   Component(guard, "AuthGuard", "Angular route guard", "Redirects visitors without a session to Sign in")
   Component(interceptor, "UnauthorizedInterceptor", "Angular HTTP interceptor", "Sends the owner to Sign in on 401 with a return URL")
   Component(shell, "Shell sign-out action", "Angular component", "Starts sign out")
-  Component(client, "AuthApiClient", "Typed API client service", "Calls the sign-out endpoint")
+  Component(client, "AuthService", "Typed HTTP service", "Calls the sign-out endpoint")
 }
 Container_Boundary(api, "Cullr API") {
   Component(auth, "authenticate wrapper", "Next.js route helper", "Rejects protected requests without a valid session")

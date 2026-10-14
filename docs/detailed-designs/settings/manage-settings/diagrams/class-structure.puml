@@ -42,7 +42,7 @@ class SettingsRouteHandler {
   +PUT(request: Request): Response
 }
 
-class SettingsApi {
+class SettingsService {
   +get(): Observable<OwnerSettings>
   +save(input: SettingsInput): Observable<OwnerSettings>
 }
@@ -53,8 +53,8 @@ class SettingsPage {
   +retry(): void
 }
 
-SettingsPage --> SettingsApi : uses
-SettingsApi ..> SettingsRouteHandler : HTTPS
+SettingsPage --> SettingsService : uses
+SettingsService ..> SettingsRouteHandler : HTTPS
 SettingsRouteHandler --> GetSettingsUseCase : invokes
 SettingsRouteHandler --> SaveSettingsUseCase : invokes
 GetSettingsUseCase --> SettingsRepository : loads through

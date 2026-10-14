@@ -13,7 +13,7 @@ The design is a shared frontend mechanism plus one backend guarantee.
 - **`SaveController<TValues>`** — shared Angular helper owned by each dialog or form component. It holds the entered `values`, the current `SaveState` (`Idle`, `Busy`, `Failed`, `Succeeded`) and the latest `SaveFailure`. It exposes `submit()`, `retry()` and `cancel()`.
 - **`SaveFailureMapper`** — Angular service that converts a failed request into a `SaveFailure`. A `SaveFailure` has a `kind` (`Offline`, `Server`, `Forbidden`, `Validation`), a `message`, a `nextStep` and an optional `referenceId` taken from the problem response (`L2-051`).
 - **Dialog and form components** — render the controller state. They match the mocks `docs/mocks/dialogs/*/busy.html` and `failed.html`.
-- **Typed API clients** — existing Angular services. They return typed errors and do not clear or reset caller state.
+- **Typed HTTP services** — existing Angular services. They return typed errors and do not clear or reset caller state.
 - **Route handlers and use cases** — each save runs as one unit of work in the application layer, so a failure rolls back the whole change. The database transaction mechanism is `<TO SUPPLY>`.
 
 Behaviour by acceptance criterion:

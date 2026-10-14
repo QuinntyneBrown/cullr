@@ -71,12 +71,12 @@ class CurateIdeaDialogComponent {
   +confirm(): void
 }
 
-class CurationApiClient {
+class CurationService {
   +curate(request: CurateIdeasRequest): Observable<CurateIdeasResult>
 }
 
-CurateIdeaDialogComponent ..> CurationApiClient : calls
-CurationApiClient ..> CurateIdeasRequest : sends
+CurateIdeaDialogComponent ..> CurationService : calls
+CurationService ..> CurateIdeasRequest : sends
 CurateIdeasUseCase ..> CurateIdeasRequest : handles
 CurateIdeasUseCase --> CurateIdeasResult : returns
 CurateIdeasUseCase ..> BestOfPolicy : applies

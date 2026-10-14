@@ -6,7 +6,7 @@ title Components — Capture an idea
 Container_Boundary(spa, "Cullr web app") {
   Component(page, "Today and Ideas pages", "Angular page components", "Host the Capture idea action")
   Component(dialog, "CaptureIdeaDialog", "Angular dialog component", "Form, counters, inline errors, busy and failed states")
-  Component(client, "IdeasApi", "Typed API client service", "Sends the capture request with its request key")
+  Component(client, "IdeasService", "Typed HTTP service", "Sends the capture request with its request key")
 }
 Container_Boundary(api, "Cullr API") {
   Component(handler, "POST /api/ideas route handler", "Next.js route handler", "Authenticates and dispatches the use case")

@@ -19,7 +19,7 @@ box "Frontend — Cullr web app" #E0F2FE
   participant "Edit idea dialog" as dialog
   participant "SaveController" as ctrl
   participant "SaveFailureMapper" as mapper
-  participant "IdeasApi" as client
+  participant "IdeasService" as client
 end box
 box "Backend — Cullr API" #D1FADF
   participant "Ideas route handler" as route

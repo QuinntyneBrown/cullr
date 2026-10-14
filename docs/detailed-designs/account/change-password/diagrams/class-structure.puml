@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Change password
+
+class ChangePasswordFormComponent {
+  +currentPassword: string
+  +newPassword: string
+  +confirmation: string
+  +state: default | submitting | invalid | success | error
+  +submit(): void
+}
+class AccountService {
+  +changePassword(request: ChangePasswordRequest): Observable<void>
+}
+class ChangePasswordRouteHandler {
+  +POST(request: Request): Response
+}
+class ChangePasswordUseCase {
+  +execute(request: ChangePasswordRequest, currentSessionId: string): void
+}
+class OwnerAccount {
+  +verifyPassword(password: string): boolean
+  +changePassword(hash: string): void
+}
+class PasswordPolicy {
+  +check(password: string): PolicyResult
+}
+class PasswordHasher {
+  +hash(password: string): string
+}
+interface OwnerRepository {
+  +load(): OwnerAccount
+  +save(account: OwnerAccount): void
+}
+interface SessionRepository {
+  +revokeAllExcept(sessionId: string): void
+}
+ChangePasswordFormComponent --> AccountService : calls
+AccountService ..> ChangePasswordRouteHandler : HTTPS
+ChangePasswordRouteHandler --> ChangePasswordUseCase : invokes
+ChangePasswordUseCase --> OwnerAccount : verifies
+ChangePasswordUseCase ..> PasswordPolicy : uses
+ChangePasswordUseCase ..> PasswordHasher : uses
+ChangePasswordUseCase --> OwnerRepository
+ChangePasswordUseCase --> SessionRepository
+@enduml

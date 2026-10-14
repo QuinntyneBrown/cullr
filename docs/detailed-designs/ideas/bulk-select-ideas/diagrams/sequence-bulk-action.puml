@@ -17,7 +17,7 @@ skinparam package {
 actor "Owner" as owner
 box "Frontend — Cullr web app" #E0F2FE
   participant "SelectionBarComponent" as bar
-  participant "IdeasApiClient" as client
+  participant "IdeasService" as client
 end box
 box "Backend — Cullr API" #D1FADF
   participant "bulk route handler" as route

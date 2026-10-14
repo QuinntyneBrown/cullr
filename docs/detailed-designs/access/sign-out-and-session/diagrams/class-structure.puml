@@ -17,7 +17,7 @@ class AuthGuard {
 class UnauthorizedInterceptor {
   +intercept(request, next): Observable
 }
-class AuthApiClient {
+class AuthService {
   +signOut(): Observable<void>
 }
 class AuthenticateRequestUseCase {
@@ -40,7 +40,7 @@ interface SessionRepository {
   +delete(id: string): void
 }
 
-AuthGuard --> AuthApiClient : uses
+AuthGuard --> AuthService : uses
 UnauthorizedInterceptor ..> AuthGuard : same redirect rule
 AuthenticateRequestUseCase --> SessionRepository
 AuthenticateRequestUseCase ..> Session : checks expiry

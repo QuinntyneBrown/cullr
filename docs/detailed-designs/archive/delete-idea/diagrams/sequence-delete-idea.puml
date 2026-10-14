@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Delete an archived idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "DeleteIdeaDialogComponent" as page
+  participant "IdeasService" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "delete route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "DeleteIdeaUseCase" as uc
+  participant "Idea" as idea
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Open Delete idea on an archived idea
+page --> owner : Show title to type, Delete permanently disabled (L2-022)
+owner -> page : Type the title
+alt text differs from title
+  page --> owner : Keep action disabled, on submit show "Type the title exactly as shown"
+else text equals title
+  page --> owner : Enable Delete permanently
+  owner -> page : Confirm
+  page -> page : Disable action, show busy state
+  page -> client : Build request with typed title
+  client -> route : DELETE /api/ideas/:id
+  route -> uc : Invoke DeleteIdeaUseCase
+  uc -> db : Load idea
+  db --> uc : Idea or none
+  uc -> idea : assertDeletable
+  alt idea is active
+    idea --> uc : Not deletable
+    uc --> route : Rejected
+    route --> client : 409
+    client --> page : Rejected
+    page --> owner : Show failure message
+  else idea is archived
+    idea --> uc : Deletable
+    uc -> db : Delete idea and history in one transaction
+    db --> uc : Deleted
+    uc --> route : Done
+    route --> client : 204
+    client --> page : Success
+    page --> owner : Close dialog, remove idea everywhere, show success notification
+  end
+end
+opt delete fails
+  client --> page : Failure
+  page --> owner : Keep dialog open, idea unchanged, show failure message (L2-022)
+end
+@enduml

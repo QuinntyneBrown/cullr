@@ -1,0 +1,65 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Notification center
+
+class NotificationsPageComponent {
+  +items: NotificationItem[]
+  +state: loading | default | empty | error
+  +markRead(id: string): void
+  +markAllRead(): void
+}
+class NotificationBellComponent {
+  +unreadCount: number
+  +accessibleName: string
+}
+class NotificationsService {
+  +list(): Observable<NotificationList>
+  +markRead(id: string): Observable<void>
+  +markAllRead(): Observable<void>
+}
+class NotificationRouteHandlers {
+  +GET(request: Request): Response
+  +POST(request: Request): Response
+}
+class ListNotificationsUseCase {
+  +execute(): NotificationList
+}
+class MarkNotificationReadUseCase {
+  +execute(id: string): void
+}
+class MarkAllNotificationsReadUseCase {
+  +execute(): void
+}
+class Notification {
+  +id: string
+  +message: string
+  +createdAt: Date
+  +readAt: Date | null
+  +markRead(now: Date): void
+}
+interface NotificationRepository {
+  +list(): Notification[]
+  +unreadCount(): number
+  +save(notification: Notification): void
+  +markAllRead(now: Date): void
+}
+NotificationsPageComponent --> NotificationsService : calls
+NotificationBellComponent --> NotificationsService : calls
+NotificationsService ..> NotificationRouteHandlers : HTTPS
+NotificationRouteHandlers --> ListNotificationsUseCase
+NotificationRouteHandlers --> MarkNotificationReadUseCase
+NotificationRouteHandlers --> MarkAllNotificationsReadUseCase
+ListNotificationsUseCase --> NotificationRepository
+MarkNotificationReadUseCase --> NotificationRepository
+MarkAllNotificationsReadUseCase --> NotificationRepository
+NotificationRepository "1" --> "*" Notification
+@enduml

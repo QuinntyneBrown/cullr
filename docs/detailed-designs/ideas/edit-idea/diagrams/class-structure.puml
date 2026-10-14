@@ -68,7 +68,7 @@ class EditIdeaDialog {
   +overwrite(): void
 }
 
-class IdeasApiClient {
+class IdeasService {
   +updateIdea(id: string, request: EditIdeaCommand): Observable<EditIdeaResult>
 }
 
@@ -79,5 +79,5 @@ EditIdeaUseCase ..> EditIdeaResult : returns
 EditIdeaCommand *-- IdeaChanges
 Idea ..> IdeaChanges : applies
 EditIdeaResult --> Outcome
-EditIdeaDialog --> IdeasApiClient : calls
+EditIdeaDialog --> IdeasService : calls
 @enduml

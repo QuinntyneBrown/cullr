@@ -18,7 +18,7 @@ class SignInPageComponent {
   +submit(): void
 }
 
-class AuthApiClient {
+class AuthService {
   +signIn(email: string, password: string): Observable<SignInResult>
 }
 
@@ -64,8 +64,8 @@ interface SessionRepository {
   +create(session: Session): void
 }
 
-SignInPageComponent --> AuthApiClient : calls
-AuthApiClient ..> SignInRouteHandler : HTTPS
+SignInPageComponent --> AuthService : calls
+AuthService ..> SignInRouteHandler : HTTPS
 SignInRouteHandler --> SignInUseCase : invokes
 SignInUseCase --> OwnerAccount : verifies
 SignInUseCase ..> LockoutPolicy : uses

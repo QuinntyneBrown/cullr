@@ -13,7 +13,7 @@ Each best-of list holds at most 5 ideas. When a sixth idea is curated into a ful
 The feature is a vertical slice from the dialog to the database.
 
 - **`CurateIdeaDialogComponent`** — Angular dialog component in the Cullr web app. It offers exactly four options: Best of today, Best of this week, Best of this month and Best of the year so far, each with its carry-over rule as secondary text (for example "Carries over until Sunday"). The first option is preselected. On confirmation the primary action shows "Curating…" and is disabled (mock `busy`). On failure the dialog stays open, shows "Couldn't curate this idea", keeps the chosen period and offers "Try again" (mock `failed`).
-- **`CurationApiClient`** — typed Angular HTTP client. It sends the idea ids and the chosen period and returns a typed result.
+- **`CurationService`** — typed Angular HTTP service. It sends the idea ids and the chosen period and returns a typed result.
 - **curate route handler** — Next.js route handler in the Cullr API. It authenticates the owner, parses the request and invokes the use case. The route path is `<TO SUPPLY>`.
 - **`CurateIdeasUseCase`** — application use case. It loads the ideas and the period's current entries, rejects archived ideas, applies `BestOfPolicy`, saves the outcome in one unit of work, calls the status change owned by `ideas/idea-status`, and raises an idea-curated event to `NotificationEvents`.
 - **`BestOfPolicy`** — domain function holding the rules. `PERIOD_CAPACITY` is 5. For each idea in selection order it skips an idea that is already best of the period, adds it otherwise, and displaces the entry with the earliest `curatedAt` when the period already holds 5 entries.

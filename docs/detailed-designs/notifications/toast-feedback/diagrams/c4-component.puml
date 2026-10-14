@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Toast feedback
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "Feature components", "Angular components", "Report the outcome of an action")
+  Component(f1, "ToastService", "Angular service", "Keeps the visible toasts")
+  Component(f2, "ToastHostComponent", "Angular component", "Renders the stack and the live region")
+}
+
+Rel(f0, f1, "Calls")
+Rel(f1, f2, "Calls")
+@enduml
