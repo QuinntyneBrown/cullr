@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NavItem, SidebarNavigation, SkipLink } from '@cullr/components';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { AuthService } from '@cullr/api';
+import { Button, NavItem, SidebarNavigation, SkipLink } from '@cullr/components';
 
 @Component({
   selector: 'app-authenticated-shell',
-  imports: [RouterOutlet, SidebarNavigation, SkipLink],
+  imports: [RouterOutlet, Button, SidebarNavigation, SkipLink],
   template: `
     <cu-skip-link target="main" />
     <div class="sidebar-layout">
       <cu-sidebar-navigation [items]="items">
         <a class="topbar__brand" href="/">Cullr</a>
+        <cu-button variant="link" (click)="signOut()">Sign out</cu-button>
       </cu-sidebar-navigation>
       <div>
         <main id="main" class="container"><router-outlet /></main>
@@ -19,6 +21,14 @@ import { NavItem, SidebarNavigation, SkipLink } from '@cullr/components';
   `,
 })
 export class AuthenticatedShell {
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  protected async signOut(): Promise<void> {
+    await this.auth.signOut();
+    await this.router.navigateByUrl('/sign-in');
+  }
+
   protected readonly items: NavItem[] = [
     { label: 'Today', path: '/today' },
     { label: 'Ideas', path: '/ideas' },

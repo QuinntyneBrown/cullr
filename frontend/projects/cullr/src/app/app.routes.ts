@@ -3,10 +3,18 @@ import { Forbidden } from './core/error-pages/forbidden';
 import { NotFound } from './core/error-pages/not-found';
 import { Offline } from './core/error-pages/offline';
 import { ServerError } from './core/error-pages/server-error';
+import { authGuard } from './core/auth/auth.guard';
+import { AuthShell } from './core/shell/auth-shell';
 import { AuthenticatedShell } from './core/shell/authenticated-shell';
+import { SignInPage } from './pages/sign-in/sign-in';
 
 export const routes: Routes = [
-  { path: '', component: AuthenticatedShell, children: [] },
+  { path: '', component: AuthenticatedShell, canActivate: [authGuard], children: [] },
+  {
+    path: '',
+    component: AuthShell,
+    children: [{ path: 'sign-in', component: SignInPage }],
+  },
   { path: '403', component: Forbidden },
   { path: '404', component: NotFound },
   { path: '500', component: ServerError },
