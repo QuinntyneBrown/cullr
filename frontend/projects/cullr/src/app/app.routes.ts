@@ -6,6 +6,7 @@ import { ServerError } from './core/error-pages/server-error';
 import { authGuard } from './core/auth/auth.guard';
 import { AuthShell } from './core/shell/auth-shell';
 import { AuthenticatedShell } from './core/shell/authenticated-shell';
+import { ForgotPasswordPage } from './pages/forgot-password/forgot-password';
 import { SignInPage } from './pages/sign-in/sign-in';
 
 export const routes: Routes = [
@@ -13,7 +14,10 @@ export const routes: Routes = [
   {
     path: '',
     component: AuthShell,
-    children: [{ path: 'sign-in', component: SignInPage }],
+    children: [
+      { path: 'sign-in', component: SignInPage },
+      { path: 'forgot-password', component: ForgotPasswordPage },
+    ],
   },
   { path: '403', component: Forbidden },
   { path: '404', component: NotFound },
