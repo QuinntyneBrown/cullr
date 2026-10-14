@@ -17,6 +17,7 @@ export interface IdeaCriteria {
 
 export interface IdeaPage {
   items: IdeaDto[];
+  allIds: string[];
   page: number;
   pageSize: number;
   total: number;
@@ -79,6 +80,11 @@ export function listIdeas(criteria: IdeaCriteria, now = Date.now()): IdeaPage {
     const filtered = criteria.status ? where(['status = ?']) : where([]);
     const filterArgs = criteria.status ? [...args, criteria.status] : args;
     const total = (db.prepare(`SELECT count(*) AS n FROM ideas ${filtered}`).get(...filterArgs) as { n: number }).n;
+    const allIds = (
+      db
+        .prepare(`SELECT id FROM ideas ${filtered} ORDER BY ${ORDER[criteria.sort]}`)
+        .all(...filterArgs) as unknown as { id: string }[]
+    ).map((r) => r.id);
     const rows = db
       .prepare(`SELECT ${IDEA_COLUMNS} FROM ideas ${filtered} ORDER BY ${ORDER[criteria.sort]} LIMIT ? OFFSET ?`)
       .all(...filterArgs, PAGE_SIZE, (criteria.page - 1) * PAGE_SIZE) as unknown as IdeaRow[];
@@ -92,7 +98,7 @@ export function listIdeas(criteria: IdeaCriteria, now = Date.now()): IdeaPage {
       )
       .get(quarterStart) as { quarter: number; active: number; archived: number };
 
-    return { items: rows.map(toDto), page: criteria.page, pageSize: PAGE_SIZE, total, counts, summary: overall };
+    return { items: rows.map(toDto), allIds, page: criteria.page, pageSize: PAGE_SIZE, total, counts, summary: overall };
   } finally {
     db.close();
   }

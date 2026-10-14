@@ -58,6 +58,16 @@ describe('GET /api/ideas (L2-009, L2-010)', () => {
     expect(second.page).toBe(2);
   });
 
+  it('Given more than 50 ideas, When listed, Then every matching id is returned for Select all (L2-011)', async () => {
+    for (let i = 0; i < 52; i++) seed({ loggedAt: Date.now() - i * 1000 });
+
+    const body = await list('?page=2');
+
+    expect(body.items).toHaveLength(2);
+    expect(body.allIds).toHaveLength(52);
+    expect(body.allIds).toEqual(expect.arrayContaining(body.items.map((i: { id: string }) => i.id)));
+  });
+
   it('Given a status tab, When selected, Then only that status is listed and tab counts stay accurate for the other filters', async () => {
     seed({ title: 'A', status: 'Logged', category: 'Product' });
     seed({ title: 'B', status: 'Critiquing', category: 'Product' });
