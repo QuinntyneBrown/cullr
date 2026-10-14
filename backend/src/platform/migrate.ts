@@ -1,6 +1,34 @@
 import { DatabaseSync } from 'node:sqlite';
 
-const migrations = [{ id: '0001_initial', sql: '' }];
+const migrations = [
+  { id: '0001_initial', sql: '' },
+  {
+    id: '0002_access',
+    sql: `
+      CREATE TABLE users (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL
+      );
+      CREATE TABLE sessions (
+        id_hash TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id),
+        created_at INTEGER NOT NULL,
+        last_used_at INTEGER NOT NULL
+      );
+      CREATE TABLE failed_sign_ins (
+        user_id TEXT NOT NULL REFERENCES users(id),
+        at INTEGER NOT NULL
+      );
+      CREATE TABLE password_reset_tokens (
+        token_hash TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id),
+        expires_at INTEGER NOT NULL,
+        used_at INTEGER
+      );
+    `,
+  },
+];
 
 export function runMigrations(path: string): void {
   const db = new DatabaseSync(path);

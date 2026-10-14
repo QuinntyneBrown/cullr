@@ -21,17 +21,17 @@ const tables = (path: string) => {
 };
 
 describe('runMigrations', () => {
-  it('Given a new database, When migrations run explicitly, Then only the migrations table exists and the migration is recorded once', () => {
+  it('Given a new database, When migrations run explicitly, Then each migration is recorded once', () => {
     const path = tempDb();
 
     runMigrations(path);
     runMigrations(path);
 
-    expect(tables(path)).toEqual(['schema_migrations']);
+    expect(tables(path)).toContain('schema_migrations');
     const db = new DatabaseSync(path);
     const applied = db.prepare('SELECT id FROM schema_migrations').all();
     db.close();
-    expect(applied).toEqual([{ id: '0001_initial' }]);
+    expect(applied).toEqual([{ id: '0001_initial' }, { id: '0002_access' }]);
   });
 
   it('Given pending migrations, When the database is merely opened or health-checked, Then nothing is applied', async () => {
