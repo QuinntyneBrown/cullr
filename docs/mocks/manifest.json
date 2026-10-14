@@ -1,0 +1,230 @@
+{
+  "project": "Cullr",
+  "required_states": {
+    "page": ["default", "loading", "empty", "error"],
+    "dialog": ["default", "busy", "invalid"],
+    "notification": ["info", "success", "warning", "danger"]
+  },
+  "screens": [
+    {
+      "id": "sign-in",
+      "kind": "page",
+      "title": "Sign in",
+      "route": "/sign-in",
+      "states": ["default", "loading", "error", "invalid", "submitting"],
+      "not_applicable": { "empty": "A sign-in form has no collection to be empty." }
+    },
+    {
+      "id": "forgot-password",
+      "kind": "page",
+      "title": "Forgot password",
+      "route": "/forgot-password",
+      "states": ["default", "error", "invalid", "submitting", "success"],
+      "not_applicable": {
+        "empty": "A single form has no collection to be empty.",
+        "loading": "The form renders immediately; nothing is fetched before it appears."
+      }
+    },
+    {
+      "id": "reset-password",
+      "kind": "page",
+      "title": "Reset password",
+      "route": "/reset-password",
+      "states": ["default", "error", "invalid", "submitting", "success"],
+      "not_applicable": {
+        "empty": "A single form has no collection to be empty.",
+        "loading": "The form renders immediately; nothing is fetched before it appears."
+      }
+    },
+    {
+      "id": "today",
+      "kind": "page",
+      "title": "Today",
+      "route": "/",
+      "states": ["default", "loading", "empty", "error", "no-results", "edge"]
+    },
+    {
+      "id": "ideas",
+      "kind": "page",
+      "title": "Ideas",
+      "route": "/ideas",
+      "states": ["default", "loading", "empty", "error", "no-results", "long", "edge", "selected"]
+    },
+    {
+      "id": "idea-detail",
+      "kind": "page",
+      "title": "Idea detail",
+      "route": "/ideas/:id",
+      "states": ["default", "loading", "error", "edge", "read-only"],
+      "not_applicable": { "empty": "A single idea is never an empty collection." }
+    },
+    {
+      "id": "curated",
+      "kind": "page",
+      "title": "Curated",
+      "route": "/curated",
+      "states": ["default", "loading", "empty", "error", "no-results", "edge"]
+    },
+    {
+      "id": "notification-center",
+      "kind": "page",
+      "title": "Notifications",
+      "route": "/notifications",
+      "states": ["default", "loading", "empty", "error"]
+    },
+    {
+      "id": "settings",
+      "kind": "page",
+      "title": "Settings",
+      "route": "/settings",
+      "states": ["default", "loading", "error", "invalid", "submitting", "success"],
+      "not_applicable": { "empty": "Settings always has values; there is no empty collection." }
+    },
+    {
+      "id": "account",
+      "kind": "page",
+      "title": "Account",
+      "route": "/account",
+      "states": ["default", "loading", "error", "invalid", "submitting", "success"],
+      "not_applicable": { "empty": "A profile always has values; there is no empty collection." }
+    },
+    {
+      "id": "archive",
+      "kind": "page",
+      "title": "Archive",
+      "route": "/archive",
+      "states": ["default", "loading", "empty", "error", "no-results", "long"]
+    },
+    {
+      "id": "help",
+      "kind": "page",
+      "title": "Help",
+      "route": "/help",
+      "states": ["default"],
+      "not_applicable": {
+        "loading": "Static content with nothing to fetch.",
+        "empty": "A single help article has no collection to be empty.",
+        "error": "Static content cannot fail to load."
+      }
+    },
+    {
+      "id": "not-found",
+      "kind": "page",
+      "title": "Page not found",
+      "route": "/404",
+      "states": ["default"],
+      "not_applicable": {
+        "loading": "The error page itself cannot be in a loading state.",
+        "empty": "The error page has no collection.",
+        "error": "This page is the error state for a broken route."
+      }
+    },
+    {
+      "id": "forbidden",
+      "kind": "page",
+      "title": "Forbidden",
+      "route": "/403",
+      "states": ["default"],
+      "not_applicable": {
+        "loading": "The error page itself cannot be in a loading state.",
+        "empty": "The error page has no collection.",
+        "error": "This page is itself the error state for a blocked route."
+      }
+    },
+    {
+      "id": "server-error",
+      "kind": "page",
+      "title": "Something went wrong",
+      "route": "/500",
+      "states": ["default"],
+      "not_applicable": {
+        "loading": "The error page itself cannot be in a loading state.",
+        "empty": "The error page has no collection.",
+        "error": "This page is itself the server error state."
+      }
+    },
+    {
+      "id": "offline",
+      "kind": "page",
+      "title": "You're offline",
+      "route": "/offline",
+      "states": ["default"],
+      "not_applicable": {
+        "loading": "The offline page itself cannot be in a loading state.",
+        "empty": "The offline page has no collection.",
+        "error": "This page is itself the offline state."
+      }
+    },
+    {
+      "id": "capture-idea",
+      "kind": "dialog",
+      "title": "Capture idea",
+      "opens_from": "today",
+      "states": ["default", "invalid", "busy", "failed", "success"]
+    },
+    {
+      "id": "edit-idea",
+      "kind": "dialog",
+      "title": "Edit idea",
+      "opens_from": "idea-detail",
+      "states": ["default", "invalid", "busy", "failed"]
+    },
+    {
+      "id": "curate-idea",
+      "kind": "dialog",
+      "title": "Curate idea",
+      "opens_from": "idea-detail",
+      "states": ["default", "busy", "failed"],
+      "not_applicable": { "invalid": "A single required choice with a sensible default is always valid." }
+    },
+    {
+      "id": "archive-idea",
+      "kind": "dialog",
+      "title": "Archive idea",
+      "opens_from": "idea-detail",
+      "states": ["default", "busy", "failed"],
+      "not_applicable": { "invalid": "A confirmation with an optional note has nothing that can be invalid." }
+    },
+    {
+      "id": "delete-idea",
+      "kind": "dialog",
+      "title": "Delete idea",
+      "opens_from": "archive",
+      "states": ["default", "invalid", "busy", "failed"]
+    },
+    {
+      "id": "restore-idea",
+      "kind": "dialog",
+      "title": "Restore idea",
+      "opens_from": "archive",
+      "states": ["default", "busy", "failed"],
+      "not_applicable": { "invalid": "A confirmation with no inputs has nothing that can be invalid." }
+    },
+    {
+      "id": "export-ideas",
+      "kind": "dialog",
+      "title": "Export ideas",
+      "opens_from": "settings",
+      "states": ["default", "busy", "success", "failed"],
+      "not_applicable": { "invalid": "A set of checkboxes with a sensible default is always valid." }
+    },
+    {
+      "id": "idea-toast",
+      "kind": "notification",
+      "title": "Idea toast",
+      "opens_from": "today",
+      "states": ["info", "success", "warning", "danger", "stacked"]
+    },
+    {
+      "id": "curation-toast",
+      "kind": "notification",
+      "title": "Curation toast",
+      "opens_from": "today",
+      "states": ["info", "success"],
+      "not_applicable": {
+        "warning": "A curation milestone is always good news; it never warns.",
+        "danger": "A curation milestone is always good news; it never fails."
+      }
+    }
+  ]
+}

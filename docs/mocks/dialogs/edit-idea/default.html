@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit idea · default — Cullr mocks</title>
+<meta name="mock:kind" content="dialog">
+<meta name="mock:screen" content="edit-idea">
+<meta name="mock:state" content="default">
+<meta name="description" content="Edit idea dialog, shown over the idea's detail page.">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div inert aria-hidden="true">
+  <header class="topbar">
+    <a class="topbar__brand" href="../../pages/today/default.html"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 6-6 2 2-6z"/></svg>Cullr</a>
+    <span class="topbar__spacer"></span>
+    <span class="avatar avatar--sm">JR</span>
+  </header>
+  <main id="main" class="container">
+    <div class="page-header"><div><h1>Idea detail</h1></div></div>
+    <p class="subtitle">Toronto & GTA · Building</p><div class="card"><p>A same-day favour board for Scarborough neighbours: borrow a ladder, get a ride to the clinic, find someone to walk the dog.</p></div>
+  </main>
+</div>
+<div class="backdrop"></div>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc" data-dismiss-on-escape>
+  <div class="dialog__panel">
+    <div class="dialog__header">
+      <div class="dialog__icon dialog__icon--info" aria-hidden="true"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></div>
+      <div style="flex:1;">
+        <h2 class="dialog__title" id="dlg-title">Edit idea</h2>
+        <p id="dlg-desc" class="text-muted" style="margin-top: var(--space-1);">Editing updates the idea everywhere it appears.</p>
+      </div>
+      <button class="btn btn--ghost btn--icon" type="button" aria-label="Close"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="dialog__body stack">
+      <label class="field"><span class="field__label">Title</span><input class="input" type="text" autofocus value="Porch Light"></label>
+      <label class="field"><span class="field__label">Summary</span><textarea class="textarea" rows="3">A same-day favour board for Scarborough neighbours: borrow a ladder, get a ride to the clinic, find someone to walk the dog.</textarea></label>
+      <label class="field"><span class="field__label">Category</span><select class="select"><option selected>Toronto & GTA</option><option>Photography</option><option>Faith & ministry</option><option>Product</option><option>Engineering</option></select></label>
+      <label class="field"><span class="field__label">Critique notes</span><textarea class="textarea" rows="3">Solves a real same-day need; needs a simple trust and rating system.</textarea></label>
+    </div>
+    <div class="dialog__footer">
+      <button class="btn" type="button">Cancel</button><button class="btn btn--primary" type="button">Save changes</button>
+    </div>
+  </div>
+</div>
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Edit idea</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html" aria-current="page">default</a></li>
+    <li><a href="invalid.html">invalid</a></li>
+    <li><a href="busy.html">busy</a></li>
+    <li><a href="failed.html">failed</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☮ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>
