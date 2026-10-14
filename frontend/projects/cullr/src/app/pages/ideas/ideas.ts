@@ -1,15 +1,17 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category, CATEGORIES, IdeaCriteria, IdeaPage, IdeaSort, IdeaStatus, IdeaService } from '@cullr/api';
-import { Badge, Button, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField, TabItem } from '@cullr/components';
+import { RouterLink } from '@angular/router';
+import { Badge, Button, Checkbox, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField, TabItem } from '@cullr/components';
 import { CaptureIdeaDialogService } from '../../core/capture/capture-idea-dialog.service';
+import { EditIdeaDialogService } from '../../core/edit/edit-idea-dialog.service';
 import { categoryTone, statusTone } from '../../core/ideas/tones';
 
 const SEARCH_DELAY_MS = 300;
 
 @Component({
   selector: 'app-ideas-page',
-  imports: [Badge, Button, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField],
+  imports: [Badge, Button, Checkbox, Chip, EmptyState, Pagination, RouterLink, Select, Skeleton, Table, Tabs, TextField],
   template: `
     <div class="page-header">
       <div>
@@ -50,9 +52,23 @@ const SEARCH_DELAY_MS = 300;
           <cu-button actions (click)="clearFilters()">Clear filters</cu-button>
         </cu-empty-state>
       } @else {
+        @if (selected().size) {
+          <div class="cluster cluster--between selection-bar" style="padding: var(--space-3) var(--space-4); background: var(--color-accent-subtle); border-radius: var(--radius-md); margin-bottom: var(--space-4);">
+            <span class="text-label" role="status">
+              {{ selected().size.toLocaleString('en-CA') }} selected@if (allSelected() && d.total > d.items.length) { · every idea in this list}
+              @if (selected().size > maxCurate) { · Select up to 5 ideas to curate }
+            </span>
+            <div class="cluster">
+              <cu-button [disabled]="selected().size > maxCurate">Curate selected</cu-button>
+              <cu-button>Archive selected</cu-button>
+              <cu-button (click)="selected.set(emptySelection)">Clear selection</cu-button>
+            </div>
+          </div>
+        }
         <cu-table caption="Ideas">
           <thead>
             <tr>
+              <th scope="col"><cu-checkbox label="Select all" [labelHidden]="true" [checked]="allSelected()" (checkedChange)="selectAll($event, d.allIds)" /></th>
               <th scope="col">Idea</th>
               <th scope="col">Status</th>
               <th scope="col">Logged</th>
@@ -62,16 +78,17 @@ const SEARCH_DELAY_MS = 300;
           </thead>
           <tbody>
             @for (idea of d.items; track idea.id) {
-              <tr>
+              <tr [attr.aria-selected]="selected().has(idea.id)">
+                <td><cu-checkbox [label]="'Select ' + idea.title" [labelHidden]="true" [checked]="selected().has(idea.id)" (checkedChange)="toggle(idea.id, $event)" /></td>
                 <td>
-                  <div class="list__title">{{ idea.title }}</div>
+                  <div class="list__title"><a [routerLink]="['/ideas', idea.id]">{{ idea.title }}</a></div>
                   <div class="list__meta"><cu-badge [tone]="categoryTone[idea.category]">{{ idea.category }}</cu-badge></div>
                 </td>
                 <td><cu-badge [tone]="statusTone[idea.status]">{{ idea.status }}</cu-badge></td>
                 <td>{{ logged(idea.loggedAt) }}</td>
                 <td class="num">{{ idea.score ?? '–' }}</td>
                 <td class="row-actions">
-                  <cu-button>Edit</cu-button>
+                  <cu-button (click)="edit.open(idea.id)">Edit</cu-button>
                   <cu-button>Archive</cu-button>
                 </td>
               </tr>
@@ -93,6 +110,15 @@ export class IdeasPage {
   private readonly ideas = inject(IdeaService);
   private readonly router = inject(Router);
   protected readonly capture = inject(CaptureIdeaDialogService);
+  protected readonly edit = inject(EditIdeaDialogService);
+
+  protected readonly maxCurate = 5;
+  protected readonly emptySelection = new Set<string>();
+  protected readonly selected = signal<ReadonlySet<string>>(this.emptySelection);
+  protected readonly allSelected = computed(() => {
+    const ids = this.data()?.allIds ?? [];
+    return ids.length > 0 && ids.every((id) => this.selected().has(id));
+  });
 
   protected readonly categoryNames = CATEGORIES;
   protected readonly categoryTone = categoryTone;
@@ -122,6 +148,7 @@ export class IdeasPage {
       this.query();
       this.page();
       this.capture.version();
+      this.edit.version();
       untracked(() => void this.load());
     });
     effect((onCleanup) => {
@@ -161,6 +188,19 @@ export class IdeasPage {
 
   protected onPage(page: number): void {
     this.page.set(page);
+  }
+
+  protected toggle(id: string, checked: boolean): void {
+    this.selected.update((all) => {
+      const next = new Set(all);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  protected selectAll(checked: boolean, ids: string[]): void {
+    this.selected.set(checked ? new Set(ids) : this.emptySelection);
   }
 
   protected clearFilters(): void {
