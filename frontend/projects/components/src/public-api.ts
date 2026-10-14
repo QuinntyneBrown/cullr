@@ -12,5 +12,6 @@ export * from './lib/sidebar-navigation/sidebar-navigation';
 export * from './lib/skeleton/skeleton';
 export * from './lib/skip-link/skip-link';
 export * from './lib/text-field/text-field';
+export * from './lib/top-bar/top-bar';
 export * from './lib/toast/toast-host';
 export * from './lib/toast/toast.service';
