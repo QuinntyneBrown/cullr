@@ -1,6 +1,6 @@
-import { openDatabase } from '../db/database';
-import { createOwner } from './owner';
-import { checkPasswordPolicy } from './password';
+import { openDatabase } from '../db/database.ts';
+import { createOwner } from './owner.ts';
+import { checkPasswordPolicy } from './password.ts';
 
 export async function seedOwner(email: string | undefined, password: string | undefined): Promise<void> {
   if (!email?.trim()) throw new Error('CULLR_OWNER_EMAIL is required');

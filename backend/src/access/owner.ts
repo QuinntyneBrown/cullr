@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { openDatabase } from '../db/database';
-import { hashPassword } from './password';
+import { openDatabase } from '../db/database.ts';
+import { hashPassword } from './password.ts';
 
 export async function createOwner(email: string, password: string): Promise<void> {
   const passwordHash = await hashPassword(password);
