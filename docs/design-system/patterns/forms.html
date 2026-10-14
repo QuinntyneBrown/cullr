@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forms — Cullr design system</title>
+<meta name="description" content="One column, visible labels, errors that say how to fix.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Cullr DS</a><button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/top-bar.html">Top bar</a></li>
+      <li><a href="../components/sidebar-navigation.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+      <li><a href="../components/layout-primitives.html">Layout primitives</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation-and-page-structure.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Pattern</p>
+      <h1>Forms</h1>
+      <p class="ds-lead">One column, visible labels, errors that say how to fix.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Extracted 2026-10-14</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure and live example</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+
+<section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+<p>Every form in Cullr is capture, edit or settings. The pattern keeps them quick to fill and easy to fix.</p><p>Built from: <a href="../components/form-layout.html">form layout</a>, <a href="../components/form-field.html">form field</a>, <a href="../components/text-field.html">text field</a>, <a href="../components/button.html">button</a>.</p>
+</section>
+
+<section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+<ul><li>Capturing or editing an idea.</li><li>Account and settings.</li><li>Sign-in and password reset.</li></ul>
+</section>
+
+<section class="ds-section" id="structure"><h2><a href="#structure">Structure and live example</a></h2>
+<div class="ds-example"><div class="ds-example__canvas"><form class="stack" style="max-width:24rem;"><label class="field"><span class="field__label">Title</span><input class="input" type="text" ></label><label class="field"><span class="field__label">Category</span><input class="input" type="text" ></label><div class="form-actions"><button class="btn " type="button" >Cancel</button><button class="btn btn--primary" type="submit">Save changes</button></div></form></div><div class="ds-example__caption"><span>Single column; primary last.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;form class="stack" style="max-width:24rem;"&gt;&lt;label class="field"&gt;&lt;span class="field__label"&gt;Title&lt;/span&gt;&lt;input class="input" type="text" &gt;&lt;/label&gt;&lt;label class="field"&gt;&lt;span class="field__label"&gt;Category&lt;/span&gt;&lt;input class="input" type="text" &gt;&lt;/label&gt;&lt;div class="form-actions"&gt;&lt;button class="btn " type="button" &gt;Cancel&lt;/button&gt;&lt;button class="btn btn--primary" type="submit"&gt;Save changes&lt;/button&gt;&lt;/div&gt;&lt;/form&gt;</code></pre></details></div>
+</section>
+
+<section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<div class="ds-example"><div class="ds-example__canvas"><div class="form-summary" role="alert"><b>Fix 2 problems</b><ul><li><a href="#top">Title: enter at least 3 characters</a></li></ul></div><label class="field"><span class="field__label">Title</span><input class="input" type="text" aria-invalid="true"><span class="field__error">Enter at least 3 characters.</span></label></div><div class="ds-example__caption"><span>Invalid: summary plus inline errors.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="form-summary" role="alert"&gt;&lt;b&gt;Fix 2 problems&lt;/b&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="#top"&gt;Title: enter at least 3 characters&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;label class="field"&gt;&lt;span class="field__label"&gt;Title&lt;/span&gt;&lt;input class="input" type="text" aria-invalid="true"&gt;&lt;span class="field__error"&gt;Enter at least 3 characters.&lt;/span&gt;&lt;/label&gt;</code></pre></details></div><div class="ds-example"><div class="ds-example__canvas"><button class="btn btn--primary" type="submit" aria-busy="true">Save changes</button></div><div class="ds-example__caption"><span>Submitting: the pressed button shows busy.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--primary" type="submit" aria-busy="true"&gt;Save changes&lt;/button&gt;</code></pre></details></div>
+</section>
+
+<section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li>Single column at all sizes; max width 32rem.</li><li>Actions stack with the primary first in reading order on phones.</li></ul>
+</section>
+
+<section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<ul><li>Validate on submit, then live on the fields that failed.</li><li>Focus the error summary on a failed submit.</li><li>Every control has a visible label and <code>autocomplete</code> where it applies.</li><li>Do not require re-entry of known data (3.3.7).</li></ul>
+</section>
+
+<section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Primary label names the action.</li><li>Errors: what is wrong + fix.</li></ul>
+</section>
+
+<section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><form class="stack" style="max-width:24rem;"><label class="field"><span class="field__label">Title</span><input class="input" type="text" ></label><label class="field"><span class="field__label">Category</span><input class="input" type="text" ></label><div class="form-actions"><button class="btn " type="button" >Cancel</button><button class="btn btn--primary" type="submit">Save changes</button></div></form></div><figcaption>Labels above, actions last.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="cluster"><input class="input" placeholder="Title" aria-label="Example of the mistake"><input class="input" placeholder="Category" aria-label="Example of the mistake"></div></div><figcaption>Placeholders as labels in a row.</figcaption></figure></div>
+</section>
+
+<section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Mocks this was extracted from:</p><ul><li><a href="../../mocks/dialogs/capture-idea/invalid.html">dialogs/capture-idea/invalid</a></li><li><a href="../../mocks/pages/settings/invalid.html">pages/settings/invalid</a></li><li><a href="../../mocks/pages/sign-in/invalid.html">pages/sign-in/invalid</a></li></ul><p>Drift fixed during extraction: Recorded in the README drift log.</p>
+</section>
+
+    <footer class="ds-footer"><span>Cullr design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>
