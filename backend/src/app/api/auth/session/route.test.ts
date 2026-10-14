@@ -28,18 +28,17 @@ beforeEach(async () => {
 });
 
 describe('session', () => {
-  it('Given a signed-in owner, When the session is read, Then 200 with the owner email', async () => {
+  it('Given a signed-in owner, When the session is read, Then 200', async () => {
     const res = await get(await signedInCookie());
 
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ email: 'owner@cullr.app' });
   });
 
-  it('Given a signed-out visitor, When a protected API is called, Then 401 and the handler data is not returned', async () => {
+  it('Given a signed-out visitor, When a protected API is called, Then 401 and no data is returned', async () => {
     const res = await get();
 
     expect(res.status).toBe(401);
-    expect(await res.text()).not.toContain('owner@cullr.app');
+    expect(await res.json()).toEqual({ status: 401, title: 'Sign in required' });
   });
 
   it('Given the real session reader, When withOwnerSession guards an endpoint, Then a signed-in request reaches it and an anonymous one does not', async () => {

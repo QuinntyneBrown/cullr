@@ -31,7 +31,7 @@ describe('withOwnerSession', () => {
     expect(res.status).toBe(200);
   });
 
-  it('Given no reader is injected, When an endpoint is called, Then there is no session yet and 401 is returned', async () => {
+  it('Given no reader is injected, When a request without a session cookie arrives, Then 401 is returned', async () => {
     const res = await withOwnerSession(async () => Response.json({}))(request);
 
     expect(res.status).toBe(401);
