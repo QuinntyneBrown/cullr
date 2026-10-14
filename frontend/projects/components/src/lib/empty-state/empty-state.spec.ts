@@ -20,7 +20,20 @@ class Host {}
 })
 class HostWithIconAndActions {}
 
+@Component({
+  imports: [EmptyState],
+  template: `<cu-empty-state title="Ideas couldn't load" [error]="true">Try again.</cu-empty-state>`,
+})
+class ErrorHost {}
+
 describe('EmptyState', () => {
+  it('Given the error variant, When rendered, Then it carries the error modifier', async () => {
+    const fixture = TestBed.createComponent(ErrorHost);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.empty.empty--error')).not.toBeNull();
+  });
+
   it('Given an icon and actions, When rendered, Then the icon is decorative and the actions sit in the actions row', async () => {
     const fixture = TestBed.createComponent(HostWithIconAndActions);
     await fixture.whenStable();

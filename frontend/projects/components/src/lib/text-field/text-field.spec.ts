@@ -4,12 +4,13 @@ import { TextField } from './text-field';
 
 @Component({
   imports: [TextField],
-  template: `<cu-text-field name="email" label="Email" type="email" [(value)]="email" [error]="error" [readonly]="readonly" />`,
+  template: `<cu-text-field name="email" label="Email" type="email" [(value)]="email" [error]="error" [readonly]="readonly" [maxlength]="maxlength" />`,
 })
 class Host {
   email = 'a@b.co';
   error = '';
   readonly = false;
+  maxlength: number | undefined;
 }
 
 describe('TextField', () => {
@@ -56,5 +57,19 @@ describe('TextField', () => {
     const fixture = await render((host) => (host.readonly = true));
 
     expect((fixture.nativeElement.querySelector('input') as HTMLInputElement).readOnly).toBe(true);
+  });
+
+  it('Given a limit, When rendered, Then the input stops at the limit and a counter shows the length', async () => {
+    const fixture = await render((host) => (host.maxlength = 120));
+
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(input.maxLength).toBe(120);
+    expect(fixture.nativeElement.querySelector('.field__counter').textContent).toBe('6 / 120');
+  });
+
+  it('Given no limit, When rendered, Then there is no counter', async () => {
+    const fixture = await render();
+
+    expect(fixture.nativeElement.querySelector('.field__counter')).toBeNull();
   });
 });
