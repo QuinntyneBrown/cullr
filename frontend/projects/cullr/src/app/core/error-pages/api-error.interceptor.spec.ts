@@ -1,7 +1,8 @@
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { HANDLES_OWN_ERRORS } from '@cullr/api';
 import { apiErrorInterceptor } from './api-error.interceptor';
 
 describe('apiErrorInterceptor', () => {
@@ -41,6 +42,13 @@ describe('apiErrorInterceptor', () => {
 
   it('Given a 400 validation failure, When it arrives, Then the caller handles it and no page is shown', () => {
     fail(400);
+
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('Given a request that shows its own failure state, When a 500 arrives, Then no page is shown', () => {
+    http.get('/api/x', { context: new HttpContext().set(HANDLES_OWN_ERRORS, true) }).subscribe({ error: () => {} });
+    backend.expectOne('/api/x').flush({}, { status: 500, statusText: 'x' });
 
     expect(navigate).not.toHaveBeenCalled();
   });
