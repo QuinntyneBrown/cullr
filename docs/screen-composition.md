@@ -8,7 +8,7 @@ marked **Local**.
 - **Sources:** `docs/mocks/` (every page/dialog/notification, every state)
   and   `docs/design-system/components/*.html` — no `docs/icd` exists yet and
     `@cullr/components` (`frontend/projects/components`) currently ships only
-    `skip-link`, `empty-state`, `sidebar-navigation`, `ToastService` and
+    `skip-link`, `empty-state`, `sidebar-navigation`, `radio-group`, `ToastService` and
     `DialogService`, so the **design system is the
   component catalogue**. A component is named by its design-system page slug
   (e.g. `button`, `empty-state`); the CSS class comes from that page's `Code`
@@ -27,7 +27,7 @@ marked **Local**.
 
 | Class(es) | Used on | Documented component | Gap |
 |---|---|---|---|
-| `.toast__action`, `.toast__progress`, `.toast__text` | Idea toast, Curation toast | `toast` | Undo action, auto-dismiss progress bar and body text node aren't in the component's anatomy/Code. |
+| `.toast__progress` | Idea toast, Curation toast | `toast` | The auto-dismiss progress bar isn't in the component's anatomy/Code and isn't implemented. `ToastService` now supports `action` (`.toast__action`), body text (`.toast__text`) and auto-dismiss with hover/focus pause. |
 | `.topbar__menu`, `.topbar__nav` | every dashboard page's top bar | `top-bar` | Mobile nav-toggle button and nav slot aren't documented. |
 | `.sidebar__group` | sidebar's "Account" divider | `sidebar-navigation` | Group label isn't documented. |
 | `.cluster--end` | several pages | `layout-primitives` | Modifier isn't documented (`.cluster--between` and `.container--narrow` now are). |
