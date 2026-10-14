@@ -2,8 +2,8 @@
   "name": "cullr",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "frontend",
+    "backend"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

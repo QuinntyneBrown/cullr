@@ -1,4 +1,4 @@
-import { databaseAnswers } from '../../../lib/database';
+import { databaseAnswers } from '../../../db/database';
 
 export const dynamic = 'force-dynamic';
 
