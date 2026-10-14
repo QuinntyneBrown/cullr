@@ -1,1 +1,2 @@
-/* You can add global styles to this file, and also import other style files */
+@import '../../components/src/styles/tokens.css';
+@import '../../components/src/styles/components.css';
