@@ -6,7 +6,8 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "test": "vitest run",
-    "migrate": "node src/platform/migrate.ts"
+    "migrate": "node src/platform/migrate.ts",
+    "seed-owner": "node src/access/seed-owner.ts"
   },
   "dependencies": {
     "next": "^15.0.0",
