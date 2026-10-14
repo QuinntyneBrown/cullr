@@ -28,6 +28,25 @@ const migrations = [
       );
     `,
   },
+  {
+    id: '0003_ideas',
+    sql: `
+      CREATE TABLE ideas (
+        id TEXT PRIMARY KEY,
+        capture_key TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
+        summary TEXT NOT NULL,
+        category TEXT NOT NULL,
+        score INTEGER,
+        status TEXT NOT NULL,
+        logged_at INTEGER NOT NULL,
+        curated_at INTEGER,
+        archived_at INTEGER,
+        critique_notes TEXT NOT NULL DEFAULT ''
+      );
+      CREATE INDEX ideas_logged_at ON ideas (logged_at);
+    `,
+  },
 ];
 
 export function runMigrations(path: string): void {
