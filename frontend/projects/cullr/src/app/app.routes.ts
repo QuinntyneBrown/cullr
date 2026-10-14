@@ -11,6 +11,7 @@ import { ResetPasswordPage } from './pages/reset-password/reset-password';
 import { SignInPage } from './pages/sign-in/sign-in';
 import { TodayPage } from './pages/today/today';
 import { IdeasPage } from './pages/ideas/ideas';
+import { IdeaDetailPage } from './pages/idea-detail/idea-detail';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', component: TodayPage },
       { path: 'today', component: TodayPage },
       { path: 'ideas', component: IdeasPage },
+      { path: 'ideas/:id', component: IdeaDetailPage },
     ],
   },
   {

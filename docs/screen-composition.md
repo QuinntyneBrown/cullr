@@ -73,11 +73,11 @@ marked **Local**.
 
 ### Ideas (`/ideas`, mock folder `pages/ideas`: default, loading, empty, error, no-results, long, edge, selected)
 - **Library:** `tabs` (status filter), `chip`, `select` (sort), `table` (with `num`/`row-actions` gaps), `pagination`, `button`, `badge`, `empty-state` (empty/no-results), `error-page` (error), `skeleton` (loading), `checkbox` (native row-selection input in `selected`).
-- **Local:** Page shell.
+- **Local:** Page shell; selection bar (`.selection-bar`: "N selected", Curate selected, Archive selected, Clear selection).
 
 ### Idea detail (`/ideas/:id`, mock folder `pages/idea-detail`: default, loading, error, edge, read-only; empty n/a)
-- **Library:** `breadcrumb`, `badge`, `button`, `card` (summary + status-history panels), `description-list` (critique notes), `list` (status history), `error-page` (error), `skeleton` (loading), `alert` (`alert--warning`, read-only banner).
-- **Local:** Page shell.
+- **Library:** `breadcrumb`, `badge`, `button`, `card` (summary + status-history panels), `description-list` (critique notes), `list` (status history), `error-page` (error), `skeleton` (loading), `alert` (`alert--warning`, read-only banner; status-update failure).
+- **Local:** Page shell; status control (Mark as Building / Mark as Built buttons with a confirm dialog).
 
 ### Curated (`/curated`, mock folder `pages/curated`: default, loading, empty, error, no-results, edge)
 - **Library:** `chip`, `card` (`card__title`, overline label), `badge`, `empty-state` (empty/no-results), `error-page` (error), `skeleton` (loading).
