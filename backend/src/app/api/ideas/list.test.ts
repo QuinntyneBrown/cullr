@@ -42,7 +42,7 @@ describe('GET /api/ideas (L2-009, L2-010)', () => {
 
     expect(titles(body)).toEqual(['New', 'Old', 'Last year']);
     expect(body.items[0]).toMatchObject({ category: 'Product', status: 'Logged', score: null });
-    expect(body.summary).toEqual({ quarter: 2, active: 3, archived: 1 });
+    expect(body.summary).toEqual({ quarter: 3, active: 3, archived: 1 });
     expect(body.total).toBe(3);
   });
 

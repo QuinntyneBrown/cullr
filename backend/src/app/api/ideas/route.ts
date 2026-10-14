@@ -1,9 +1,16 @@
 import { isSameOrigin, forbiddenOrigin } from '../../../access/origin';
+import { listIdeas, parseCriteria } from '../../../ideas/browse-ideas/list-ideas';
 import { captureIdea } from '../../../ideas/capture-idea/capture-idea';
 import { withErrorHandling } from '../../../platform/with-error-handling';
 import { withOwnerSession } from '../../../platform/with-owner-session';
 
 export const dynamic = 'force-dynamic';
+
+export const GET = withErrorHandling(
+  withOwnerSession(async (request) =>
+    Response.json(listIdeas(parseCriteria(new URL(request.url).searchParams))),
+  ),
+);
 
 export const POST = withErrorHandling(
   withOwnerSession(async (request) => {
