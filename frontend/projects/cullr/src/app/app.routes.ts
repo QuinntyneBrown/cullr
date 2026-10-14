@@ -7,6 +7,7 @@ import { authGuard } from './core/auth/auth.guard';
 import { AuthShell } from './core/shell/auth-shell';
 import { AuthenticatedShell } from './core/shell/authenticated-shell';
 import { ForgotPasswordPage } from './pages/forgot-password/forgot-password';
+import { ResetPasswordPage } from './pages/reset-password/reset-password';
 import { SignInPage } from './pages/sign-in/sign-in';
 
 export const routes: Routes = [
@@ -17,6 +18,7 @@ export const routes: Routes = [
     children: [
       { path: 'sign-in', component: SignInPage },
       { path: 'forgot-password', component: ForgotPasswordPage },
+      { path: 'reset-password', component: ResetPasswordPage },
     ],
   },
   { path: '403', component: Forbidden },
