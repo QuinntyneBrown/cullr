@@ -1,3 +1,4 @@
+import { currentEntries } from '../../curation/current-entries';
 import { openDatabase } from '../../db/database';
 import { CATEGORIES, IDEA_COLUMNS, toDto, type Category, type IdeaDto, type IdeaRow } from '../idea';
 import { localDate, ownerTimeZone, startOfLocalDay } from '../time-zone';
@@ -29,9 +30,14 @@ export function getTodaySummary(category: Category | undefined, now = Date.now()
          ORDER BY logged_at DESC`,
       )
       .all(start, end) as unknown as IdeaRow[];
+    const todays = new Map(
+      currentEntries(db, now)
+        .filter((e) => e.period === 'today')
+        .map((e) => [e.ideaId, e.curatedAt]),
+    );
     const best = rows
-      .filter((r) => r.curated_at !== null)
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || b.curated_at! - a.curated_at!)[0];
+      .filter((r) => todays.has(r.id))
+      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || todays.get(b.id)! - todays.get(a.id)!)[0];
     return {
       date: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
       timeZone,
@@ -39,7 +45,7 @@ export function getTodaySummary(category: Category | undefined, now = Date.now()
       best: best ? { id: best.id, title: best.title } : null,
       ideas: rows
         .filter((r) => !category || r.category === category)
-        .map((r) => ({ ...toDto(r), bestOfToday: r.curated_at !== null })),
+        .map((r) => ({ ...toDto(r), bestOfToday: todays.has(r.id) })),
     };
   } finally {
     db.close();

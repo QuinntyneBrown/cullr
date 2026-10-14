@@ -13,7 +13,6 @@ export interface IdeaRow {
   score: number | null;
   status: IdeaStatus;
   logged_at: number;
-  curated_at: number | null;
 }
 
 export interface IdeaDto {
@@ -36,4 +35,4 @@ export const toDto = (row: IdeaRow): IdeaDto => ({
   loggedAt: row.logged_at,
 });
 
-export const IDEA_COLUMNS = 'id, title, summary, category, score, status, logged_at, curated_at';
+export const IDEA_COLUMNS = 'id, title, summary, category, score, status, logged_at';

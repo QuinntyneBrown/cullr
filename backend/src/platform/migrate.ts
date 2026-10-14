@@ -76,6 +76,7 @@ const migrations = [
         ended_at INTEGER
       );
       CREATE INDEX best_of_entries_period ON best_of_entries (period);
+      ALTER TABLE ideas DROP COLUMN curated_at;
     `,
   },
 ];

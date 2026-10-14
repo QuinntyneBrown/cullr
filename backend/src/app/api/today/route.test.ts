@@ -11,9 +11,13 @@ let n = 0;
 function seed(fields: { loggedAt: number; title?: string; category?: string; score?: number | null; curatedAt?: number | null; archivedAt?: number | null }) {
   const db = openDatabase();
   db.prepare(
-    `INSERT INTO ideas (id, capture_key, title, summary, category, score, status, logged_at, curated_at, archived_at)
-     VALUES (?, ?, ?, 'summary', ?, ?, 'Logged', ?, ?, ?)`,
-  ).run(`id${n}`, `key${n++}`, fields.title ?? 'Idea', fields.category ?? 'Product', fields.score ?? null, fields.loggedAt, fields.curatedAt ?? null, fields.archivedAt ?? null);
+    `INSERT INTO ideas (id, capture_key, title, summary, category, score, status, logged_at, archived_at)
+     VALUES (?, ?, ?, 'summary', ?, ?, 'Logged', ?, ?)`,
+  ).run(`id${n}`, `key${n}`, fields.title ?? 'Idea', fields.category ?? 'Product', fields.score ?? null, fields.loggedAt, fields.archivedAt ?? null);
+  if (fields.curatedAt) {
+    db.prepare("INSERT INTO best_of_entries (idea_id, period, curated_at) VALUES (?, 'today', ?)").run(`id${n}`, fields.curatedAt);
+  }
+  n++;
   db.close();
 }
 const get = (query = '', withCookie = true) =>
@@ -67,6 +71,16 @@ describe('GET /api/today (L2-008)', () => {
 
     expect(body.best).toEqual({ id: 'id2', title: 'High late' });
     expect(body.ideas.filter((i: { bestOfToday: boolean }) => i.bestOfToday).map((i: { title: string }) => i.title).sort()).toEqual(['High early', 'High late', 'Low']);
+  });
+
+  it('Given an idea that was best of today yesterday, When today is requested, Then it is not marked', async () => {
+    const now = Date.now();
+    seed({ loggedAt: now - 2000, title: 'Lapsed', curatedAt: now - 30 * 3600 * 1000 });
+
+    const body = await (await get()).json();
+
+    expect(body.best).toBeNull();
+    expect(body.ideas[0].bestOfToday).toBe(false);
   });
 
   it('Given a category, When today is requested, Then only that category is listed while the total stays', async () => {
