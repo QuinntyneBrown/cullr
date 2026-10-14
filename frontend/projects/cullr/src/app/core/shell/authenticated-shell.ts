@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '@cullr/api';
 import { Button, NavItem, SidebarNavigation, SkipLink } from '@cullr/components';
+import { CaptureIdeaDialog } from '../capture/capture-idea-dialog';
 
 @Component({
   selector: 'app-authenticated-shell',
-  imports: [RouterOutlet, Button, SidebarNavigation, SkipLink],
+  imports: [RouterOutlet, Button, CaptureIdeaDialog, SidebarNavigation, SkipLink],
   template: `
     <cu-skip-link target="main" />
     <div class="sidebar-layout">
@@ -18,6 +19,7 @@ import { Button, NavItem, SidebarNavigation, SkipLink } from '@cullr/components'
         <footer class="footer">Cullr · personal idea curation</footer>
       </div>
     </div>
+    <app-capture-idea-dialog />
   `,
 })
 export class AuthenticatedShell {

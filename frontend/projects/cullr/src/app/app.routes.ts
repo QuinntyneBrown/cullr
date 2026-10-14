@@ -9,9 +9,20 @@ import { AuthenticatedShell } from './core/shell/authenticated-shell';
 import { ForgotPasswordPage } from './pages/forgot-password/forgot-password';
 import { ResetPasswordPage } from './pages/reset-password/reset-password';
 import { SignInPage } from './pages/sign-in/sign-in';
+import { TodayPage } from './pages/today/today';
+import { IdeasPage } from './pages/ideas/ideas';
 
 export const routes: Routes = [
-  { path: '', component: AuthenticatedShell, canActivate: [authGuard], children: [] },
+  {
+    path: '',
+    component: AuthenticatedShell,
+    canActivate: [authGuard],
+    children: [
+      { path: '', pathMatch: 'full', component: TodayPage },
+      { path: 'today', component: TodayPage },
+      { path: 'ideas', component: IdeasPage },
+    ],
+  },
   {
     path: '',
     component: AuthShell,

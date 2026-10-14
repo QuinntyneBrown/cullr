@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { AuthService } from '@cullr/api';
+import { AuthService, IdeaService } from '@cullr/api';
 import { routes } from './app.routes';
 
 describe('Application shell', () => {
@@ -15,8 +15,24 @@ describe('Application shell', () => {
       providers: [
         provideRouter(routes),
         { provide: AuthService, useValue: { isSignedIn: async () => signedIn, signOut } },
+        { provide: IdeaService, useValue: { today: async () => ({ date: '2025-10-14', timeZone: 'America/Toronto', total: 0, best: null, ideas: [] }) } },
       ],
     });
+  });
+
+  it('Given a signed-in owner, When the app root or /today is opened, Then Today is shown and Capture idea opens the dialog from the shell', async () => {
+    const harness = await RouterTestingHarness.create('/');
+    const el = harness.routeNativeElement as HTMLElement;
+    await harness.fixture.whenStable();
+    expect(el.querySelector('main#main h1')?.textContent).toBe('Today');
+
+    const capture = Array.from(el.querySelectorAll('main button')).find((b) => b.textContent?.trim() === 'Capture idea') as HTMLButtonElement;
+    capture.click();
+    await harness.fixture.whenStable();
+
+    expect(el.querySelector('[role="dialog"] h2')?.textContent).toBe('Capture an idea');
+    await harness.navigateByUrl('/today');
+    expect(el.querySelector('main#main h1')?.textContent).toBe('Today');
   });
 
   it('Given the owner opens the app, When the shell renders, Then skip link, primary navigation, main and footer landmarks exist', async () => {
