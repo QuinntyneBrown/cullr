@@ -48,39 +48,37 @@ the year.
 
 ## Project status
 
-Cullr is in its design phase. Requirements, detailed designs and application
-code have not been written yet. What exists today is the full set of static
-HTML mocks in [`docs/mocks/`](docs/mocks/), covering every page, dialog and
-notification in every state, used to validate the product before any code is
-written. See [`AGENTS.md`](AGENTS.md) for the mandatory requirement-first,
-design-first, mock-first, test-first workflow this project follows once
-implementation begins.
+Cullr's foundation is in place: the `@cullr/components` library, the Angular
+application shell and a Next.js `GET /api/health` endpoint backed by SQLite.
+Features are built one vertical slice at a time. See
+[`AGENTS.md`](AGENTS.md) for the mandatory requirement-first, design-first,
+mock-first, test-first workflow.
+
+### Run and test
+
+```sh
+npm install
+npm test                         # backend and frontend tests
+npm run dev --workspace backend  # API on http://localhost:3000
+npm start --workspace frontend   # app on http://localhost:4200, proxies /api
+```
 
 ### Browse the mocks
 
-No build step or server is required.
-
-```sh
-git clone https://github.com/QuinntyneBrown/cullr.git
-cd cullr
-```
-
-Open [`docs/mocks/index.html`](docs/mocks/index.html) in a browser.
+No build step or server is required. Open
+[`docs/mocks/index.html`](docs/mocks/index.html) in a browser.
 
 ## Repository layout
 
 ```
 cullr/
-├── docs/
-│   └── mocks/        static HTML mocks for every page, dialog and notification
-├── .claude/skills/    project skills (requirements, design, mocks, implementation)
-├── .agents/skills/    the same skills, mirrored for other coding agents
-└── AGENTS.md          working agreement for contributors and coding agents
+├── frontend/         Angular workspace: cullr (app), components, api
+├── backend/          Next.js backend (SQLite)
+├── docs/             specs, detailed designs, mocks, design system
+├── .claude/skills/   project skills (requirements, design, mocks, implementation)
+├── .agents/skills/   the same skills, mirrored for other coding agents
+└── AGENTS.md         working agreement for contributors and coding agents
 ```
-
-As requirements, detailed designs, the design system and the Next.js backend
-and Angular frontend are built, this layout will grow to match; see
-[`AGENTS.md`](AGENTS.md) for the intended architecture.
 
 ## Documentation
 

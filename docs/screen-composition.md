@@ -6,8 +6,10 @@ below and use exactly the components it lists. Build locally only the UI
 marked **Local**.
 
 - **Sources:** `docs/mocks/` (every page/dialog/notification, every state)
-  and `docs/design-system/components/*.html` — no `docs/icd` or
-  `@cullr/components` public API exists yet, so the **design system is the
+  and   `docs/design-system/components/*.html` — no `docs/icd` exists yet and
+    `@cullr/components` (`frontend/projects/components`) currently ships only
+    `skip-link`, `empty-state`, `sidebar-navigation`, `ToastService` and
+    `DialogService`, so the **design system is the
   component catalogue**. A component is named by its design-system page slug
   (e.g. `button`, `empty-state`); the CSS class comes from that page's `Code`
   section and lives in `docs/design-system/assets/components.css`.
