@@ -51,7 +51,9 @@ export function listIdeas(criteria: IdeaCriteria, now = Date.now()): IdeaPage {
     args.push(...criteria.categories);
   }
   if (criteria.query) {
-    shared.push('(instr(lower(title), lower(?)) > 0 OR instr(lower(summary), lower(?)) > 0 OR instr(lower(critique_notes), lower(?)) > 0)');
+    shared.push(
+      "(instr(lower(title), lower(?)) > 0 OR instr(lower(summary), lower(?)) > 0 OR instr(lower(strengths || ' ' || risks || ' ' || next_step), lower(?)) > 0)",
+    );
     args.push(criteria.query, criteria.query, criteria.query);
   }
   const where = (extra: string[]) => `WHERE ${[...shared, ...extra].join(' AND ')}`;

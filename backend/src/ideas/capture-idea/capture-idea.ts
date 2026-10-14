@@ -25,12 +25,17 @@ export function captureIdea(input: Record<string, unknown>): CaptureResult {
 
   const db = openDatabase();
   try {
+    const id = randomUUID();
+    const now = Date.now();
     const { changes } = db
       .prepare(
         `INSERT OR IGNORE INTO ideas (id, capture_key, title, summary, category, score, status, logged_at)
          VALUES (?, ?, ?, ?, ?, ?, 'Logged', ?)`,
       )
-      .run(randomUUID(), captureKey, title, summary, input.category as string, score as number | null, Date.now());
+      .run(id, captureKey, title, summary, input.category as string, score as number | null, now);
+    if (changes) {
+      db.prepare("INSERT INTO status_history (idea_id, description, at) VALUES (?, 'Logged', ?)").run(id, now);
+    }
     const row = db
       .prepare(`SELECT ${IDEA_COLUMNS} FROM ideas WHERE capture_key = ?`)
       .get(captureKey) as unknown as IdeaRow;

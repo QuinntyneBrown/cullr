@@ -47,6 +47,24 @@ const migrations = [
       CREATE INDEX ideas_logged_at ON ideas (logged_at);
     `,
   },
+  {
+    id: '0004_idea_detail',
+    sql: `
+      ALTER TABLE ideas ADD COLUMN strengths TEXT NOT NULL DEFAULT '';
+      ALTER TABLE ideas ADD COLUMN risks TEXT NOT NULL DEFAULT '';
+      ALTER TABLE ideas ADD COLUMN next_step TEXT NOT NULL DEFAULT '';
+      ALTER TABLE ideas ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+      UPDATE ideas SET strengths = critique_notes;
+      ALTER TABLE ideas DROP COLUMN critique_notes;
+      CREATE TABLE status_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        idea_id TEXT NOT NULL REFERENCES ideas(id),
+        description TEXT NOT NULL,
+        at INTEGER NOT NULL
+      );
+      CREATE INDEX status_history_idea ON status_history (idea_id);
+    `,
+  },
 ];
 
 export function runMigrations(path: string): void {

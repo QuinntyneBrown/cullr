@@ -10,7 +10,7 @@ let n = 0;
 function seed(fields: { title?: string; summary?: string; category?: string; score?: number | null; status?: string; loggedAt?: number; archivedAt?: number | null; notes?: string }) {
   const db = openDatabase();
   db.prepare(
-    `INSERT INTO ideas (id, capture_key, title, summary, category, score, status, logged_at, archived_at, critique_notes)
+    `INSERT INTO ideas (id, capture_key, title, summary, category, score, status, logged_at, archived_at, strengths)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(`id${n}`, `key${n++}`, fields.title ?? `Idea ${n}`, fields.summary ?? '', fields.category ?? 'Product', fields.score ?? null, fields.status ?? 'Logged', fields.loggedAt ?? Date.now() - n * 1000, fields.archivedAt ?? null, fields.notes ?? '');
   db.close();
