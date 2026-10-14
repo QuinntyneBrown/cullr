@@ -12,6 +12,7 @@ import { SignInPage } from './pages/sign-in/sign-in';
 import { TodayPage } from './pages/today/today';
 import { IdeasPage } from './pages/ideas/ideas';
 import { IdeaDetailPage } from './pages/idea-detail/idea-detail';
+import { CuratedPage } from './pages/curated/curated';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,7 @@ export const routes: Routes = [
       { path: 'today', component: TodayPage },
       { path: 'ideas', component: IdeasPage },
       { path: 'ideas/:id', component: IdeaDetailPage },
+      { path: 'curated', component: CuratedPage },
     ],
   },
   {
