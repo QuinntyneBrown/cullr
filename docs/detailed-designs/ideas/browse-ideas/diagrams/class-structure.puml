@@ -1,0 +1,85 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Browse ideas
+
+enum SortOrder {
+  NewestFirst
+  ScoreHighestFirst
+  StatusLifecycle
+}
+
+class IdeaCriteria {
+  +IdeaStatus status
+  +Category[] categories
+  +SortOrder sort
+  +string query
+  +int page
+  +int pageSize
+}
+
+class IdeaListItem {
+  +string id
+  +string title
+  +Category category
+  +IdeaStatus status
+  +DateTime loggedAt
+  +int? score
+}
+
+class IdeasPageResult {
+  +IdeaListItem[] items
+  +int totalMatching
+  +int loggedThisQuarter
+  +int activeCount
+  +int archivedCount
+  +Map<IdeaStatus, int> statusCounts
+}
+
+class ListIdeas {
+  +execute(criteria: IdeaCriteria): IdeasPageResult
+}
+
+interface IdeaRepository {
+  +findActive(criteria: IdeaCriteria): IdeasPageResult
+}
+
+class IdeasQueryState {
+  +IdeaStatus status
+  +Category[] categories
+  +SortOrder sort
+  +string query
+  +toQueryParams(): Map<string, string>
+  +clear(): void
+}
+
+class IdeasPage {
+  +IdeasPageResult result
+  +string viewState
+  +selectTab(status: IdeaStatus): void
+  +toggleChip(category: Category): void
+  +setSort(sort: SortOrder): void
+  +setQuery(text: string): void
+}
+
+class IdeasApi {
+  +list(criteria: IdeaCriteria): Observable<IdeasPageResult>
+}
+
+IdeasPage --> IdeasQueryState : holds
+IdeasPage ..> IdeasApi : calls
+IdeasQueryState ..> IdeaCriteria : maps to
+IdeaCriteria --> SortOrder
+ListIdeas ..> IdeaCriteria : receives
+ListIdeas ..> IdeaRepository : uses
+ListIdeas --> IdeasPageResult : returns
+IdeasPageResult "1" *-- "*" IdeaListItem
+@enduml

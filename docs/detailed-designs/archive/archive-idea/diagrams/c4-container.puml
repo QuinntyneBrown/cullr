@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Archive an idea
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(web, "Cullr web app", "Angular single-page app", "Hosts the Archive idea dialog")
+  Container(api, "Cullr API", "Next.js route handlers", "Applies the archive transition")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and best-of selections")
+}
+
+Rel(owner, web, "Uses", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

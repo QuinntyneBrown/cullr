@@ -1,0 +1,82 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Web security baseline
+
+class SecurityMiddleware {
+  +handle(request: Request): Response
+  -redirectToHttps(request: Request): Response
+  -applyHeaders(response: Response): Response
+}
+
+class SecurityHeaders {
+  +strictTransportSecurity: string
+  +contentSecurityPolicy: string
+  +xContentTypeOptions: string
+  +frameAncestors: string
+  +referrerPolicy: string
+}
+
+class SessionCookieOptions {
+  +secure: boolean
+  +httpOnly: boolean
+  +sameSite: SameSite
+}
+
+enum SameSite {
+  Lax
+  Strict
+}
+
+class SessionService {
+  +issueOnSignIn(ownerId: string): Session
+  +read(request: Request): Session
+}
+
+class Session {
+  +id: string
+  +ownerId: string
+  +csrfToken: string
+}
+
+class CsrfGuard {
+  +verify(request: Request, session: Session): boolean
+}
+
+class RequestValidator {
+  +validate(schema: FieldSchema, body: unknown): ValidationResult
+}
+
+class FieldSchema {
+  +type: string
+  +maxLength: number
+  +allowedValues: string[]
+}
+
+class ValidationResult {
+  +ok: boolean
+  +fieldErrors: FieldError[]
+}
+
+class FieldError {
+  +field: string
+  +message: string
+}
+
+SecurityMiddleware --> SecurityHeaders : applies
+SessionService --> SessionCookieOptions : uses
+SessionService --> Session : creates
+SessionCookieOptions --> SameSite
+CsrfGuard ..> Session : compares token of
+RequestValidator ..> FieldSchema : applies
+RequestValidator --> ValidationResult : returns
+ValidationResult "1" o-- "*" FieldError
+@enduml

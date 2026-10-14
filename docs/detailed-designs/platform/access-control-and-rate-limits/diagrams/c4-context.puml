@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Access control and rate limits
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation app that serves only the authenticated owner")
+
+Rel(owner, cullr, "Uses after signing in")
+@enduml

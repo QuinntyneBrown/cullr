@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Error pages
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation app")
+
+Rel(owner, cullr, "Reaches unknown, forbidden, failing and offline states in", "HTTPS")
+@enduml

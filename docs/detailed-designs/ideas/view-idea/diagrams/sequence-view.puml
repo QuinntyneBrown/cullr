@@ -1,0 +1,63 @@
+@startuml
+title UML sequence behaviour — View an idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "IdeaDetailPage" as page
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "GET /api/ideas/[id] route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "GetIdeaUseCase" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> page : Open /ideas/:id
+page -> page : Show skeleton (L2-012 criterion 2)
+page -> client : getIdea(id)
+client -> route : GET /api/ideas/{id}
+route -> route : Authenticate session (L2-005)
+route -> usecase : execute(id)
+usecase -> repo : findById(id)
+repo -> db : Query idea, critique notes, history
+db --> repo : Row or none
+alt idea exists
+  repo --> usecase : Idea
+  usecase -> entity : Order history newest first (L2-012 criterion 1)
+  entity --> usecase : IdeaDetail
+  usecase --> route : IdeaDetail
+  route --> client : 200 IdeaDetail
+  client --> page : IdeaDetail
+  page --> owner : Show fields, critique notes, history, actions (L2-012)
+else id does not exist
+  repo --> usecase : none
+  usecase --> route : NotFound
+  route --> client : 404
+  client --> page : not found
+  page --> owner : Show Page not found screen (L2-012 criterion 3)
+else load fails
+  repo --> usecase : failure
+  usecase --> route : failure
+  route --> client : 5xx or network error
+  client --> page : error
+  page --> owner : Show error with retry (L2-012 criterion 2)
+end
+@enduml

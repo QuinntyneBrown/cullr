@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Forgot password
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Forgot password screen at /forgot-password")
+  Container(api, "Cullr API", "Next.js route handlers", "Issues reset tokens and sends reset email")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Owner account and reset tokens")
+}
+System_Ext(email, "Email provider", "<TO SUPPLY>")
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Posts the email to", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+Rel(api, email, "Sends reset email via", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,58 @@
+@startuml
+title UML sequence behaviour — Theme contrast verification, motion preference and toast announcement
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "AppShellComponent" as shell
+  participant "ThemeService" as theme
+  participant "MotionPreferenceService" as motion
+  participant "ToastHost" as toast
+  participant "LiveAnnouncer" as live
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "Build pipeline gate" as gate
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "ContrastCheck" as check
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "tokens.css and contrast-pairs.json" as tokens
+end box
+== Build time ==
+gate -> check : Run for light and dark themes
+check -> tokens : Read token values and pairs
+tokens --> check : Pairs with minimum ratios
+alt Every pair meets 4.5:1 text and 3:1 large text and components (L2-039)
+  check --> gate : Pass
+else A pair falls below its minimum
+  check --> gate : Fail with pair name
+  gate --> gate : Block the build
+end
+== Run time ==
+owner -> shell : Load a screen
+shell -> theme : Apply light or dark token set
+shell -> motion : Read prefers-reduced-motion
+alt Owner prefers reduced motion
+  motion --> shell : reducedMotion = true
+  shell -> shell : Disable non-essential animation (L2-039)
+else No preference
+  motion --> shell : reducedMotion = false
+end
+owner -> toast : Complete an action
+toast -> live : announce(message, polite) (L2-038)
+live --> owner : Announce through live region
+toast --> owner : Show text and icon, not colour alone (L2-039)
+@enduml

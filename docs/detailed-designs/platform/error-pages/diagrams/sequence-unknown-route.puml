@@ -1,0 +1,39 @@
+@startuml
+title UML sequence behaviour — Unknown route
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "AppRouter" as router
+  participant "SessionGuard" as guard
+  participant "NotFoundPage" as page
+  participant "SignInPage" as signin
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "Document route handler" as doc
+end box
+owner -> doc : Request unknown URL
+doc --> router : Application shell with status 404 (host mechanism <TO SUPPLY>)
+router -> guard : Resolve route
+alt Signed-out visitor
+  guard --> router : No session
+  router -> signin : Apply L2-032 criterion 2, show Sign in instead of 404
+  signin --> owner : Sign in screen
+else Signed-in owner
+  guard --> router : Session present
+  router -> page : Apply L2-032 criterion 1, match wildcard route
+  page --> owner : Page not found with Back to Today link
+end
+@enduml

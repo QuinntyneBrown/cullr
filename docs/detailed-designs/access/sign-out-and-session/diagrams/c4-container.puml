@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Sign out and session expiry
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Route guard, 401 handling and sign-out action")
+  Container(api, "Cullr API", "Next.js route handlers", "Authenticates each request and ends sessions")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Sessions")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes sessions", "<TO SUPPLY>")
+@enduml

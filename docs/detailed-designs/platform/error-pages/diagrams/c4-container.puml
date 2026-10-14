@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Error pages
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Routes, error screens, connectivity detection")
+  Container(api, "Cullr API", "Next.js route handlers", "Maps failures to 403 and 500 responses with a reference id")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and account data")
+}
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

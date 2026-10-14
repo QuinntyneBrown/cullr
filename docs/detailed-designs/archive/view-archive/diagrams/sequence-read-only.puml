@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Read-only archived idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — Cullr web app" #E0F2FE
+  participant "IdeaDetailPageComponent" as page
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "IdeaMutationRouteHandlers" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+actor -> page : Open archived idea detail
+page -> client : Get idea
+client --> page : Idea with State Archived
+page --> actor : Show reason, archive date, read-only text, Restore and Delete permanently only (L2-020 criterion 1)
+== Edit, curate or status-change request sent to an archived idea ==
+client -> handler : PATCH or POST on /api/ideas/{id}
+handler -> handler : Authenticate owner
+handler -> repo : GetById
+repo -> db : Load idea
+db --> repo : Idea state
+repo --> handler : Idea
+handler -> entity : Apply L2-020 AssertMutable
+entity --> handler : IdeaArchivedConflictError
+handler --> client : 409 ProblemDetails, nothing saved (L2-020 criterion 2)
+client --> page : Conflict result
+@enduml

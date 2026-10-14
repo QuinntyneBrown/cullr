@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Curated screen
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(web, "Cullr web app", "Angular single-page app", "Hosts the Curated screen at /curated")
+  Container(api, "Cullr API", "Next.js route handlers", "Returns the current best-of ideas")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and best-of entries")
+}
+Rel(owner, web, "Views", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads", "<TO SUPPLY>")
+@enduml

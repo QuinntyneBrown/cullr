@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Sign out and session expiry
+
+class AuthGuard {
+  +canActivate(url: string): boolean
+}
+class UnauthorizedInterceptor {
+  +intercept(request, next): Observable
+}
+class AuthApiClient {
+  +signOut(): Observable<void>
+}
+class AuthenticateRequestUseCase {
+  +execute(sessionId: string, now: Date): AuthResult
+}
+class SignOutUseCase {
+  +execute(sessionId: string): void
+}
+class Session {
+  +id: string
+  +createdAt: Date
+  +lastSeenAt: Date
+  +idleLimitDays: 30
+  +maxAgeDays: 90
+  +isExpired(now: Date): boolean
+}
+interface SessionRepository {
+  +find(id: string): Session
+  +touch(id: string, now: Date): void
+  +delete(id: string): void
+}
+
+AuthGuard --> AuthApiClient : uses
+UnauthorizedInterceptor ..> AuthGuard : same redirect rule
+AuthenticateRequestUseCase --> SessionRepository
+AuthenticateRequestUseCase ..> Session : checks expiry
+SignOutUseCase --> SessionRepository
+SessionRepository "1" --> "*" Session
+@enduml

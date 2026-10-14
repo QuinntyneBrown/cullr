@@ -1,0 +1,81 @@
+@startuml
+title UML sequence behaviour — Edit an idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "EditIdeaDialog" as dialog
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "PUT /api/ideas/[id] route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "EditIdeaUseCase" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> dialog : Open Edit idea
+dialog -> dialog : Prefill saved values and remember Version (L2-013 criterion 1)
+owner -> dialog : Change fields and select Save changes
+dialog -> dialog : Validate title and score (L2-013 criterion 3)
+alt invalid input
+  dialog --> owner : Show inline errors, send nothing
+else valid input
+  dialog -> dialog : Set busy and disable primary action (L2-013 criterion 4)
+  dialog -> client : updateIdea(id, changes, expectedVersion)
+  client -> route : PUT /api/ideas/{id}
+  route -> route : Authenticate session (L2-005)
+  route -> usecase : execute(EditIdeaCommand)
+  usecase -> repo : findById(id)
+  repo -> db : Load idea
+  db --> repo : Row
+  repo --> usecase : Idea
+  alt idea is archived
+    usecase --> route : Archived (L2-013 criterion 7)
+    route --> client : Rejected
+    client --> dialog : Archived
+    dialog --> owner : Show failure message
+  else Version differs and Overwrite is false
+    usecase --> route : Changed (L2-013 criterion 6)
+    route --> client : 409 with current idea
+    client --> dialog : Changed
+    dialog --> owner : Tell the idea changed, offer Review and Overwrite
+  else version matches or Overwrite is true
+    usecase -> entity : edit(changes) and apply L2-013 criterion 8 rule via L2-014
+    entity --> usecase : Updated idea, status history entry if Logged becomes Critiquing
+    usecase -> repo : save(idea, expectedVersion)
+    repo -> db : Update in one unit of work and increment Version
+    alt save succeeds
+      db --> repo : Commit result
+      repo --> usecase : Saved
+      usecase --> route : Saved
+      route --> client : 200 updated idea
+      client --> dialog : Updated idea
+      dialog --> owner : Close, show success notification (L2-013 criterion 2)
+    else save fails
+      db --> repo : Failure
+      repo --> usecase : Failure
+      usecase --> route : Failure
+      route --> client : 5xx
+      client --> dialog : Failure
+      dialog --> owner : Stay open, keep edits, show failure message (L2-013 criterion 5)
+    end
+  end
+end
+@enduml

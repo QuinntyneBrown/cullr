@@ -1,0 +1,77 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Sign in
+
+class SignInPageComponent {
+  +email: string
+  +password: string
+  +state: default | submitting | invalid | error
+  +submit(): void
+}
+
+class AuthApiClient {
+  +signIn(email: string, password: string): Observable<SignInResult>
+}
+
+class SignInRouteHandler {
+  +POST(request: Request): Response
+}
+
+class SignInUseCase {
+  +execute(email: string, password: string): SignInResult
+}
+
+class OwnerAccount {
+  +id: string
+  +email: string
+  +verifyPassword(password: string): boolean
+}
+
+class LockoutPolicy {
+  +maxFailures: 5
+  +windowMinutes: 15
+  +isLockedOut(failures: FailedSignIn[], now: Date): boolean
+}
+
+class FailedSignIn {
+  +occurredAt: Date
+}
+
+class Session {
+  +id: string
+  +createdAt: Date
+  +lastSeenAt: Date
+}
+
+interface OwnerRepository {
+  +findByEmail(email: string): OwnerAccount
+}
+interface FailedSignInRepository {
+  +recentFailures(since: Date): FailedSignIn[]
+  +record(at: Date): void
+  +clear(): void
+}
+interface SessionRepository {
+  +create(session: Session): void
+}
+
+SignInPageComponent --> AuthApiClient : calls
+AuthApiClient ..> SignInRouteHandler : HTTPS
+SignInRouteHandler --> SignInUseCase : invokes
+SignInUseCase --> OwnerAccount : verifies
+SignInUseCase ..> LockoutPolicy : uses
+SignInUseCase --> OwnerRepository
+SignInUseCase --> FailedSignInRepository
+SignInUseCase --> SessionRepository
+FailedSignInRepository "1" --> "*" FailedSignIn
+SessionRepository "1" --> "*" Session
+@enduml

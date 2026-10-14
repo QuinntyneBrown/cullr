@@ -1,0 +1,71 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Error pages
+
+enum ErrorScreenKind {
+  NotFound
+  Forbidden
+  ServerError
+  Offline
+}
+
+class ProblemResponse {
+  +number status
+  +string title
+  +string referenceId
+}
+
+class ApiErrorInterceptor {
+  +intercept(request, next): Observable
+  -toScreen(error: HttpErrorResponse): ErrorScreenKind
+}
+
+class ConnectivityService {
+  +boolean isOnline
+  +online$: Observable<boolean>
+}
+
+class SessionGuard {
+  +canActivate(): boolean
+}
+
+class ErrorPage {
+  +ErrorScreenKind kind
+  +string referenceId
+  +retry(): void
+  +goToToday(): void
+}
+
+class withErrorHandling {
+  +handle(request): Response
+  -toProblem(error, correlationId): ProblemResponse
+}
+
+class CorrelationId {
+  +string value
+  +create(): CorrelationId
+}
+
+class ErrorLogger {
+  +log(error, correlationId): void
+}
+
+ApiErrorInterceptor ..> ProblemResponse : reads
+ApiErrorInterceptor --> ErrorScreenKind : selects
+ApiErrorInterceptor ..> ErrorPage : navigates to
+ConnectivityService ..> ErrorPage : triggers offline
+ErrorPage --> ErrorScreenKind : has
+SessionGuard ..> ErrorPage : unknown route for signed-in owner only
+withErrorHandling ..> ProblemResponse : returns
+withErrorHandling --> CorrelationId : creates
+withErrorHandling ..> ErrorLogger : logs with
+@enduml

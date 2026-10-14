@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Archive an idea
+
+Container_Boundary(web, "Cullr web app") {
+  Component(dialog, "ArchiveIdeaDialogComponent", "Angular dialog component", "Collects the optional reason and shows busy and failure states")
+  Component(client, "IdeasApiClient", "Typed Angular service", "Sends the archive request")
+}
+
+Container_Boundary(api, "Cullr API") {
+  Component(handler, "ArchiveIdeaRouteHandler", "Next.js route handler", "Exposes POST /api/ideas/{id}/archive")
+  Component(usecase, "ArchiveIdeaUseCase", "Application use case", "Loads, archives and saves the idea")
+  Component(entity, "Idea", "Domain entity", "Owns the archive transition and best-of removal")
+  Component(repo, "IdeaRepository", "Infrastructure repository", "Loads and saves ideas")
+}
+ComponentDb(db, "Cullr database", "<TO SUPPLY>", "Persists ideas")
+
+Rel(dialog, client, "Calls")
+Rel(client, handler, "POST", "JSON/HTTPS")
+Rel(handler, usecase, "Invokes")
+Rel(usecase, entity, "Calls Archive")
+Rel(usecase, repo, "Loads and saves through")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam state {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title State lifecycle — Idea status
+
+[*] --> Logged : Capture (L2-014 criterion 1)
+Logged --> Critiquing : automatic, first non-empty critique notes saved (L2-014 criterion 6)
+Logged --> Curating : automatic, curated (L2-014 criterion 7)
+Critiquing --> Curating : automatic, curated (L2-014 criterion 7)
+Curating --> Building : manual (L2-052)
+Building --> Built : manual (L2-052)
+Logged --> Building : manual (L2-052)
+Logged --> Built : manual (L2-052)
+Critiquing --> Building : manual (L2-052)
+Critiquing --> Built : manual (L2-052)
+Curating --> Built : manual (L2-052)
+Built --> Building : manual (L2-052)
+
+note right of Curating
+  Automatic rules never move
+  Curating, Building or Built
+  to an earlier status (L2-014 criterion 8)
+end note
+@enduml

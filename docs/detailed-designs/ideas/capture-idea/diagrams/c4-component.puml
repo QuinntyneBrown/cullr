@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Capture an idea
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "Today and Ideas pages", "Angular page components", "Host the Capture idea action")
+  Component(dialog, "CaptureIdeaDialog", "Angular dialog component", "Form, counters, inline errors, busy and failed states")
+  Component(client, "IdeasApi", "Typed API client service", "Sends the capture request with its request key")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(handler, "POST /api/ideas route handler", "Next.js route handler", "Authenticates and dispatches the use case")
+  Component(usecase, "CaptureIdea", "Use case", "Orchestrates validation, duplicate check and save")
+  Component(entity, "Idea", "Domain entity", "Enforces field rules and the Logged starting status")
+  Component(repo, "IdeaRepository", "Repository", "Persists ideas and capture request keys")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and capture request keys")
+
+Rel(page, dialog, "Opens")
+Rel(dialog, client, "Submits capture to")
+Rel(client, handler, "POST", "JSON/HTTPS")
+Rel(handler, usecase, "Calls")
+Rel(usecase, entity, "Creates")
+Rel(usecase, repo, "Saves through")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

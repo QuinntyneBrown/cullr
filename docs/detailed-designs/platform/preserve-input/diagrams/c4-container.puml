@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Preserve input on failed saves
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Forms and dialogs that keep input and offer retry")
+  Container(api, "Cullr API", "Next.js route handlers", "Saves in one unit of work; returns problem responses")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and account data")
+}
+Rel(owner, spa, "Edits and saves in", "HTTPS")
+Rel(spa, api, "Sends save requests to", "JSON/HTTPS")
+Rel(api, db, "Commits all-or-nothing changes to", "<TO SUPPLY>")
+@enduml

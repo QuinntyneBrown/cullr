@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse ideas
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "IdeasPage", "Angular page component", "Tabs, chips, sort, search box, rows or cards, pagination and states")
+  Component(state, "IdeasQueryState", "Angular service", "Holds tab, chips, sort and query; mirrors the query in the URL")
+  Component(client, "IdeasApi", "Typed API client service", "Requests one page of ideas")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(handler, "GET /api/ideas route handler", "Next.js route handler", "Authenticates, parses query parameters, dispatches the use case")
+  Component(usecase, "ListIdeas", "Use case", "Combines criteria and returns one page with counts")
+  Component(criteria, "IdeaCriteria", "Domain value object", "Status, categories, sort and text query combined with AND")
+  Component(repo, "IdeaRepository", "Repository", "Finds active ideas matching criteria")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas, critique notes and status history")
+
+Rel(page, state, "Reads and updates")
+Rel(page, client, "Loads pages through")
+Rel(client, handler, "GET", "JSON/HTTPS")
+Rel(handler, usecase, "Calls")
+Rel(usecase, criteria, "Builds")
+Rel(usecase, repo, "Queries through")
+Rel(repo, db, "Reads", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,83 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Edit an idea
+
+class Idea {
+  +string Id
+  +string Title
+  +string Summary
+  +string Category
+  +int Score
+  +CritiqueNotes Critique
+  +IdeaStatus Status
+  +bool IsArchived
+  +int Version
+  +edit(changes: IdeaChanges): void
+}
+
+class IdeaChanges {
+  +string Title
+  +string Summary
+  +string Category
+  +int Score
+  +CritiqueNotes Critique
+}
+
+class EditIdeaCommand {
+  +string IdeaId
+  +int ExpectedVersion
+  +bool Overwrite
+  +IdeaChanges Changes
+}
+
+class EditIdeaUseCase {
+  +execute(command: EditIdeaCommand): EditIdeaResult
+}
+
+class EditIdeaResult {
+  +Idea Idea
+  +Outcome Outcome
+}
+
+enum Outcome {
+  Saved
+  Invalid
+  Changed
+  Archived
+  NotFound
+}
+
+class IdeaRepository {
+  +findById(id: string): Idea
+  +save(idea: Idea, expectedVersion: int): void
+}
+
+class EditIdeaDialog {
+  +state: default | invalid | busy | failed | changed
+  +save(): void
+  +review(): void
+  +overwrite(): void
+}
+
+class IdeasApiClient {
+  +updateIdea(id: string, request: EditIdeaCommand): Observable<EditIdeaResult>
+}
+
+EditIdeaUseCase ..> EditIdeaCommand : handles
+EditIdeaUseCase --> IdeaRepository : loads and saves
+EditIdeaUseCase --> Idea : edits
+EditIdeaUseCase ..> EditIdeaResult : returns
+EditIdeaCommand *-- IdeaChanges
+Idea ..> IdeaChanges : applies
+EditIdeaResult --> Outcome
+EditIdeaDialog --> IdeasApiClient : calls
+@enduml

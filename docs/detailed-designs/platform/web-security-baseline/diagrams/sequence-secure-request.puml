@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Secure state-changing request
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "IdeaDialog" as page
+  participant "CsrfInterceptor" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "SecurityMiddleware" as mw
+  participant "POST /api/ideas route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "CsrfGuard" as csrf
+  participant "RequestValidator" as validator
+  participant "CaptureIdeaUseCase" as usecase
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Submit idea
+page -> client : Build typed request
+client -> client : Attach anti-CSRF token
+client -> mw : HTTPS request with session cookie
+alt Request arrives over HTTP
+  mw --> client : Redirect to HTTPS (L2-040)
+end
+mw -> handler : Forward request
+handler -> csrf : Verify token or origin (L2-041)
+alt Token and origin invalid
+  csrf --> handler : Rejected
+  handler --> client : Rejection response, status code <TO SUPPLY>
+else Token valid
+  csrf --> handler : Accepted
+  handler -> validator : Apply L2-042 validation for type, length and allowed values
+  alt Any field invalid
+    validator --> handler : Field errors
+    handler --> client : 400 with field-level errors (L2-042)
+  else All fields valid
+    validator --> handler : Validated command
+    handler -> usecase : Execute
+    usecase -> db : Insert with parameterised query (L2-042)
+    db --> usecase : Commit result
+    usecase --> handler : Result
+    handler --> client : 201 response
+  end
+end
+mw -> mw : Add HSTS, CSP, nosniff, frame-ancestors, referrer policy to every response (L2-040)
+client --> page : Typed result
+page --> owner : Render idea text as inert text (L2-042)
+@enduml

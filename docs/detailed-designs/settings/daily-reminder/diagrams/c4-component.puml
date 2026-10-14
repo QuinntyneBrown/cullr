@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Daily capture reminder
+
+Container_Boundary(api, "Cullr API") {
+  Component(trigger, "ReminderSchedulerTrigger", "<TO SUPPLY>", "Invokes the job at the reminder time")
+  Component(usecase, "SendDailyReminderUseCase", "Application use case", "Decides and creates the reminder")
+  Component(policy, "ReminderPolicy", "Domain function", "Applies L2-027 rules")
+  Component(settings, "SettingsRepository", "Infrastructure repository", "Reads OwnerSettings")
+  Component(ideas, "IdeaRepository", "Infrastructure repository", "Counts ideas logged on a day")
+  Component(notes, "NotificationRepository", "Infrastructure repository", "Finds and creates notifications")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Settings, ideas and notifications")
+
+Rel(trigger, usecase, "Invokes at reminder time")
+Rel(usecase, policy, "Evaluates")
+Rel(usecase, settings, "Reads settings through")
+Rel(usecase, ideas, "Counts ideas through")
+Rel(usecase, notes, "Creates reminder through")
+Rel(settings, db, "Reads", "<TO SUPPLY>")
+Rel(ideas, db, "Reads", "<TO SUPPLY>")
+Rel(notes, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Forgot password
+
+class ForgotPasswordPageComponent {
+  +email: string
+  +state: default | submitting | invalid | success | error
+  +submit(): void
+}
+class AuthApiClient {
+  +requestPasswordReset(email: string): Observable<void>
+}
+class RequestPasswordResetUseCase {
+  +execute(email: string): void
+}
+class PasswordResetToken {
+  +tokenHash: string
+  +expiresAt: Date
+  +usedAt: Date
+  +lifetimeMinutes: 60
+  +issue(now: Date): PasswordResetToken
+}
+interface OwnerRepository {
+  +findByEmail(email: string): OwnerAccount
+}
+interface PasswordResetTokenRepository {
+  +save(token: PasswordResetToken): void
+}
+interface EmailSender {
+  +sendResetLink(to: string, link: string): void
+}
+class OwnerAccount {
+  +id: string
+  +email: string
+}
+
+ForgotPasswordPageComponent --> AuthApiClient : calls
+AuthApiClient ..> RequestPasswordResetUseCase : via route handler
+RequestPasswordResetUseCase --> OwnerRepository
+RequestPasswordResetUseCase --> PasswordResetTokenRepository
+RequestPasswordResetUseCase --> EmailSender
+RequestPasswordResetUseCase ..> PasswordResetToken : issues
+OwnerRepository ..> OwnerAccount : returns
+PasswordResetTokenRepository "1" --> "*" PasswordResetToken
+@enduml

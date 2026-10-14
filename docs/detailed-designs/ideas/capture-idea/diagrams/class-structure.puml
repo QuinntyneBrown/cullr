@@ -1,0 +1,86 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Capture an idea
+
+enum Category {
+  TorontoAndGta
+  Photography
+  FaithAndMinistry
+  Product
+  Engineering
+}
+
+enum IdeaStatus {
+  Logged
+  Critiquing
+  Curating
+  Building
+  Built
+}
+
+class Idea {
+  +string id
+  +string title
+  +string summary
+  +Category category
+  +int? score
+  +IdeaStatus status
+  +DateTime loggedAt
+  +{static} create(input: CaptureIdeaInput, now: DateTime): Idea
+}
+
+class CaptureIdeaInput {
+  +string requestId
+  +string title
+  +string summary
+  +Category category
+  +int? score
+}
+
+class CaptureIdea {
+  +execute(input: CaptureIdeaInput): CaptureIdeaResult
+}
+
+class CaptureIdeaResult {
+  +Idea idea
+  +ValidationError[] errors
+}
+
+interface IdeaRepository {
+  +findByRequestId(requestId: string): Idea
+  +save(idea: Idea, requestId: string): Idea
+}
+
+class CaptureIdeaDialog {
+  +string title
+  +string summary
+  +Category category
+  +int? score
+  +string requestId
+  +submit(): void
+  +cancel(): void
+}
+
+class IdeasApi {
+  +capture(input: CaptureIdeaInput): Observable<Idea>
+}
+
+CaptureIdeaDialog ..> IdeasApi : calls
+CaptureIdeaDialog ..> CaptureIdeaInput : builds
+CaptureIdea ..> CaptureIdeaInput : receives
+CaptureIdea --> CaptureIdeaResult : returns
+CaptureIdea ..> IdeaRepository : uses
+CaptureIdea ..> Idea : creates
+Idea --> Category
+Idea --> IdeaStatus
+CaptureIdeaResult --> Idea
+@enduml

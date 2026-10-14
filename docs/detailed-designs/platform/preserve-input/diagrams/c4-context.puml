@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Preserve input on failed saves
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation app")
+
+Rel(owner, cullr, "Saves ideas and settings through forms and dialogs in", "HTTPS")
+@enduml

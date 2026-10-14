@@ -1,0 +1,82 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — View an idea
+
+enum IdeaStatus {
+  Logged
+  Critiquing
+  Curating
+  Building
+  Built
+}
+
+class Idea {
+  +string Id
+  +string Title
+  +string Category
+  +IdeaStatus Status
+  +string Summary
+  +CritiqueNotes Critique
+  +bool IsArchived
+  +bestOfMarker(): string
+}
+
+class CritiqueNotes {
+  +string Strengths
+  +string Risks
+  +string NextStep
+}
+
+class StatusHistoryEntry {
+  +string Label
+  +DateTime At
+}
+
+class IdeaDetail {
+  +string Id
+  +string Title
+  +string Category
+  +IdeaStatus Status
+  +string BestOf
+  +string Summary
+  +CritiqueNotes Critique
+  +StatusHistoryEntry[] History
+  +bool IsArchived
+}
+
+class GetIdeaUseCase {
+  +execute(id: string): IdeaDetail
+}
+
+class IdeaRepository {
+  +findById(id: string): Idea
+}
+
+class IdeaDetailPage {
+  +state: loading | loaded | error | notFound
+  +load(): void
+  +retry(): void
+}
+
+class IdeasApiClient {
+  +getIdea(id: string): Observable<IdeaDetail>
+}
+
+Idea --> IdeaStatus : has
+Idea *-- CritiqueNotes
+Idea "1" *-- "*" StatusHistoryEntry
+GetIdeaUseCase --> IdeaRepository : loads through
+GetIdeaUseCase ..> IdeaDetail : returns
+IdeaRepository ..> Idea : returns
+IdeaDetailPage --> IdeasApiClient : calls
+IdeasApiClient ..> IdeaDetail : receives
+@enduml

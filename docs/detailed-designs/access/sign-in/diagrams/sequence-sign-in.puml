@@ -1,0 +1,76 @@
+@startuml
+title UML sequence behaviour — Sign in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "SignInPageComponent" as page
+  participant "AuthApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "sign-in route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "SignInUseCase" as uc
+  participant "LockoutPolicy" as lock
+  participant "OwnerAccount" as acct
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Submit email and password
+alt empty email or password
+  page --> owner : Apply L2-001 inline error, send no request
+else fields present
+  page -> page : Disable submit, show busy state, lock fields (L2-001)
+  page -> client : Build typed request
+  client -> route : POST /api/auth/sign-in
+  route -> uc : Invoke SignInUseCase
+  uc -> db : Load recent failed sign-ins
+  db --> uc : Failures
+  uc -> lock : Apply L2-002 lockout check
+  lock --> uc : Locked or open
+  alt locked out
+    uc --> route : Rejected, generic result
+    route --> client : 401 "Email or password is incorrect"
+    client --> page : Generic error
+    page --> owner : Show generic message
+  else not locked out
+    uc -> db : Load owner account by email
+    db --> uc : Account or none
+    uc -> acct : Verify password
+    acct --> uc : Match or mismatch
+    alt credentials match
+      uc -> db : Clear failures, create session
+      db --> uc : Saved
+      uc --> route : Signed in
+      route --> client : 200 with session cookie
+      client --> page : Success
+      page --> owner : Navigate to Today
+    else mismatch
+      uc -> db : Record failed sign-in
+      db --> uc : Saved
+      uc --> route : Rejected, generic result
+      route --> client : 401 "Email or password is incorrect" (L2-001)
+      client --> page : Generic error
+      page --> owner : Show generic message, keep email
+    end
+  end
+end
+opt API unreachable
+  client --> page : Network failure
+  page --> owner : Show "Sign-in service is unreachable" with Try again, keep email (L2-001)
+end
+@enduml

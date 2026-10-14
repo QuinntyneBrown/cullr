@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Preserve input on failed saves
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(dialog, "Dialog components", "Angular components", "Capture, Edit, Delete, Archive, Restore, Curate and Export idea dialogs")
+  Component(form, "Form pages", "Angular components", "Account and Settings forms")
+  Component(controller, "SaveController", "Shared Angular helper", "Holds SaveState and the entered values across a save")
+  Component(mapper, "SaveFailureMapper", "Angular service", "Maps a failed request to a SaveFailure with a next step")
+  Component(client, "Typed API clients", "Angular services", "Send requests and surface typed errors")
+}
+
+Container_Boundary(api, "Cullr API") {
+  Component(route, "Route handlers", "Next.js route handlers", "Validate input and return problem responses")
+  Component(usecase, "Save use cases", "Application layer", "Apply each change in one unit of work")
+  ComponentDb(db, "Cullr database", "<TO SUPPLY>", "Commits or rolls back the whole change")
+}
+
+Rel(dialog, controller, "Uses")
+Rel(form, controller, "Uses")
+Rel(controller, client, "Calls")
+Rel(controller, mapper, "Maps failures with")
+Rel(client, route, "Sends request", "JSON/HTTPS")
+Rel(route, usecase, "Executes")
+Rel(usecase, db, "Commits in one unit of work")
+@enduml

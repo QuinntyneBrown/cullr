@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Edit an idea
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "IdeaDetailPage", "Angular page component", "Opens the dialog and refreshes after a save")
+  Component(dialog, "EditIdeaDialog", "Angular dialog component", "Holds the form and its default, invalid, busy, failed and changed states")
+  Component(client, "IdeasApiClient", "Typed Angular HTTP service", "Sends the update request")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(route, "PUT /api/ideas/[id] route handler", "Next.js route handler", "Authenticates and maps results to HTTP")
+  Component(usecase, "EditIdeaUseCase", "Application use case", "Checks version, applies the edit, persists once")
+  Component(entity, "Idea", "Domain entity", "Validates fields and applies the critique status rule")
+  Component(repo, "IdeaRepository", "Infrastructure repository", "Loads and saves an idea with a version check")
+}
+ComponentDb(db, "Cullr database", "<TO SUPPLY>", "Persists ideas")
+
+Rel(page, dialog, "Opens")
+Rel(dialog, client, "Submits through")
+Rel(client, route, "PUT", "JSON/HTTPS")
+Rel(route, usecase, "Invokes")
+Rel(usecase, repo, "Loads and saves through")
+Rel(usecase, entity, "Calls edit on")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

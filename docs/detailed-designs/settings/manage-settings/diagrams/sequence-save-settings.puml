@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Save settings
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "SettingsPage" as page
+  participant "SettingsApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "SettingsRouteHandler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "SaveSettingsUseCase" as usecase
+  participant "OwnerSettings" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "SettingsRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> page : Choose Save changes
+page -> page : Mark Save changes busy and disabled (L2-026 criterion 4)
+page -> client : save(input)
+client -> handler : PUT /api/settings
+handler -> usecase : execute(input)
+usecase -> entity : Apply L2-026 validation (threshold whole number of 1 or more)
+alt threshold empty, below 1 or not a whole number
+  entity --> usecase : Invalid
+  usecase --> handler : Validation failure
+  handler --> client : 422 with field error
+  client --> page : Validation failure
+  page --> owner : Show "Enter a number of 1 or more" inline, nothing saved (L2-026 criterion 3)
+else values valid
+  entity --> usecase : OwnerSettings
+  usecase -> repo : save(settings)
+  repo -> db : Write settings
+  alt write succeeds
+    db --> repo : Commit result
+    repo --> usecase : Saved
+    usecase --> handler : OwnerSettings
+    handler --> client : 200 with settings
+    client --> page : OwnerSettings
+    page --> owner : Show success and apply new values (L2-026 criterion 2)
+  else write fails
+    db --> repo : Error
+    repo --> usecase : Error
+    usecase --> handler : Error
+    handler --> client : Problem response
+    client --> page : Error
+    page --> owner : Show error with retry, keep entered values (L2-026 criterion 5)
+  end
+end
+@enduml

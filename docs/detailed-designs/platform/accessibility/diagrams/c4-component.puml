@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Accessibility
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(shell, "AppShellComponent", "Angular component", "Renders the skip link, landmarks and the single h1 per page")
+  Component(skip, "SkipLinkComponent", "Angular component", "First focusable element; moves focus to main content")
+  Component(dialogs, "DialogService", "Angular service", "Opens dialogs, traps focus, handles Escape, restores focus")
+  Component(trap, "FocusTrapDirective", "Angular directive", "Cycles Tab and Shift+Tab inside an open dialog")
+  Component(announcer, "LiveAnnouncer", "Angular service", "Writes toast, loading and result-count messages to polite live regions")
+  Component(errors, "ErrorSummaryComponent", "Angular component", "Lists field errors, links each to its field, receives focus on failure")
+  Component(tabs, "TabsComponent", "Angular component", "Implements the tabs pattern with arrow-key navigation")
+  Component(motion, "MotionPreferenceService", "Angular service", "Reads prefers-reduced-motion and disables non-essential animation")
+  Component(theme, "ThemeService", "Angular service", "Applies the light or dark token set")
+  Component(contrast, "check_contrast", "Build-time script", "Verifies token pairs in contrast-pairs.json against 4.5:1 and 3:1")
+}
+Container(api, "Cullr API", "Next.js route handlers", "Returns 400 with field-level errors")
+
+Rel(shell, skip, "Contains")
+Rel(dialogs, trap, "Applies to dialog host")
+Rel(dialogs, announcer, "Announces dialog result")
+Rel(errors, announcer, "Announces error count")
+Rel(theme, contrast, "Token sets verified by")
+Rel(motion, theme, "Shares media-query preferences with")
+Rel(dialogs, api, "Submits form data to", "JSON/HTTPS")
+Rel(shell, tabs, "Hosts status tabs through")
+@enduml

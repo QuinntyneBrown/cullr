@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Accessibility
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Renders every screen, dialog and toast; owns focus, announcements and theming")
+  Container(api, "Cullr API", "Next.js route handlers", "Returns field-level validation errors that the web app associates with fields")
+}
+Rel(owner, spa, "Uses", "Keyboard, touch, screen reader")
+Rel(spa, api, "Calls", "JSON/HTTPS")
+@enduml

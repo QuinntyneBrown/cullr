@@ -1,0 +1,70 @@
+@startuml
+title UML sequence behaviour — View the Curated screen
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "CuratedPageComponent" as page
+  participant "CurationApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "curated route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "GetCuratedUseCase" as usecase
+  participant "CuratedOrdering" as order
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "BestOfRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> page : Open /curated
+page -> page : Show skeleton (L2-016 criterion 4)
+page -> client : Request curated list
+client -> handler : HTTPS GET
+handler -> handler : Authenticate the owner (L1-001)
+handler -> usecase : Execute
+usecase -> repo : List current best-of entries with ideas
+repo -> db : Read
+alt Read fails
+  db --> repo : Error
+  repo --> usecase : Failure
+  usecase --> handler : Failure
+  handler --> client : HTTP 5xx problem response
+  client --> page : Error
+  page --> owner : Show error with Try again (L2-016 criterion 4)
+  owner -> page : Choose Try again
+  page -> client : Request curated list again
+else Read succeeds
+  db --> repo : Entries and ideas
+  repo --> usecase : Items
+  usecase -> order : Order today, week, month, year; score highest first, unscored last (L2-016 criterion 1)
+  order --> usecase : Ordered items
+  usecase --> handler : CuratedList with distinct idea count
+  handler --> client : HTTP 200
+  client --> page : CuratedList
+  alt No items
+    page --> owner : Show empty state with link to Ideas (L2-016 criterion 2)
+  else Items present
+    page --> owner : Show list and subtitle "N ideas curated as of <date>" (L2-016 criterion 1)
+    owner -> page : Choose a category chip
+    alt No item matches
+      page --> owner : Show no-results state with Clear filters (L2-016 criterion 3)
+    else Matches exist
+      page --> owner : Show matching items
+    end
+  end
+end
+@enduml

@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Forbidden, server error and offline
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Page component" as page
+  participant "ApiErrorInterceptor" as icpt
+  participant "ConnectivityService" as conn
+  participant "ErrorPage" as err
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "withErrorHandling" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "Use case" as uc
+  participant "CorrelationId" as corr
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "ErrorLogger" as log
+end box
+owner -> page : Perform action
+page -> icpt : HTTP request
+alt Browser offline
+  icpt -> conn : Check online state
+  conn --> icpt : Offline
+  icpt -> err : Apply L2-033 criterion 3, show offline screen or banner
+  err --> owner : You're offline with Try again
+  owner -> err : Try again after connectivity returns
+  err -> page : Return to screen with entered input intact
+else Request reaches API
+  icpt -> handler : HTTPS request
+  handler -> corr : Create correlation id
+  handler -> uc : Execute
+  alt Caller not permitted
+    uc --> handler : Permission failure
+    handler --> icpt : 403 problem response
+    icpt -> err : Apply L2-033 criterion 1, show Forbidden
+    err --> owner : Forbidden with Back to Today
+  else Unexpected failure
+    uc --> handler : Unhandled error
+    handler -> log : Apply L2-051 log error with correlation id
+    handler --> icpt : 500 problem response with reference id, no stack trace
+    icpt -> err : Apply L2-033 criterion 2, show Something went wrong
+    err --> owner : Retry action and reference id
+  end
+end
+@enduml

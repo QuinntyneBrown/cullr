@@ -1,0 +1,82 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Idea status lifecycle
+
+enum IdeaStatus {
+  Logged
+  Critiquing
+  Curating
+  Building
+  Built
+}
+
+class Idea {
+  +string Id
+  +IdeaStatus Status
+  +bool IsArchived
+  +StatusHistoryEntry[] History
+  +applyCritiqueSaved(notes: CritiqueNotes): void
+  +applyCurated(period: string): void
+  +setStatusManually(target: IdeaStatus): StatusHistoryEntry
+}
+
+class StatusHistoryEntry {
+  +string Label
+  +IdeaStatus Status
+  +DateTime At
+}
+
+class SetIdeaStatusCommand {
+  +string IdeaId
+  +IdeaStatus Target
+}
+
+class SetIdeaStatusUseCase {
+  +execute(command: SetIdeaStatusCommand): SetIdeaStatusResult
+}
+
+class SetIdeaStatusResult {
+  +Idea Idea
+  +Outcome Outcome
+}
+
+enum Outcome {
+  Changed
+  Unchanged
+  Archived
+  NotFound
+}
+
+class IdeaRepository {
+  +findById(id: string): Idea
+  +save(idea: Idea): void
+}
+
+class StatusControl {
+  +options: Building | Built
+  +confirm(target: IdeaStatus): void
+  +retry(): void
+}
+
+class IdeasApiClient {
+  +setStatus(id: string, target: IdeaStatus): Observable<SetIdeaStatusResult>
+}
+
+Idea --> IdeaStatus : has
+Idea "1" *-- "*" StatusHistoryEntry : append-only
+SetIdeaStatusUseCase ..> SetIdeaStatusCommand : handles
+SetIdeaStatusUseCase --> IdeaRepository : loads and saves
+SetIdeaStatusUseCase --> Idea : mutates
+SetIdeaStatusUseCase ..> SetIdeaStatusResult : returns
+SetIdeaStatusResult --> Outcome
+StatusControl --> IdeasApiClient : calls
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Error pages
+
+Person(owner, "Owner", "Sole user of Cullr")
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(router, "AppRouter", "Angular router", "Resolves routes and applies the wildcard route")
+  Component(guard, "SessionGuard", "Angular route guard", "Redirects signed-out visitors to Sign in")
+  Component(interceptor, "ApiErrorInterceptor", "Angular HTTP interceptor", "Classifies failed requests and navigates to an error page")
+  Component(conn, "ConnectivityService", "Angular service", "Tracks browser online and offline state")
+  Component(pages, "NotFoundPage, ForbiddenPage, ServerErrorPage, OfflinePage", "Angular page components", "Render the four error screens")
+}
+
+Container_Boundary(api, "Cullr API") {
+  Component(handler, "withErrorHandling", "Route handler wrapper", "Catches failures and returns a safe response")
+  Component(corr, "CorrelationId", "Request context", "Creates the id used as log key and reference id")
+  Component(logger, "ErrorLogger", "Logging component", "Writes the failure and its correlation id to <TO SUPPLY>")
+}
+
+Rel(owner, router, "Navigates to", "HTTPS")
+Rel(router, guard, "Consults")
+Rel(router, pages, "Renders")
+Rel(interceptor, pages, "Navigates to")
+Rel(conn, pages, "Shows offline screen or banner")
+Rel(interceptor, handler, "Receives 403 and 500 from", "JSON/HTTPS")
+Rel(handler, corr, "Reads")
+Rel(handler, logger, "Logs failure with correlation id")
+@enduml

@@ -1,0 +1,29 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Access control and rate limits
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(errInterceptor, "ApiErrorInterceptor", "Angular HTTP interceptor", "Maps 401, 404 and 429 responses to typed errors")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(limiter, "RateLimiter", "Request filter", "Counts requests per IP address or session per minute")
+  Component(auth, "withOwnerSession", "Route wrapper", "Requires an authenticated owner session on every non-public endpoint")
+  Component(public, "PublicRouteList", "Configuration", "Sign-in, forgot-password, reset-password and public error pages")
+  Component(handler, "Route handlers", "Next.js route handlers", "Entry point for each endpoint")
+  Component(usecase, "Idea use cases", "Application layer", "Load ideas for the owner and report not found")
+  Component(repo, "IdeaRepository", "Repository", "Finds an idea by id")
+  ComponentDb(counters, "Counter store", "<TO SUPPLY>", "Holds per-minute request counts")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Stores sessions and ideas")
+
+Rel(errInterceptor, limiter, "Sends requests through", "JSON/HTTPS")
+Rel(limiter, counters, "Increments and reads")
+Rel(limiter, auth, "Passes allowed requests to")
+Rel(auth, public, "Consults")
+Rel(auth, handler, "Passes authenticated requests to")
+Rel(handler, usecase, "Executes")
+Rel(usecase, repo, "Loads ideas through")
+Rel(auth, db, "Reads session from", "Parameterised queries")
+Rel(repo, db, "Reads and writes", "Parameterised queries")
+@enduml

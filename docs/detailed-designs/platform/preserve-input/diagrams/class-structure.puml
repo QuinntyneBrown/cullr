@@ -1,0 +1,70 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Preserve input on failed saves
+
+enum SaveState {
+  Idle
+  Busy
+  Failed
+  Succeeded
+}
+
+enum SaveFailureKind {
+  Offline
+  Server
+  Forbidden
+  Validation
+}
+
+class SaveFailure {
+  +SaveFailureKind kind
+  +string message
+  +string nextStep
+  +string referenceId
+}
+
+class SaveController<TValues> {
+  +SaveState state
+  +TValues values
+  +SaveFailure failure
+  +submit(): Promise<void>
+  +retry(): Promise<void>
+  +cancel(): void
+}
+
+class SaveFailureMapper {
+  +map(error: HttpErrorResponse): SaveFailure
+}
+
+class DialogComponent {
+  +SaveController controller
+  +boolean isOpen
+}
+
+class ApiClient {
+  +save(values): Observable<Result>
+}
+
+class ProblemResponse {
+  +number status
+  +string title
+  +string referenceId
+}
+
+DialogComponent *-- SaveController : owns
+SaveController --> SaveState : has
+SaveController --> SaveFailure : holds latest
+SaveController ..> SaveFailureMapper : maps with
+SaveController ..> ApiClient : calls
+SaveFailure --> SaveFailureKind : has
+SaveFailureMapper ..> ProblemResponse : reads
+@enduml

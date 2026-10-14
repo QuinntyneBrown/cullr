@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Reset password
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "ResetPasswordPageComponent", "Angular page component", "Renders the form and its states")
+  Component(client, "AuthApiClient", "Typed API client service", "Checks the link and submits the new password")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(route, "reset-password route handlers", "Next.js route handlers", "GET and POST /api/auth/reset-password")
+  Component(uc, "ResetPasswordUseCase", "Application", "Validates the token, changes the password and revokes sessions")
+  Component(token, "PasswordResetToken", "Domain entity", "Single-use token with expiry")
+  Component(policy, "PasswordPolicy", "Domain function", "Applies L2-046")
+  Component(acct, "OwnerAccount", "Domain entity", "Holds the password hash")
+  Component(repo, "OwnerRepository, PasswordResetTokenRepository, SessionRepository", "Infrastructure", "Persist account, tokens and sessions")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(page, client, "Calls")
+Rel(client, route, "Sends request", "JSON/HTTPS")
+Rel(route, uc, "Invokes")
+Rel(uc, token, "Checks validity with")
+Rel(uc, policy, "Validates the new password with")
+Rel(uc, acct, "Changes password on")
+Rel(uc, repo, "Loads and saves through")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

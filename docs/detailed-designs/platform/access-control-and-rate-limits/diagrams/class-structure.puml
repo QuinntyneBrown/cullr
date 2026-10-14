@@ -1,0 +1,71 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Access control and rate limits
+
+class RateLimiter {
+  +check(request: Request): RateLimitDecision
+  -keyFor(rule: RateLimitRule, request: Request): string
+}
+
+class RateLimitRule {
+  +name: string
+  +limitPerMinute: number
+  +scope: LimitScope
+}
+
+enum LimitScope {
+  IpAddress
+  Session
+}
+
+class RateLimitDecision {
+  +allowed: boolean
+  +retryAfterSeconds: number
+}
+
+class CounterStore {
+  +increment(key: string, windowStart: number): number
+}
+
+class withOwnerSession {
+  +wrap(handler: RouteHandler): RouteHandler
+}
+
+class PublicRouteList {
+  +isPublic(path: string): boolean
+}
+
+class OwnerSession {
+  +sessionId: string
+  +ownerId: string
+}
+
+class IdeaRepository {
+  +findById(ownerId: string, ideaId: string): Idea
+}
+
+class ApiError {
+  +status: number
+  +code: string
+  +retryAfterSeconds: number
+}
+
+RateLimiter "1" o-- "*" RateLimitRule
+RateLimitRule --> LimitScope
+RateLimiter --> CounterStore : uses
+RateLimiter --> RateLimitDecision : returns
+withOwnerSession ..> PublicRouteList : consults
+withOwnerSession --> OwnerSession : resolves
+withOwnerSession ..> ApiError : raises 401
+IdeaRepository ..> ApiError : missing id yields 404
+RateLimiter ..> ApiError : raises 429
+@enduml

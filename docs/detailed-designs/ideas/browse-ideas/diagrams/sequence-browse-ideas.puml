@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Browse, filter, sort and search ideas
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "IdeasPage" as page
+  participant "IdeasApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "GET /api/ideas route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "ListIdeas" as usecase
+  participant "IdeaCriteria" as criteria
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+
+owner -> page : Open Ideas, or change tab, chip, sort or query
+page -> page : Wait for 300 ms typing pause, then update URL query (L2-010)
+page --> owner : Show skeleton placeholder (L2-009)
+page -> client : Build request from IdeasQueryState
+client -> handler : HTTPS GET with status, categories, sort, q, page
+handler -> handler : Authenticate session
+handler -> usecase : execute(criteria)
+usecase -> criteria : Combine tab, chips, sort and query with AND (L2-010)
+criteria --> usecase : IdeaCriteria with page size of at most 50 (L2-009)
+usecase -> repo : findActive(criteria)
+repo -> db : Query non-archived ideas by title, summary and critique notes
+alt query fails
+  db --> repo : Error
+  repo --> usecase : Failure
+  usecase --> handler : Failure
+  handler --> client : 500 with reference id
+  client --> page : Error
+  page --> owner : Show error with retry action (L2-009)
+else query succeeds
+  db --> repo : Page of ideas and counts
+  repo --> usecase : IdeasPageResult
+  usecase --> handler : IdeasPageResult
+  handler --> client : 200 with result
+  client --> page : IdeasPageResult
+  alt no active ideas at all
+    page --> owner : Show empty state with Capture idea (L2-009)
+  else criteria match nothing
+    page --> owner : Show no-results state naming filter or query, with Clear filters (L2-010)
+  else ideas listed
+    page --> owner : Show rows or stacked cards, subtitle counts and tab counts (L2-009, L2-010)
+  end
+end
+@enduml

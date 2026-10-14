@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Web security baseline
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation app that protects ideas and credentials against the OWASP Top 10")
+
+Rel(owner, cullr, "Uses over HTTPS")
+@enduml

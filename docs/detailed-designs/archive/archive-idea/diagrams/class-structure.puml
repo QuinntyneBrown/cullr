@@ -1,0 +1,64 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Archive an idea
+
+enum IdeaState {
+  Active
+  Archived
+}
+
+class Idea {
+  +string Id
+  +string Title
+  +IdeaState State
+  +string? ArchiveReason
+  +Date? ArchivedAt
+  +Archive(reason: string?, now: Date): void
+}
+
+class BestOfSelection {
+  +string IdeaId
+  +string Period
+}
+
+class ArchiveIdeaRequest {
+  +string IdeaId
+  +string? Reason
+}
+
+class ArchiveIdeaUseCase {
+  +Execute(request: ArchiveIdeaRequest): Promise<Idea>
+}
+
+interface IdeaRepository {
+  +GetById(id: string): Promise<Idea?>
+  +Save(idea: Idea): Promise<void>
+}
+
+class ArchiveIdeaDialogComponent {
+  +reason: string
+  +busy: boolean
+  +failed: boolean
+  +confirm(): void
+}
+
+class IdeasApiClient {
+  +archive(id: string, reason?: string): Observable<void>
+}
+
+ArchiveIdeaUseCase ..> ArchiveIdeaRequest : handles
+ArchiveIdeaUseCase --> IdeaRepository : uses
+ArchiveIdeaUseCase --> Idea : loads / mutates
+Idea --> IdeaState : has
+Idea "1" --> "*" BestOfSelection : clears
+ArchiveIdeaDialogComponent --> IdeasApiClient : uses
+@enduml

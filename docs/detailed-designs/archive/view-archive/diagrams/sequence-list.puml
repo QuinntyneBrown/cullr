@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — View the archive
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — Cullr web app" #E0F2FE
+  participant "ArchivePageComponent" as page
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "ListArchivedIdeasRouteHandler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "ListArchivedIdeasUseCase" as usecase
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+actor -> page : Open /archive
+page -> page : Show skeleton (L2-019 criterion 5)
+page -> client : Build typed list request with optional category filter
+client -> handler : GET /api/ideas?state=archived&offset=0
+handler -> handler : Authenticate owner
+handler -> usecase : Execute list query
+usecase -> repo : ListArchived with page size 50 (L2-019 criterion 4)
+repo -> db : Query archived ideas
+db --> repo : Rows and total
+repo --> usecase : ArchivedIdeaPage
+usecase --> handler : ArchivedIdeaPage
+handler --> client : 200 OK
+client --> page : ArchivedIdeaPage
+alt Load fails
+  page --> actor : Show error with retry (L2-019 criterion 5)
+else Total is 0 with no filter
+  page --> actor : Show empty state (L2-019 criterion 2)
+else Filter matches nothing
+  page --> actor : Show no-results state with Clear filters (L2-019 criterion 3)
+else Rows returned
+  page --> actor : Show rows with title, category, reason, date, Restore and Delete, subtitle count and range (L2-019 criterion 1)
+end
+@enduml

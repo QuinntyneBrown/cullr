@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Curated screen
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation application")
+
+Rel(owner, cullr, "Reviews current best-of ideas using", "HTTPS")
+@enduml

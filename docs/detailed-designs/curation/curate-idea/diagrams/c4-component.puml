@@ -1,0 +1,29 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Curate an idea
+
+Container_Boundary(web, "Cullr web app") {
+  Component(dialog, "CurateIdeaDialogComponent", "Angular dialog component", "Offers the four periods and confirms")
+  Component(client, "CurationApiClient", "Typed Angular HTTP client", "Sends the curate request")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(handler, "curate route handler", "Next.js route handler", "Authenticates and parses the request")
+  Component(usecase, "CurateIdeasUseCase", "Application use case", "Orchestrates one curate action in one unit of work")
+  Component(policy, "BestOfPolicy", "Domain function", "Applies the 5-idea capacity and earliest-curated displacement")
+  Component(events, "NotificationEvents", "Application service", "Creates the L2-024 curation notification")
+  Component(repo, "BestOfRepository", "Repository", "Persists best-of entries")
+  Component(idearepo, "IdeaRepository", "Repository", "Loads ideas and their archived state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(dialog, client, "Calls")
+Rel(client, handler, "POST", "JSON/HTTPS")
+Rel(handler, usecase, "Invokes")
+Rel(usecase, policy, "Applies")
+Rel(usecase, events, "Raises idea curated")
+Rel(usecase, repo, "Saves entries through")
+Rel(usecase, idearepo, "Loads ideas through")
+Rel(repo, db, "Reads and writes")
+Rel(idearepo, db, "Reads and writes")
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Apply theme
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "SettingsPage", "Angular page component", "Saves the automatic dark theme preference")
+  Component(client, "SettingsApi", "Typed API client service", "Reads the saved settings")
+  Component(theme, "ThemeService", "Angular service", "Resolves and applies the theme")
+  Component(rule, "resolveTheme", "Pure function", "Applies the L2-028 rules")
+  Component(sun, "SunTimesSource", "<TO SUPPLY>", "Provides local sunrise and sunset")
+  Component(media, "SystemColorSchemeQuery", "Browser media query", "Reports prefers-color-scheme: dark")
+}
+
+Rel(page, theme, "Notifies of saved preference")
+Rel(theme, client, "Loads preference through")
+Rel(theme, rule, "Resolves theme with")
+Rel(theme, sun, "Reads sunrise and sunset from")
+Rel(theme, media, "Reads system preference from")
+@enduml

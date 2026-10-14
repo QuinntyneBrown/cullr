@@ -1,0 +1,29 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View the archive
+
+Container_Boundary(web, "Cullr web app") {
+  Component(page, "ArchivePageComponent", "Angular page component", "Renders list, empty, no-results, loading and error states")
+  Component(detail, "IdeaDetailPageComponent", "Angular page component", "Renders the read-only view of an archived idea")
+  Component(client, "IdeasApiClient", "Typed Angular service", "Calls the list and detail endpoints")
+}
+
+Container_Boundary(api, "Cullr API") {
+  Component(listHandler, "ListArchivedIdeasRouteHandler", "Next.js route handler", "Exposes GET /api/ideas?state=archived")
+  Component(editHandler, "IdeaMutationRouteHandlers", "Next.js route handlers", "Edit, curate and status-change endpoints")
+  Component(listCase, "ListArchivedIdeasUseCase", "Application use case", "Returns one page of archived ideas and the total")
+  Component(guard, "Idea", "Domain entity", "Rejects mutation when archived")
+  Component(repo, "IdeaRepository", "Infrastructure repository", "Queries and loads ideas")
+}
+ComponentDb(db, "Cullr database", "<TO SUPPLY>", "Persists ideas")
+
+Rel(page, client, "Calls")
+Rel(detail, client, "Calls")
+Rel(client, listHandler, "GET", "JSON/HTTPS")
+Rel(client, editHandler, "PATCH or POST", "JSON/HTTPS")
+Rel(listHandler, listCase, "Invokes")
+Rel(listCase, repo, "Queries through")
+Rel(editHandler, guard, "Applies mutation to")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

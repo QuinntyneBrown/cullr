@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Web security baseline
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Renders idea text as inert text; sends the anti-CSRF token with each state-changing request")
+  Container(api, "Cullr API", "Next.js route handlers", "Redirects to HTTPS, sets security headers and session cookie, checks CSRF, validates input")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Stores ideas and sessions; accessed only through parameterised queries")
+}
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "Parameterised queries")
+@enduml

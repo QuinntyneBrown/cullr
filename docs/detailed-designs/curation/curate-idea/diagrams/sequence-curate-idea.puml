@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Curate an idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "CurateIdeaDialogComponent" as dialog
+  participant "CurationApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "curate route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "CurateIdeasUseCase" as usecase
+  participant "BestOfPolicy" as policy
+  participant "NotificationEvents" as events
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "BestOfRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> dialog : Choose a period and confirm
+dialog -> dialog : Set primary action busy and disabled (L2-015 criterion 4)
+dialog -> client : Build typed request
+client -> handler : HTTPS POST with ideaIds and period
+handler -> handler : Authenticate the owner (L1-001)
+handler -> usecase : Execute CurateIdeasRequest
+usecase -> repo : Load ideas and current entries of the period
+repo -> db : Read
+db --> repo : Ideas and entries
+repo --> usecase : Ideas and entries
+alt An idea is archived
+  usecase --> handler : Rejected (L2-015 criterion 6)
+  handler --> client : HTTP 4xx problem response
+  client --> dialog : Failure
+  dialog --> owner : Keep dialog open with failure message and kept choice
+else All ideas active
+  usecase -> policy : Apply L2-015 capacity of 5 and earliest-curated displacement
+  policy --> usecase : CurateOutcome (added, alreadyBest, displaced)
+  opt Outcome has added or displaced entries
+    usecase -> repo : Save outcome in one unit of work
+    repo -> db : Write
+    db --> repo : Commit result
+    usecase -> events : Raise idea curated (L2-024 criterion 1)
+  end
+  usecase --> handler : CurateIdeasResult
+  handler --> client : HTTP 200 with result
+  client --> dialog : Result
+  alt Every idea was already best of the period
+    dialog --> owner : Close and tell the owner it is already best of that period (L2-015 criterion 7)
+  else At least one idea added
+    dialog --> owner : Close and show success notification naming any displaced idea (L2-015 criteria 2 and 3)
+  end
+end
+@enduml

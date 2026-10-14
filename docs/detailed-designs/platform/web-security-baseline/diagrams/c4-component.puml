@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Web security baseline
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(csrfClient, "CsrfInterceptor", "Angular HTTP interceptor", "Attaches the anti-CSRF token to state-changing requests")
+  Component(render, "Idea text bindings", "Angular text interpolation", "Renders idea text as inert text; no innerHTML binding")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(mw, "SecurityMiddleware", "Next.js middleware", "Redirects HTTP to HTTPS; adds HSTS, CSP, nosniff, frame-ancestors and referrer policy")
+  Component(handler, "Route handlers", "Next.js route handlers", "Entry point for each endpoint")
+  Component(csrf, "CsrfGuard", "Application service", "Verifies anti-CSRF token or Origin header on state-changing methods")
+  Component(session, "SessionService", "Application service", "Issues the session cookie and regenerates the identifier on sign-in")
+  Component(validator, "RequestValidator", "Schema validation", "Checks type, length and allowed values of every field")
+  Component(repo, "IdeaRepository", "Repository", "Executes parameterised queries")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists ideas and sessions")
+
+Rel(csrfClient, mw, "Sends token to", "HTTPS")
+Rel(mw, handler, "Passes request to")
+Rel(handler, csrf, "Checks state-changing requests with")
+Rel(handler, session, "Reads and issues sessions with")
+Rel(handler, validator, "Validates input with")
+Rel(handler, repo, "Persists through")
+Rel(repo, db, "Reads and writes", "Parameterised queries")
+Rel(render, csrfClient, "Shares the web app runtime with")
+@enduml

@@ -1,0 +1,62 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Daily capture reminder
+
+class SendDailyReminderUseCase {
+  +execute(now: Instant): Promise<ReminderOutcome>
+}
+
+class ReminderPolicy {
+  +{static} shouldSend(reminderEnabled: boolean, ideasLoggedToday: int, alreadySentToday: boolean): boolean
+}
+
+class OwnerSettings {
+  +boolean dailyReminderEnabled
+  +int headsUpThreshold
+  +boolean autoDarkThemeEnabled
+}
+
+class ReminderNotification {
+  +string message
+  +LocalDate localDate
+  +Instant createdAt
+}
+
+enum ReminderOutcome {
+  Sent
+  SkippedReminderOff
+  SkippedIdeaLogged
+  SkippedAlreadySent
+}
+
+class SettingsRepository {
+  +load(): Promise<OwnerSettings>
+}
+
+class IdeaRepository {
+  +countLoggedOn(localDate: LocalDate): Promise<int>
+}
+
+class NotificationRepository {
+  +existsReminderFor(localDate: LocalDate): Promise<boolean>
+  +add(notification: ReminderNotification): Promise<void>
+}
+
+SendDailyReminderUseCase --> ReminderPolicy : evaluates
+SendDailyReminderUseCase --> SettingsRepository : reads
+SendDailyReminderUseCase --> IdeaRepository : counts
+SendDailyReminderUseCase --> NotificationRepository : checks and adds
+SendDailyReminderUseCase ..> ReminderOutcome : returns
+SendDailyReminderUseCase ..> ReminderNotification : creates
+SettingsRepository --> OwnerSettings : loads
+NotificationRepository --> ReminderNotification : stores
+@enduml

@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Session cookie issued on sign-in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "SignInPage" as page
+  participant "AuthApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "POST /api/sign-in route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "SignInUseCase" as usecase
+  participant "SessionService" as session
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Submit credentials
+page -> client : Build typed request
+client -> handler : HTTPS request
+handler -> usecase : Execute
+usecase --> handler : Credentials verified
+handler -> session : issueOnSignIn(ownerId)
+session -> db : Discard previous session identifier
+session -> db : Store new session with fresh identifier (L2-041)
+db --> session : Stored
+session --> handler : Session with csrfToken
+handler --> client : 200 with Set-Cookie Secure, HttpOnly, SameSite=Lax (L2-041)
+client --> page : Signed in
+page --> owner : Navigate to Today
+@enduml

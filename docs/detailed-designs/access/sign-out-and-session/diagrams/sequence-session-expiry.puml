@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Session expiry and protected access
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Page component" as page
+  participant "UnauthorizedInterceptor" as icpt
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "authenticate wrapper" as auth
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "AuthenticateRequestUseCase" as uc
+  participant "Session" as session
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Open a page or act
+page -> auth : Request with session cookie
+auth -> uc : Invoke AuthenticateRequestUseCase
+uc -> db : Load session
+db --> uc : Session or none
+alt no session
+  uc --> auth : Unauthenticated
+  auth --> icpt : 401, no idea data (L2-005)
+else session found
+  uc -> session : Apply L2-005 expiry (idle 30 days, age 90 days)
+  session --> uc : Expired or valid
+  alt expired
+    uc -> db : Delete session
+    uc --> auth : Unauthenticated
+    auth --> icpt : 401, no idea data (L2-005)
+  else valid
+    uc -> db : Update last seen
+    uc --> auth : Authenticated
+    auth --> page : Requested data
+    page --> owner : Show result
+  end
+end
+opt 401 received
+  icpt --> owner : Redirect to Sign in with return URL of original page
+end
+@enduml

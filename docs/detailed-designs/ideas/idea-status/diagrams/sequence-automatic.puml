@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Automatic status changes
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Cullr API" #D1FADF
+  participant "Route handler (edit or curate)" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "EditIdeaUseCase or CurateIdeaUseCase" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+route -> usecase : Execute edit or curate command
+usecase -> repo : findById(id)
+repo --> usecase : Idea
+alt critique notes saved (L2-013 criterion 8)
+  usecase -> entity : applyCritiqueSaved(notes)
+  alt status is Logged and notes are non-empty
+    entity -> entity : Status becomes Critiquing, append history entry (L2-014 criterion 6)
+  else any other status or empty notes
+    entity -> entity : No status change (L2-014 criterion 8)
+  end
+else idea curated (L2-015)
+  usecase -> entity : applyCurated(period)
+  entity -> entity : Append "Curated as best of period" (L2-014 criterion 4)
+  alt status is Logged or Critiquing
+    entity -> entity : Status becomes Curating, append history entry (L2-014 criterion 7)
+  else status is Curating, Building or Built
+    entity -> entity : Keep status (L2-014 criterion 8)
+  end
+end
+entity --> usecase : Updated idea
+usecase -> repo : save(idea)
+repo -> db : Persist status and history entries
+db --> repo : Commit result
+repo --> usecase : Saved
+usecase --> route : Result
+@enduml

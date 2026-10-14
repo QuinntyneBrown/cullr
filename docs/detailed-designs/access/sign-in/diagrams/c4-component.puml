@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign in
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "SignInPageComponent", "Angular page component", "Renders the form and its states")
+  Component(client, "AuthApiClient", "Typed API client service", "Posts the sign-in request")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(route, "sign-in route handler", "Next.js route handler", "POST /api/auth/sign-in")
+  Component(uc, "SignInUseCase", "Application", "Orchestrates lockout check, verification and session creation")
+  Component(owner, "OwnerAccount", "Domain entity", "Verifies the password")
+  Component(lock, "LockoutPolicy", "Domain function", "Decides lockout from recent failures")
+  Component(repo, "OwnerRepository, FailedSignInRepository, SessionRepository", "Infrastructure", "Persist account, failures and sessions")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(page, client, "Calls")
+Rel(client, route, "Sends request", "JSON/HTTPS")
+Rel(route, uc, "Invokes")
+Rel(uc, owner, "Verifies password with")
+Rel(uc, lock, "Evaluates")
+Rel(uc, repo, "Loads and saves through")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

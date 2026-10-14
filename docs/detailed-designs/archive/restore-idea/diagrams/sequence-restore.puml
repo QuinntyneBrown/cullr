@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Restore an idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — Cullr web app" #E0F2FE
+  participant "RestoreIdeaDialogComponent" as page
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "RestoreIdeaRouteHandler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "RestoreIdeaUseCase" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+actor -> page : Confirm Restore idea
+page -> page : Set busy and disable primary action (L2-021 criterion 2)
+page -> client : Build typed request
+client -> handler : POST /api/ideas/{id}/restore
+handler -> handler : Authenticate owner
+handler -> usecase : Execute restore
+usecase -> repo : GetById
+repo -> db : Load idea
+db --> repo : Idea state
+repo --> usecase : Idea
+usecase -> entity : Apply L2-021 restore transition
+entity --> usecase : Active idea with status Logged
+usecase -> repo : Save in one unit of work
+repo -> db : Persist state
+alt Save succeeds
+  db --> repo : Commit result
+  repo --> usecase : Saved
+  usecase --> handler : Restored idea
+  handler --> client : 200 OK
+  client --> page : Success
+  page --> actor : Close dialog, remove row from Archive, show success notification (L2-021 criterion 1)
+else Save fails
+  db --> repo : Error
+  repo --> usecase : Failure
+  usecase --> handler : Failure
+  handler --> client : 500 ProblemDetails
+  client --> page : Failure
+  page --> actor : Keep dialog open with failure message (L2-021 criterion 3)
+end
+@enduml

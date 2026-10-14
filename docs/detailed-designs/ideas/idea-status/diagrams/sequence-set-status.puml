@@ -1,0 +1,76 @@
+@startuml
+title UML sequence behaviour — Set status manually
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "StatusControl" as control
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "PUT /api/ideas/[id]/status route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "SetIdeaStatusUseCase" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> control : Open status control (offers Building and Built, L2-052 criterion 1)
+owner -> control : Choose a status and confirm
+control -> client : setStatus(id, target)
+client -> route : PUT /api/ideas/{id}/status
+route -> route : Authenticate session (L2-005)
+route -> usecase : execute(SetIdeaStatusCommand)
+usecase -> repo : findById(id)
+repo -> db : Load idea and history
+db --> repo : Row
+repo --> usecase : Idea
+alt idea is archived
+  usecase --> route : Archived (L2-052 criterion 5)
+  route --> client : Rejected
+  client --> control : Archived
+  control --> owner : Show failure message
+else target equals current status
+  usecase -> entity : setStatusManually(target)
+  entity --> usecase : No change, no history entry (L2-052 criterion 3)
+  usecase --> route : Unchanged
+  route --> client : 200 unchanged
+  client --> control : Unchanged
+  control --> owner : Close control, nothing changes
+else target differs
+  usecase -> entity : Apply L2-052 transition and append L2-014 history entry
+  entity --> usecase : Updated idea
+  usecase -> repo : save(idea)
+  repo -> db : Update status and insert history entry in one unit of work
+  alt save succeeds
+    db --> repo : Commit result
+    repo --> usecase : Saved
+    usecase --> route : Changed
+    route --> client : 200 updated idea
+    client --> control : Updated idea
+    control --> owner : Show new status, success notification (L2-052 criterion 2)
+  else save fails
+    db --> repo : Failure
+    repo --> usecase : Failure
+    usecase --> route : Failure
+    route --> client : 5xx
+    client --> control : Failure
+    control --> owner : Keep previous status, show failure with retry (L2-052 criterion 4)
+  end
+end
+@enduml

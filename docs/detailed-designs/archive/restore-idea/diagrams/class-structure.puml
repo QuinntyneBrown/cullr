@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Restore an idea
+
+enum IdeaState {
+  Active
+  Archived
+}
+
+enum IdeaStatus {
+  Logged
+}
+
+class Idea {
+  +string Id
+  +string Title
+  +IdeaState State
+  +IdeaStatus Status
+  +Restore(): void
+}
+
+class RestoreIdeaUseCase {
+  +Execute(ideaId: string): Promise<Idea>
+}
+
+interface IdeaRepository {
+  +GetById(id: string): Promise<Idea?>
+  +Save(idea: Idea): Promise<void>
+}
+
+class RestoreIdeaDialogComponent {
+  +busy: boolean
+  +failed: boolean
+  +confirm(): void
+}
+
+class IdeasApiClient {
+  +restore(id: string): Observable<void>
+}
+
+RestoreIdeaUseCase --> IdeaRepository : uses
+RestoreIdeaUseCase --> Idea : loads / mutates
+Idea --> IdeaState : has
+Idea --> IdeaStatus : has
+RestoreIdeaDialogComponent --> IdeasApiClient : uses
+@enduml

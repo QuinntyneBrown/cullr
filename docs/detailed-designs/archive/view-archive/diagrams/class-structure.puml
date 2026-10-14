@@ -1,0 +1,79 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — View the archive
+
+enum IdeaState {
+  Active
+  Archived
+}
+
+class Idea {
+  +string Id
+  +string Title
+  +string Category
+  +IdeaState State
+  +string? ArchiveReason
+  +Date? ArchivedAt
+  +AssertMutable(): void
+}
+
+class ArchivedIdeaSummary {
+  +string Id
+  +string Title
+  +string Category
+  +string? Reason
+  +Date ArchivedAt
+}
+
+class ArchivedIdeaPage {
+  +int Total
+  +int PageSize
+  +int Offset
+}
+
+class ListArchivedIdeasUseCase {
+  +Execute(category: string?, offset: int): Promise<ArchivedIdeaPage>
+}
+
+class IdeaArchivedConflictError {
+  +int Status = 409
+}
+
+interface IdeaRepository {
+  +ListArchived(category: string?, offset: int, limit: int): Promise<ArchivedIdeaPage>
+  +GetById(id: string): Promise<Idea?>
+}
+
+class ArchivePageComponent {
+  +status: loading | list | empty | noResults | error
+  +categoryFilter: string?
+  +retry(): void
+  +clearFilter(): void
+}
+
+class IdeaDetailPageComponent {
+  +readOnly: boolean
+}
+
+class IdeasApiClient {
+  +listArchived(category?: string, offset?: int): Observable<ArchivedIdeaPage>
+  +get(id: string): Observable<Idea>
+}
+
+Idea --> IdeaState : has
+ArchivedIdeaPage "1" *-- "*" ArchivedIdeaSummary : holds
+ListArchivedIdeasUseCase --> IdeaRepository : uses
+ListArchivedIdeasUseCase ..> ArchivedIdeaPage : returns
+Idea ..> IdeaArchivedConflictError : throws when archived
+ArchivePageComponent --> IdeasApiClient : uses
+IdeaDetailPageComponent --> IdeasApiClient : uses
+@enduml

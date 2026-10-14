@@ -14,6 +14,21 @@ It is a responsive web app that meets WCAG 2.2 AA, with a Next.js backend and
 an Angular frontend. The design favours generous whitespace and good use of
 space.
 
+## Components library is mandatory (CRITICAL)
+
+- The Angular application MUST be built from `@cullr/components`
+  (or, until that library exists, the design system in `docs/design-system`:
+  its `components.css` classes and documented markup).
+  Never hand-write markup, CSS, icons, overlays or toasts the library already
+  provides. Use the library component, `DialogService` and `ToastService`
+  (or the design-system equivalent).
+- `docs/screen-composition.md` is binding. Before implementing any page,
+  dialog, notification or shell part, read its entry and use exactly the
+  components it lists. Build locally only the UI it marks as local.
+- If the library lacks something the entry needs, STOP. Update the interface
+  document and the library first. Do not work around it in the app.
+- Keep `docs/screen-composition.md` aligned with the mocks and the interface document.
+
 ## Scope, Simplicity, and Zero-Waste Engineering (CRITICAL)
 
 This is the absolute highest-priority rule in this repository. AI agents tend to over-engineer, hallucinate future needs, and balloon codebase complexity. This kills project velocity and comprehensibility. You must resist this impulse. Deliver radically simple solutions that fulfill the exact prompt—nothing more.

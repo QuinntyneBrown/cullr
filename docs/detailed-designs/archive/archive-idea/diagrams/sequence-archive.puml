@@ -1,0 +1,63 @@
+@startuml
+title UML sequence behaviour — Archive an idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — Cullr web app" #E0F2FE
+  participant "ArchiveIdeaDialogComponent" as page
+  participant "IdeasApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "ArchiveIdeaRouteHandler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "ArchiveIdeaUseCase" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+actor -> page : Confirm Archive idea with optional reason
+page -> page : Set busy and disable primary action (L2-018 criterion 3)
+page -> client : Build typed request
+client -> handler : POST /api/ideas/{id}/archive
+handler -> handler : Authenticate owner and validate reason of up to 500 characters
+handler -> usecase : Execute ArchiveIdeaRequest
+usecase -> repo : GetById
+repo -> db : Load idea and best-of selections
+db --> repo : Idea state
+repo --> usecase : Idea
+usecase -> entity : Apply L2-018 archive transition
+entity -> entity : Clear best-of selections (L2-018 criterion 2)
+entity --> usecase : Archived idea
+usecase -> repo : Save in one unit of work
+repo -> db : Persist state, reason, date and cleared selections
+alt Save succeeds
+  db --> repo : Commit result
+  repo --> usecase : Saved
+  usecase --> handler : Archived idea
+  handler --> client : 200 OK
+  client --> page : Success
+  page --> actor : Close dialog and show success notification
+else Save fails
+  db --> repo : Error
+  repo --> usecase : Failure
+  usecase --> handler : Failure
+  handler --> client : 500 ProblemDetails
+  client --> page : Failure
+  page --> actor : Keep dialog open with failure message and kept reason (L2-018 criterion 4)
+end
+@enduml

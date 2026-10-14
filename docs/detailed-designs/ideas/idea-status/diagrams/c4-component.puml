@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Idea status lifecycle
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "IdeaDetailPage", "Angular page component", "Hosts the status control and shows history")
+  Component(control, "StatusControl", "Angular component", "Offers Building and Built and confirms the choice")
+  Component(client, "IdeasApiClient", "Typed Angular HTTP service", "Sends the status request")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(route, "PUT /api/ideas/[id]/status route handler", "Next.js route handler", "Authenticates and maps results to HTTP")
+  Component(usecase, "SetIdeaStatusUseCase", "Application use case", "Applies a manual status and saves once")
+  Component(entity, "Idea", "Domain entity", "Owns the status, history and transition rules")
+  Component(repo, "IdeaRepository", "Infrastructure repository", "Loads and saves an idea and its history")
+  Component(other, "EditIdeaUseCase and CurateIdeaUseCase", "Application use cases", "Trigger the automatic rules on the entity")
+}
+ComponentDb(db, "Cullr database", "<TO SUPPLY>", "Persists ideas and history")
+
+Rel(page, control, "Hosts")
+Rel(control, client, "Submits through")
+Rel(client, route, "PUT", "JSON/HTTPS")
+Rel(route, usecase, "Invokes")
+Rel(usecase, repo, "Loads and saves through")
+Rel(usecase, entity, "Calls setStatusManually on")
+Rel(other, entity, "Call applyCritiqueSaved and applyCurated on")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

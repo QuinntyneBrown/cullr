@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Send daily capture reminder
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Scheduler <TO SUPPLY>" as sched
+box "Backend — Cullr API" #D1FADF
+  participant "ReminderJobHandler" as job
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "SendDailyReminderUseCase" as usecase
+  participant "ReminderPolicy" as policy
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "SettingsRepository" as settings
+  participant "IdeaRepository" as ideas
+  participant "NotificationRepository" as notes
+  database "Cullr database" as db
+end box
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Notifications UI" as ui
+end box
+sched -> job : Fire at reminder time <TO SUPPLY>
+job -> usecase : execute(now)
+usecase -> usecase : Resolve local date in owner's time zone (L2-008 criterion 8)
+usecase -> settings : load()
+settings -> db : Read settings
+db --> settings : Stored values
+settings --> usecase : OwnerSettings
+usecase -> ideas : countLoggedOn(localDate)
+ideas -> db : Count ideas logged that day
+db --> ideas : Count
+ideas --> usecase : ideasLoggedToday
+usecase -> notes : existsReminderFor(localDate)
+notes -> db : Look up today's reminder
+db --> notes : Result
+notes --> usecase : alreadySentToday
+usecase -> policy : Apply L2-027 shouldSend(...)
+alt reminder on, no idea logged, none sent today
+  policy --> usecase : true
+  usecase -> notes : add(ReminderNotification)
+  notes -> db : Insert notification
+  db --> notes : Commit result
+  notes --> usecase : Saved
+  usecase --> job : Sent
+  owner -> ui : Open notifications
+  ui --> owner : Show reminder (L2-027 criterion 1)
+else reminder off (L2-027 criterion 2)
+  policy --> usecase : false
+  usecase --> job : SkippedReminderOff
+else idea already logged or reminder already sent
+  policy --> usecase : false
+  usecase --> job : Skipped
+end
+@enduml

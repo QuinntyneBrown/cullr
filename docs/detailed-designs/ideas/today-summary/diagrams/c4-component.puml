@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Today summary
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "TodayPage", "Angular page component", "Subtitle, category chips, idea cards and states")
+  Component(client, "TodayApi", "Typed API client service", "Requests the Today summary")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(handler, "GET /api/today route handler", "Next.js route handler", "Authenticates and dispatches the use case")
+  Component(usecase, "GetTodaySummary", "Use case", "Resolves today's window and assembles the summary")
+  Component(domain, "TodaySummary", "Domain function", "Counts ideas and selects today's best idea")
+  Component(repo, "IdeaRepository", "Repository", "Reads ideas logged within a time window")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas, best-of marks and owner time zone")
+
+Rel(page, client, "Loads summary through")
+Rel(client, handler, "GET", "JSON/HTTPS")
+Rel(handler, usecase, "Calls")
+Rel(usecase, domain, "Builds summary with")
+Rel(usecase, repo, "Reads through")
+Rel(repo, db, "Reads", "<TO SUPPLY>")
+@enduml

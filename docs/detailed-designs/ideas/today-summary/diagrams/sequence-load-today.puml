@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Today summary
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "TodayPage" as page
+  participant "TodayApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "GET /api/today route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "GetTodaySummary" as usecase
+  participant "TodaySummary" as domain
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+
+owner -> page : Open Today
+page --> owner : Show skeleton placeholder (L2-008)
+page -> client : Request summary with optional category
+client -> handler : HTTPS GET
+handler -> handler : Authenticate session
+handler -> usecase : execute(category, now)
+usecase -> usecase : Resolve today's window in owner time zone, default America/Toronto (L2-008)
+usecase -> repo : findLoggedBetween(start, end, category)
+repo -> db : Query ideas logged today
+alt query fails
+  db --> repo : Error
+  repo --> usecase : Failure
+  usecase --> handler : Failure
+  handler --> client : 500 with reference id
+  client --> page : Error
+  page --> owner : Show error with retry action (L2-008)
+else query succeeds
+  db --> repo : Ideas and best-of marks
+  repo --> usecase : Ideas and best-of marks
+  usecase -> domain : build(ideas, marks) selecting highest score, ties by latest curated (L2-008)
+  domain --> usecase : TodaySummary
+  usecase --> handler : TodaySummary
+  handler --> client : 200 with summary
+  client --> page : Summary
+  alt zero ideas and no category filter
+    page --> owner : Show "No ideas logged yet today" with Capture idea (L2-008)
+  else zero ideas for chosen category
+    page --> owner : Show no-results state with clear filter (L2-008)
+  else ideas listed
+    page --> owner : Show subtitle, best-of marker and idea cards (L2-008)
+  end
+end
+@enduml

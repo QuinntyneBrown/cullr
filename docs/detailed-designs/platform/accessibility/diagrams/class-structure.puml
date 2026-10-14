@@ -1,0 +1,74 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Accessibility
+
+class DialogService {
+  -openerStack: HTMLElement[]
+  -saveInFlight: boolean
+  +open(dialog: DialogRef): DialogHandle
+  +close(handle: DialogHandle): void
+  +setBusy(busy: boolean): void
+}
+
+class FocusTrapDirective {
+  +activate(host: HTMLElement): void
+  +deactivate(): void
+  -onTab(event: KeyboardEvent): void
+}
+
+class LiveAnnouncer {
+  +announce(message: string, politeness: Politeness): void
+}
+
+enum Politeness {
+  polite
+  assertive
+}
+
+class ErrorSummaryComponent {
+  +errors: FieldError[]
+  +focusSummary(): void
+}
+
+class FieldError {
+  +fieldId: string
+  +message: string
+}
+
+class MotionPreferenceService {
+  +reducedMotion: boolean
+}
+
+class TabsComponent {
+  +tabs: TabItem[]
+  +selectedIndex: number
+  +onKeydown(event: KeyboardEvent): void
+}
+
+class ContrastCheck {
+  +pairs: ContrastPair[]
+  +run(theme: string): CheckResult
+}
+
+class ContrastPair {
+  +fg: string
+  +bg: string
+  +min: number
+}
+
+DialogService *-- FocusTrapDirective : owns one per open dialog
+DialogService ..> LiveAnnouncer : announces result
+ErrorSummaryComponent ..> LiveAnnouncer : announces count
+ErrorSummaryComponent "1" o-- "*" FieldError
+LiveAnnouncer --> Politeness : uses
+ContrastCheck "1" *-- "*" ContrastPair
+@enduml

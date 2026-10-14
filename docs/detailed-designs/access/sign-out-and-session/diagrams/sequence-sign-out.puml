@@ -1,0 +1,41 @@
+@startuml
+title UML sequence behaviour — Sign out
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Shell sign-out action" as shell
+  participant "AuthApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "sign-out route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "SignOutUseCase" as uc
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> shell : Choose sign out
+shell -> client : Build sign-out request
+client -> route : POST /api/auth/sign-out
+route -> uc : Invoke SignOutUseCase
+uc -> db : Apply L2-005 destroy session server-side
+db --> uc : Session deleted
+uc --> route : Done
+route --> client : 204 and cleared session cookie
+client --> shell : Signed out
+shell --> owner : Navigate to Sign in
+@enduml

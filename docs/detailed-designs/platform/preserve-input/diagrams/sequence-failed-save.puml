@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Failed save, then retry
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Edit idea dialog" as dialog
+  participant "SaveController" as ctrl
+  participant "SaveFailureMapper" as mapper
+  participant "IdeasApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "Ideas route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "UpdateIdeaUseCase" as uc
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> dialog : Choose Save
+dialog -> ctrl : submit()
+ctrl -> ctrl : State Busy, disable primary action
+ctrl -> client : Send entered values
+client -> route : HTTPS request
+route -> uc : Execute
+uc -> db : Save changes in one unit of work
+alt Save succeeds
+  db --> uc : Commit result
+  uc --> route : Updated idea
+  route --> client : 200 response
+  client --> ctrl : Result
+  ctrl --> dialog : State Succeeded
+  dialog --> owner : Close and confirm
+else Save fails or request never arrives
+  db --> uc : Failure, change rolled back
+  uc --> route : Failure
+  route --> client : Problem response with reference id, or network error offline
+  client --> ctrl : Typed error
+  ctrl -> mapper : Apply L2-034 map error to SaveFailure
+  mapper --> ctrl : Message with next step
+  ctrl --> dialog : State Failed, values unchanged
+  dialog --> owner : Stay open, all values present, Try again offered, nothing shown as saved
+  owner -> dialog : Try again
+  dialog -> ctrl : retry()
+  ctrl -> client : Send same values
+end
+@enduml

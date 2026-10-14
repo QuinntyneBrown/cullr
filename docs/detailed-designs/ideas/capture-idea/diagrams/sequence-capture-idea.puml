@@ -1,0 +1,77 @@
+@startuml
+title UML sequence behaviour — Capture an idea
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "CaptureIdeaDialog" as dialog
+  participant "IdeasApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "POST /api/ideas route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "CaptureIdea" as usecase
+  participant "Idea" as entity
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "IdeaRepository" as repo
+  database "Cullr database" as db
+end box
+
+owner -> dialog : Choose Capture idea
+dialog --> owner : Show form, focus on Title (L2-006)
+owner -> dialog : Enter values and choose Capture idea
+dialog -> dialog : Disable primary action while busy (L2-006)
+dialog -> client : Build request with requestId
+client -> handler : HTTPS POST
+handler -> handler : Authenticate session
+handler -> usecase : execute(CaptureIdeaInput)
+usecase -> repo : findByRequestId(requestId)
+repo -> db : Look up capture request key
+db --> repo : Existing idea or none
+repo --> usecase : Existing idea or none
+alt requestId already captured
+  usecase --> handler : Existing idea (L2-007 exactly one idea)
+else new request
+  usecase -> entity : create(input, now) applying L2-006 validation
+  alt invalid title or score
+    entity --> usecase : ValidationError list
+    usecase --> handler : Errors, nothing saved
+    handler --> client : 422 with field errors
+    client --> dialog : Field errors
+    dialog --> owner : Show inline errors and error summary (L2-006)
+  else valid
+    entity --> usecase : Idea with status Logged and loggedAt now
+    usecase -> repo : save(idea, requestId)
+    repo -> db : Insert idea and request key in one unit of work
+    alt save fails
+      db --> repo : Error
+      repo --> usecase : Failure
+      usecase --> handler : Failure
+      handler --> client : 500 with reference id
+      client --> dialog : Failure
+      dialog --> owner : Keep dialog open and values, show failure (L2-006)
+    else save succeeds
+      db --> repo : Commit result
+      repo --> usecase : Saved idea
+      usecase --> handler : Saved idea
+    end
+  end
+end
+handler --> client : 201 with idea (or 200 for repeated requestId)
+client --> dialog : Idea
+dialog --> owner : Close dialog, show success notification naming the idea (L2-006)
+@enduml

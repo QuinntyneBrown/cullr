@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign out and session expiry
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(guard, "AuthGuard", "Angular route guard", "Redirects visitors without a session to Sign in")
+  Component(interceptor, "UnauthorizedInterceptor", "Angular HTTP interceptor", "Sends the owner to Sign in on 401 with a return URL")
+  Component(shell, "Shell sign-out action", "Angular component", "Starts sign out")
+  Component(client, "AuthApiClient", "Typed API client service", "Calls the sign-out endpoint")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(auth, "authenticate wrapper", "Next.js route helper", "Rejects protected requests without a valid session")
+  Component(route, "sign-out route handler", "Next.js route handler", "POST /api/auth/sign-out")
+  Component(uc, "AuthenticateRequestUseCase and SignOutUseCase", "Application", "Validate and destroy sessions")
+  Component(session, "Session", "Domain entity", "Decides expiry from idle time and age")
+  Component(repo, "SessionRepository", "Infrastructure", "Loads, touches and deletes sessions")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists sessions")
+
+Rel(shell, client, "Calls")
+Rel(client, route, "Sends request", "JSON/HTTPS")
+Rel(guard, auth, "Protected calls pass through", "JSON/HTTPS")
+Rel(interceptor, guard, "Redirects to Sign in as")
+Rel(auth, uc, "Invokes")
+Rel(route, uc, "Invokes")
+Rel(uc, session, "Checks expiry with")
+Rel(uc, repo, "Loads and deletes through")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — Dialog focus management and accessible validation errors
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "IdeasPage" as page
+  participant "DialogService" as dialogs
+  participant "CaptureIdeaDialog" as dialog
+  participant "ErrorSummaryComponent" as summary
+  participant "LiveAnnouncer" as live
+  participant "IdeasApi" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "POST /api/ideas route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "CaptureIdeaUseCase" as usecase
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Activate "Capture idea" by keyboard
+page -> dialogs : open(CaptureIdeaDialog, opener)
+dialogs -> dialogs : Remember opener element
+dialogs -> dialog : Render with role=dialog, aria-modal, aria-labelledby
+dialogs -> dialog : Move focus into dialog and trap Tab (L2-037)
+owner -> dialog : Submit with empty title
+dialog -> dialogs : setBusy(true) and expose aria-busy (L2-038)
+dialog -> client : Build typed request
+client -> handler : HTTPS request
+handler -> usecase : Execute with validated command
+usecase --> handler : Validation failure with field errors
+handler --> client : 400 with field-level errors
+client --> dialog : Field errors
+dialog -> dialog : Set aria-invalid and aria-describedby on each field (L2-038)
+dialog -> summary : Show error summary
+summary -> summary : Take focus (L2-038)
+summary -> live : announce("1 error", polite)
+live --> owner : Announce through live region
+alt Owner presses Escape and no save is in flight
+  owner -> dialog : Escape
+  dialog -> dialogs : close()
+  dialogs -> page : Return focus to opener (L2-037)
+else Save is in flight
+  owner -> dialog : Escape
+  dialog --> owner : Ignore Escape until save settles (L2-037)
+end
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Forgot password
+
+Person(owner, "Owner", "Sole user of Cullr")
+System(cullr, "Cullr", "Personal idea-curation application")
+System_Ext(email, "Email provider", "<TO SUPPLY>")
+
+Rel(owner, cullr, "Requests a reset link from")
+Rel(cullr, email, "Sends the reset email via", "<TO SUPPLY>")
+Rel(email, owner, "Delivers the reset link to")
+@enduml

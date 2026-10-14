@@ -1,0 +1,55 @@
+@startuml
+title UML sequence behaviour — Bulk curate ideas into one period
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Ideas page" as page
+  participant "CurateIdeaDialogComponent" as dialog
+  participant "CurationApiClient" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "curate route handler" as handler
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "CurateIdeasUseCase" as usecase
+  participant "BestOfPolicy" as policy
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  participant "BestOfRepository" as repo
+  database "Cullr database" as db
+end box
+owner -> page : Select several ideas and choose Curate (L2-011)
+page -> dialog : Open with the selected idea ids
+owner -> dialog : Choose a period and confirm
+dialog -> client : Build typed request with all idea ids
+client -> handler : HTTPS POST
+handler -> usecase : Execute CurateIdeasRequest
+usecase -> repo : Load the period's current entries
+repo -> db : Read
+db --> repo : Entries
+repo --> usecase : Entries
+loop For each selected idea in selection order
+  usecase -> policy : Apply L2-015 criterion 8 limit of 5 to the period as a whole
+  policy --> usecase : Entry added, already best, or earliest-curated entry displaced
+end
+usecase -> repo : Save all changes in one unit of work
+repo -> db : Write
+db --> repo : Commit result
+usecase --> handler : CurateIdeasResult with displaced titles
+handler --> client : HTTP 200
+client --> dialog : Result
+dialog --> owner : Close and show one success notification
+@enduml

@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Apply theme
+
+enum Theme {
+  Light
+  Dark
+}
+
+class ThemeInputs {
+  +boolean autoDarkEnabled
+  +boolean systemPrefersDark
+  +Instant now
+  +Instant sunrise
+  +Instant sunset
+}
+
+class ThemeService {
+  +start(): void
+  +refresh(): void
+  -apply(theme: Theme): void
+}
+
+class "resolveTheme" as resolveTheme <<function>> {
+  +resolveTheme(inputs: ThemeInputs): Theme
+}
+
+class SunTimesSource {
+  +timesFor(day: LocalDate): SunTimes
+}
+
+class SunTimes {
+  +Instant sunrise
+  +Instant sunset
+}
+
+ThemeService --> resolveTheme : calls
+ThemeService --> SunTimesSource : reads
+ThemeService ..> ThemeInputs : builds
+ThemeService ..> Theme : applies
+resolveTheme ..> ThemeInputs : consumes
+resolveTheme ..> Theme : returns
+SunTimesSource ..> SunTimes : returns
+@enduml

@@ -1,0 +1,90 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Curate an idea
+
+enum BestOfPeriod {
+  Day
+  Week
+  Month
+  Year
+}
+
+class BestOfEntry {
+  +string ideaId
+  +BestOfPeriod period
+  +DateTime curatedAt
+}
+
+class BestOfPolicy {
+  +PERIOD_CAPACITY: 5
+  +curate(entries: BestOfEntry[], ideaIds: string[], period: BestOfPeriod, now: DateTime): CurateOutcome
+}
+
+class CurateOutcome {
+  +BestOfEntry[] added
+  +string[] alreadyBest
+  +BestOfEntry[] displaced
+}
+
+class CurateIdeasRequest {
+  +string[] ideaIds
+  +BestOfPeriod period
+}
+
+class CurateIdeasResult {
+  +string[] curatedIdeaIds
+  +string[] alreadyBestIdeaIds
+  +string[] displacedTitles
+}
+
+class CurateIdeasUseCase {
+  +execute(request: CurateIdeasRequest): CurateIdeasResult
+}
+
+class BestOfRepository {
+  +listByPeriod(period: BestOfPeriod): BestOfEntry[]
+  +save(outcome: CurateOutcome): void
+}
+
+class IdeaRepository {
+  +getMany(ideaIds: string[]): Idea[]
+}
+
+class Idea {
+  +string id
+  +string title
+  +boolean archived
+}
+
+class CurateIdeaDialogComponent {
+  +period: BestOfPeriod
+  +busy: boolean
+  +confirm(): void
+}
+
+class CurationApiClient {
+  +curate(request: CurateIdeasRequest): Observable<CurateIdeasResult>
+}
+
+CurateIdeaDialogComponent ..> CurationApiClient : calls
+CurationApiClient ..> CurateIdeasRequest : sends
+CurateIdeasUseCase ..> CurateIdeasRequest : handles
+CurateIdeasUseCase --> CurateIdeasResult : returns
+CurateIdeasUseCase ..> BestOfPolicy : applies
+CurateIdeasUseCase --> BestOfRepository : persists through
+CurateIdeasUseCase --> IdeaRepository : loads through
+BestOfPolicy --> CurateOutcome : produces
+BestOfPolicy ..> BestOfEntry : reads
+CurateOutcome "1" o-- "*" BestOfEntry
+BestOfEntry --> BestOfPeriod : has
+IdeaRepository ..> Idea : returns
+@enduml

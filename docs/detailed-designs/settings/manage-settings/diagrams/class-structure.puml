@@ -1,0 +1,65 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Manage settings
+
+class OwnerSettings {
+  +boolean dailyReminderEnabled
+  +int headsUpThreshold
+  +boolean autoDarkThemeEnabled
+  +{static} create(input: SettingsInput): Result<OwnerSettings>
+}
+
+class SettingsInput {
+  +boolean dailyReminderEnabled
+  +string headsUpThreshold
+  +boolean autoDarkThemeEnabled
+}
+
+class GetSettingsUseCase {
+  +execute(): Promise<OwnerSettings>
+}
+
+class SaveSettingsUseCase {
+  +execute(input: SettingsInput): Promise<Result<OwnerSettings>>
+}
+
+class SettingsRepository {
+  +load(): Promise<OwnerSettings>
+  +save(settings: OwnerSettings): Promise<void>
+}
+
+class SettingsRouteHandler {
+  +GET(): Response
+  +PUT(request: Request): Response
+}
+
+class SettingsApi {
+  +get(): Observable<OwnerSettings>
+  +save(input: SettingsInput): Observable<OwnerSettings>
+}
+
+class SettingsPage {
+  +state: loading | default | invalid | submitting | success | error
+  +save(): void
+  +retry(): void
+}
+
+SettingsPage --> SettingsApi : uses
+SettingsApi ..> SettingsRouteHandler : HTTPS
+SettingsRouteHandler --> GetSettingsUseCase : invokes
+SettingsRouteHandler --> SaveSettingsUseCase : invokes
+GetSettingsUseCase --> SettingsRepository : loads through
+SaveSettingsUseCase --> SettingsRepository : persists through
+SaveSettingsUseCase ..> SettingsInput : consumes
+SaveSettingsUseCase ..> OwnerSettings : creates
+SettingsRepository --> OwnerSettings : stores
+@enduml

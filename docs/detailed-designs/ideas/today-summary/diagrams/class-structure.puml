@@ -1,0 +1,64 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Today summary
+
+class TodaySummary {
+  +int loggedCount
+  +string dateLabel
+  +IdeaCardDto bestIdea
+  +IdeaCardDto[] ideas
+  +{static} build(ideas: Idea[], bestOfToday: BestOfMark[]): TodaySummary
+}
+
+class IdeaCardDto {
+  +string id
+  +string title
+  +string category
+  +string status
+  +int? score
+  +string summary
+  +DateTime loggedAt
+  +bool bestOfToday
+}
+
+class BestOfMark {
+  +string ideaId
+  +DateTime curatedAt
+}
+
+class GetTodaySummary {
+  +execute(category: string, now: DateTime): TodaySummary
+}
+
+interface IdeaRepository {
+  +findLoggedBetween(from: DateTime, to: DateTime, category: string): Idea[]
+  +findBestOfTodayMarks(ideaIds: string[]): BestOfMark[]
+}
+
+class TodayPage {
+  +TodaySummary summary
+  +string categoryFilter
+  +string viewState
+  +load(): void
+  +toggleCategory(category: string): void
+}
+
+class TodayApi {
+  +getToday(category: string): Observable<TodaySummary>
+}
+
+TodayPage ..> TodayApi : calls
+GetTodaySummary ..> IdeaRepository : uses
+GetTodaySummary ..> TodaySummary : builds
+TodaySummary "1" *-- "*" IdeaCardDto
+TodaySummary ..> BestOfMark : reads
+@enduml

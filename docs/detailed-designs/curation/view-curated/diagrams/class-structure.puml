@@ -1,0 +1,67 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Curated screen
+
+enum BestOfPeriod {
+  Day
+  Week
+  Month
+  Year
+}
+
+class CuratedItem {
+  +string ideaId
+  +BestOfPeriod period
+  +string title
+  +string category
+  +string status
+  +string summary
+  +number score
+}
+
+class CuratedList {
+  +CuratedItem[] items
+  +number distinctIdeaCount
+  +Date asOf
+}
+
+class CuratedOrdering {
+  +order(items: CuratedItem[]): CuratedItem[]
+}
+
+class GetCuratedUseCase {
+  +execute(): CuratedList
+}
+
+class BestOfRepository {
+  +listCurrent(): CuratedItem[]
+}
+
+class CuratedPageComponent {
+  +state: loading | ready | empty | error | noResults
+  +categoryFilter: string
+  +retry(): void
+  +clearFilter(): void
+}
+
+class CurationApiClient {
+  +getCurated(): Observable<CuratedList>
+}
+
+CuratedPageComponent ..> CurationApiClient : calls
+CurationApiClient ..> CuratedList : returns
+GetCuratedUseCase --> BestOfRepository : reads through
+GetCuratedUseCase ..> CuratedOrdering : orders with
+GetCuratedUseCase --> CuratedList : returns
+CuratedList "1" *-- "*" CuratedItem
+CuratedItem --> BestOfPeriod : has
+@enduml

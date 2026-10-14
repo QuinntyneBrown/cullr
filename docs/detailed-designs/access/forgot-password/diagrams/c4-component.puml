@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Forgot password
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(page, "ForgotPasswordPageComponent", "Angular page component", "Renders the form and its states")
+  Component(client, "AuthApiClient", "Typed API client service", "Posts the reset request")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(route, "forgot-password route handler", "Next.js route handler", "POST /api/auth/forgot-password")
+  Component(uc, "RequestPasswordResetUseCase", "Application", "Issues a token and sends the email when the address is the owner's")
+  Component(token, "PasswordResetToken", "Domain entity", "Single-use token with a 60-minute expiry")
+  Component(repo, "OwnerRepository and PasswordResetTokenRepository", "Infrastructure", "Load the account and save tokens")
+  Component(mailer, "EmailSender", "Infrastructure adapter", "Sends the reset email")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+System_Ext(email, "Email provider", "<TO SUPPLY>")
+
+Rel(page, client, "Calls")
+Rel(client, route, "Sends request", "JSON/HTTPS")
+Rel(route, uc, "Invokes")
+Rel(uc, token, "Creates")
+Rel(uc, repo, "Loads and saves through")
+Rel(uc, mailer, "Sends through")
+Rel(repo, db, "Reads and writes", "<TO SUPPLY>")
+Rel(mailer, email, "Delivers via", "<TO SUPPLY>")
+@enduml
