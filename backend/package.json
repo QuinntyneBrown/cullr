@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "migrate": "node src/platform/migrate.ts"
   },
   "dependencies": {
     "next": "^15.0.0",
