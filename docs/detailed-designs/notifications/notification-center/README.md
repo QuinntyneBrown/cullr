@@ -24,6 +24,13 @@ Key behaviours, by acceptance criterion:
 - "Mark read" makes one notification read and lowers the count. "Mark all read" makes all read and the count shows none (`L2-023`, criteria 2 and 3).
 - No notifications show the empty state. Loading shows a skeleton and a failed load shows an error with retry (`L2-023`, criterion 4).
 
+### Screen composition
+
+The Notifications page and the top-bar bell entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `list`, `badge` (`badge--count`), `button` ("Mark all read"), `empty-state` (empty), `error-page` (error), `skeleton` (loading).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page; the coloured status icon chip in each row (an inline composition of `toast--*` colour and an icon).
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

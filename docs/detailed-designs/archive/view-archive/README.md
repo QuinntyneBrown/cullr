@@ -30,6 +30,13 @@ Key behaviour, by criterion:
 
 The two C4 views at container and component level carry the detail; the context view is minimal because no external system takes part.
 
+### Screen composition
+
+The Archive page and the read-only Idea detail entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `chip`, `table`, `pagination`, `button`, `badge`, `empty-state` (empty and no-results), `error-page` (error), `skeleton` (loading), `alert` (`alert--warning`, read-only banner on Idea detail).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page.
+
 ## Requirements
 
 | L2 ID | Refines (L1) | Requirement |

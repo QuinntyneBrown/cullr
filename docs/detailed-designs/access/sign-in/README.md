@@ -31,6 +31,13 @@ Key behaviours, by acceptance criterion:
 
 The lockout response is identical to the mismatch response so the response never reveals that a lockout is active.
 
+### Screen composition
+
+The Sign in page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `card`, `form-field` (via `field`), `text-field`, `button` (`btn--primary`, `btn--block`, `btn--link`), `alert` (error and invalid), `skeleton` (loading).
+- **Local:** the Auth shell (`.auth-layout` + `.auth-card`), built once and shared by Sign in, Forgot password and Reset password.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

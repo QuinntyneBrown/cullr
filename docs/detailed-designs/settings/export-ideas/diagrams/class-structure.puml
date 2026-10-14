@@ -1,0 +1,56 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Export ideas
+
+class ExportIdeasDialogComponent {
+  +includeActive: boolean
+  +includeArchived: boolean
+  +includeNotes: boolean
+  +canExport: boolean
+  +state: default | busy | success | failed
+  +export(): void
+  +retry(): void
+}
+class ExportService {
+  +export(selection: ExportSelection): Observable<Blob>
+}
+class ExportRouteHandler {
+  +POST(request: Request): Response
+}
+class ExportIdeasUseCase {
+  +execute(selection: ExportSelection): ExportFile
+}
+class CsvWriter {
+  +write(rows: ExportRow[], includeNotes: boolean): string
+  +safeCell(value: string): string
+}
+class ExportFile {
+  +name: string
+  +content: string
+  +ideaCount: number
+}
+class NotificationEvents {
+  +exportFinished(count: number): void
+  +exportFailed(): void
+}
+interface IdeaReadRepository {
+  +activeForExport(): ExportRow[]
+  +archivedForExport(): ExportRow[]
+}
+ExportIdeasDialogComponent --> ExportService : calls
+ExportService ..> ExportRouteHandler : HTTPS
+ExportRouteHandler --> ExportIdeasUseCase : invokes
+ExportIdeasUseCase ..> CsvWriter : uses
+ExportIdeasUseCase --> NotificationEvents : reports
+ExportIdeasUseCase --> IdeaReadRepository
+ExportIdeasUseCase --> ExportFile : returns
+@enduml

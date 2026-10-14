@@ -26,6 +26,13 @@ Key behaviours, by acceptance criterion:
 - A request on a session idle for 30 days or older than 90 days is rejected. The owner is sent to Sign in and returns to the original page after signing in (`L2-005`, criterion 2).
 - A signed-out visitor requesting a protected screen is redirected to Sign in. A protected API request receives 401, and no idea data is returned (`L2-005`, criterion 3).
 
+### Screen composition
+
+The Dashboard top bar entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `top-bar`, `avatar`, `button`, `tooltip`.
+- **Local:** none. The sign-out action sits in the account area of the top bar. `<TO SUPPLY>`: the mocks and the composition map do not itemize the sign-out control..
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

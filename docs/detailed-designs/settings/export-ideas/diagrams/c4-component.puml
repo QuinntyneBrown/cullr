@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Export ideas
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "ExportIdeasDialogComponent", "Angular dialog component", "Dataset choice and states")
+  Component(f1, "ExportService", "Angular HTTP service", "Requests and downloads the file")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "export route handler", "Next.js route handler", "POST /api/exports")
+  Component(a1, "ExportIdeasUseCase", "Application", "Builds the rows")
+  Component(a2, "CsvWriter", "Domain function", "Writes safe CSV")
+  Component(a3, "NotificationEvents", "Application service", "Reports finish or failure")
+  Component(r, "IdeaReadRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, f1, "Calls")
+Rel(f1, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

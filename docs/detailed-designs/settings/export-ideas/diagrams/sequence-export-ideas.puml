@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Export ideas
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "ExportIdeasDialogComponent" as page
+  participant "ExportService" as client
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "export route handler" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "ExportIdeasUseCase" as uc
+  participant "CsvWriter" as csv
+  participant "NotificationEvents" as events
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+owner -> page : Open Export ideas
+page --> owner : Show options with counts, Export disabled until one is selected (L2-029)
+owner -> page : Select datasets and Export
+page -> page : Disable action, show busy state
+page -> client : Build request
+client -> route : POST /api/exports
+route -> uc : Invoke ExportIdeasUseCase
+uc -> db : Read active and archived ideas as chosen
+db --> uc : Rows
+alt export succeeds
+  uc -> csv : Write rows and neutralize formula cells (L2-029)
+  csv --> uc : CSV text
+  uc -> events : exportFinished(count)
+  events -> db : Save notification
+  uc --> route : File
+  route --> client : 200 cullr-ideas-YYYY-MM-DD.csv
+  client --> page : File
+  page --> owner : Download file, show success state
+else export fails
+  uc -> events : exportFailed
+  events -> db : Save failure notification with retry action
+  uc --> route : Failure
+  route --> client : 500
+  client --> page : Failure
+  page --> owner : Show failed state with retry (L2-029)
+end
+@enduml

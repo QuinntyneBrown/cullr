@@ -37,6 +37,13 @@ Key behaviours, by acceptance criterion:
 
 The Curate and Archive actions on each card open dialogs described by the curate and archive features. The Capture idea action opens the dialog described by `capture-idea`.
 
+### Screen composition
+
+The Today page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `chip` (category filters), `card` (`card--interactive`), `badge`, `button`, `empty-state` (empty and no-results), `error-page` (error), `skeleton` (loading).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page; the idea-card header and footer with the score stat (`.card__header`, `.stat__value`, a catalogue gap); the content section grouping (`.section`) around the idea-card list.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

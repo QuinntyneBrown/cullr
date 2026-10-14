@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Performance budgets
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "Angular build and router configuration", "Angular build", "Initial bundle budget, lazy routes and hashed assets")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "Route handlers", "Next.js route handlers", "List, write and export endpoints")
+  Component(a1, "QueryLimits", "Application rule", "Page size 50 and indexed queries")
+  Component(r, "IdeaReadRepository", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

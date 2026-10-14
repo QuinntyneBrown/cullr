@@ -26,6 +26,13 @@ Key behaviours, by acceptance criterion:
 - The primary action is busy and disabled in flight. A failed delete keeps the dialog open and leaves the idea unchanged (`L2-022`, criteria 4 and 5).
 - An active idea has no delete action and the server rejects deletion (`L2-022`, criterion 6).
 
+### Screen composition
+
+The Delete idea dialog entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `form-field`, `text-field` (type-to-confirm), `button`, `alert` (failed).
+- **Local:** none.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

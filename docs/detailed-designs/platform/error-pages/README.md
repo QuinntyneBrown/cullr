@@ -30,6 +30,13 @@ Key behaviours, by acceptance criterion:
 
 The context and container diagrams are near-identical to the component diagram in scope for this slice. All three are kept because the component view adds the error mapping on each side.
 
+### Screen composition
+
+The full-page error entry (Page not found, Forbidden, Something went wrong, You're offline) entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `top-bar` (brand only), `layout-primitives` (`container--narrow`), `empty-state`, `button`.
+- **Local:** the full-page error and offline wrapper (bare top bar and a centred `empty-state`), built once and shared by the four screens.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

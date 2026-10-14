@@ -23,6 +23,13 @@ Key behaviour, by criterion of `L2-021`:
 
 The reason and archive date set by `archive-idea` are not part of this requirement; whether the restore clears them is `<TO SUPPLY>`.
 
+### Screen composition
+
+The Restore idea dialog entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `button`, `alert` (failed).
+- **Local:** none.
+
 ## Requirements
 
 | L2 ID | Refines (L1) | Requirement |

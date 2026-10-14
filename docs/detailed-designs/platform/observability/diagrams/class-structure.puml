@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Observability
+
+class withErrorHandling {
+  +wrap(handler: RouteHandler): RouteHandler
+}
+class CorrelationId {
+  +value: string
+  +{static} create(): CorrelationId
+}
+class ErrorLogger {
+  +log(error: Error, id: CorrelationId): void
+}
+class HealthRouteHandler {
+  +GET(request: Request): Response
+}
+class HealthCheckUseCase {
+  +execute(): HealthStatus
+}
+class HealthStatus {
+  +service: up | down
+  +database: up | down
+}
+class MigrationRunner {
+  +apply(): MigrationResult
+}
+interface DatabaseProbe {
+  +isAvailable(): boolean
+}
+withErrorHandling --> CorrelationId : creates
+withErrorHandling --> ErrorLogger : calls
+HealthRouteHandler --> HealthCheckUseCase : invokes
+HealthCheckUseCase --> DatabaseProbe
+HealthCheckUseCase ..> HealthStatus : returns
+@enduml

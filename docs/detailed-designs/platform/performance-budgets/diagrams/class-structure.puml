@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Performance budgets
+
+class BundleBudget {
+  +initialRouteGzipKb: 200
+  +check(sizeKb: number): boolean
+}
+class WebVitalsBudget {
+  +lcpP75Seconds: 2.5
+  +cls: 0.1
+  +inpMs: 200
+}
+class ApiBudget {
+  +readP95Ms: 300
+  +writeP95Ms: 200
+  +exportSeconds: 10
+  +ideaCount: 10000
+}
+class QueryLimits {
+  +pageSize: 50
+}
+class PerformanceSuite {
+  +seed(ideaCount: number): void
+  +measureApi(): ApiMeasurements
+  +measureVitals(): VitalsMeasurements
+}
+PerformanceSuite ..> WebVitalsBudget : checks
+PerformanceSuite ..> ApiBudget : checks
+PerformanceSuite ..> QueryLimits : exercises
+BundleBudget ..> WebVitalsBudget : supports
+@enduml

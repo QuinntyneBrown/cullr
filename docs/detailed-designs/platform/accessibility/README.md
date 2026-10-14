@@ -27,6 +27,13 @@ The design introduces a small set of shared frontend building blocks and one bui
 
 Whether automated accessibility checks run in the end-to-end suite is `<TO SUPPLY>`.
 
+### Screen composition
+
+The Shell entry entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `skip-link`, `dialog`, `tabs`, `toast`.
+- **Local:** none. The behaviours apply to every library component and every local shell.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. The specification gives each only a title and acceptance criteria; the criteria are summarised in the Description above.

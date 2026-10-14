@@ -26,6 +26,13 @@ Key behaviours, by acceptance criterion:
 - When some items fail, the successes are applied, the failures are reported by title and selection is kept for the failures only (`L2-011`, criterion 3).
 - With more than 5 ideas selected, "Curate selected" is disabled with the explanation "Select up to 5 ideas to curate". With 1 to 5 active ideas selected it opens the Curate idea dialog and applies the chosen period to every selected idea (`L2-011`, criterion 5).
 
+### Screen composition
+
+The Ideas page, `selected` state entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `checkbox` (native row-selection input), `button`.
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page. The "N selected" bar with its three actions is not itemized in the composition map; its markup is `<TO SUPPLY>` until the map names a component for it.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

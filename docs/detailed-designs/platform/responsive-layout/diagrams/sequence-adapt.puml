@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Adapt to the viewport
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "ViewportService" as vp
+  participant "AppShellComponent" as shell
+  participant "TableComponent" as table
+  participant "DialogComponent" as dialog
+end box
+owner -> vp : Open Cullr or resize the window
+vp -> shell : Publish viewport class
+alt XS
+  shell --> owner : Collapse navigation behind menu button with aria-expanded, single column (L2-036)
+else LG or XL
+  shell --> owner : Pin sidebar, cap content width (L2-036)
+else SM or MD
+  shell --> owner : Use available width with generous whitespace
+end
+vp -> table : Publish viewport class
+alt columns do not fit
+  table --> owner : Present rows as stacked cards, no horizontal page scroll (L2-036)
+else columns fit
+  table --> owner : Present the table
+end
+owner -> dialog : Open a dialog at XS
+vp -> dialog : Publish viewport class
+dialog --> owner : Fit viewport height, scroll inside, keep primary action reachable (L2-036)
+@enduml

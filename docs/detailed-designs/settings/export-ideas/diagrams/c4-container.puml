@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Export ideas
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Export ideas dialog")
+  Container(api, "Cullr API", "Next.js route handlers", "Builds the CSV file")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Ideas and notes")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Requests the file from", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Navigation shell
+
+class AppShellComponent {
+  +skipLinkTarget: string
+}
+class TopBarComponent {
+  +unreadCount: number
+  +initials: string
+  +search(query: string): void
+}
+class SidebarNavigationComponent {
+  +items: NavItem[]
+  +currentPath: string
+}
+class NavItem {
+  +label: string
+  +path: string
+  +ariaCurrent: page | null
+}
+class HelpPageComponent
+class ShellService {
+  +unreadCount(): Observable<number>
+}
+class UnreadCountRouteHandler {
+  +GET(request: Request): Response
+}
+interface NotificationRepository {
+  +unreadCount(): number
+}
+AppShellComponent *-- TopBarComponent
+AppShellComponent *-- SidebarNavigationComponent
+AppShellComponent o-- HelpPageComponent : routes to
+SidebarNavigationComponent "1" *-- "5" NavItem
+TopBarComponent --> ShellService : calls
+ShellService ..> UnreadCountRouteHandler : HTTPS
+UnreadCountRouteHandler --> NotificationRepository
+@enduml

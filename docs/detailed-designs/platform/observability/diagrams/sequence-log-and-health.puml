@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Log an error and answer a health check
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Backend — Cullr API" #D1FADF
+  participant "withErrorHandling" as wrap
+  participant "health route handler" as health
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "CorrelationId" as corr
+  participant "ErrorLogger" as logger
+  participant "HealthCheckUseCase" as uc
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+wrap -> corr : create()
+corr --> wrap : Correlation id
+wrap -> wrap : Run the route handler, unexpected failure
+wrap -> logger : log(error, correlation id) (L2-051)
+logger --> wrap : Logged
+wrap --> wrap : Return 500 with the correlation id as reference id, no stack trace
+health -> uc : GET /api/health, no sign-in required (L2-051)
+uc -> db : Run a trivial query
+alt database answers
+  db --> uc : OK
+  uc --> health : service up, database up
+else database does not answer
+  uc --> health : service up, database down, no internal detail
+end
+@enduml

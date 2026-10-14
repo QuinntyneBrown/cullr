@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Responsive layout
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "AppShellComponent", "Angular layout component", "Collapses or pins the navigation")
+  Component(f1, "ViewportService", "Angular service", "Exposes the viewport class")
+  Component(f2, "TableComponent", "Angular component", "Switches between table and cards")
+  Component(f3, "DialogComponent", "Angular component", "Fits the viewport height")
+}
+
+Rel(f0, f1, "Reads viewport class from")
+Rel(f2, f1, "Reads viewport class from")
+Rel(f3, f1, "Reads viewport class from")
+@enduml

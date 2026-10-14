@@ -40,6 +40,13 @@ Key behaviours, by acceptance criterion:
 
 The database engine and the transport for the uniqueness constraint are `<TO SUPPLY>`.
 
+### Screen composition
+
+The Capture idea dialog entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `form-field`, `text-field`, `textarea`, `select`, `button`, `alert` (failed).
+- **Local:** none. The Score field is not in the mock yet; the Decisions section of `docs/specs/L2.md` lists it as a mock follow-up, and its component is `<TO SUPPLY>`..
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

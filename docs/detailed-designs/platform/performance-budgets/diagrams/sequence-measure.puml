@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Measure against the budgets
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as owner
+box "Frontend — Cullr web app" #E0F2FE
+  participant "Angular build" as build
+  participant "PerformanceSuite" as suite
+end box
+box "Backend — Cullr API" #D1FADF
+  participant "Route handlers" as route
+end box
+box "Backend — Cullr Application and Domain" #ECFDF3
+  participant "QueryLimits" as limits
+end box
+box "Backend — Cullr Infrastructure" #FFF4E5
+  database "Cullr database" as db
+end box
+build -> build : Measure initial route JavaScript, gzipped
+alt more than 200 KB (L2-050)
+  build --> owner : Fail the build
+else 200 KB or less
+  build --> owner : Pass
+end
+suite -> db : Seed 10,000 ideas
+db --> suite : Seeded
+loop each operation
+  suite -> route : Call list, filter, sort, search, write or export
+  route -> limits : Apply page size 50 and indexed query
+  limits -> db : Query
+  db --> limits : Rows
+  limits --> route : Page
+  route --> suite : Response and its time
+end
+suite -> suite : Compare p95 with 300 ms, 200 ms and 10 s (L2-049)
+suite -> suite : Compare LCP p75, CLS and INP with the budgets (L2-048)
+@enduml

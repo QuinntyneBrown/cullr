@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Navigation shell
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Shell, navigation and Help screen")
+  Container(api, "Cullr API", "Next.js route handlers", "Returns the unread notification count")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Notifications")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Requests the unread count from", "JSON/HTTPS")
+Rel(api, db, "Reads", "<TO SUPPLY>")
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Credential protection
+
+class PasswordPolicy {
+  +minLength: 12
+  +maxLength: 128
+  +check(password: string): PolicyResult
+}
+class PolicyResult {
+  +accepted: boolean
+  +reason: TooShort | Breached | null
+}
+class PasswordHasher {
+  +hash(password: string): string
+  +verify(password: string, hash: string): boolean
+}
+class TokenHasher {
+  +issue(): IssuedToken
+  +hash(token: string): string
+}
+class IssuedToken {
+  +value: string
+  +hash: string
+}
+class LogRedactor {
+  +redact(entry: LogEntry): LogEntry
+}
+class SecretsProvider {
+  +get(name: string): string
+}
+interface BreachedPasswordList {
+  +contains(password: string): boolean
+}
+PasswordPolicy ..> BreachedPasswordList : checks
+PasswordPolicy ..> PolicyResult : returns
+TokenHasher ..> IssuedToken : creates
+@enduml

@@ -31,6 +31,13 @@ Key behaviours, by criterion of `L2-012`:
 
 Mocks: `pages\idea-detail\default`, `loading`, `error`, `edge` (long text) and `read-only` (archived idea); `pages\not-found\default` for the unknown id.
 
+### Screen composition
+
+The Idea detail page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `breadcrumb`, `badge`, `button`, `card` (summary and status-history panels), `description-list` (critique notes), `list` (status history), `error-page` (error), `skeleton` (loading), `alert` (`alert--warning`, read-only banner).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

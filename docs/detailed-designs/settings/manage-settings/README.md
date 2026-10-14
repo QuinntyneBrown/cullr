@@ -36,6 +36,13 @@ Key behaviours, by criterion of L2-026:
 
 The default threshold value, the persistence engine and the transport of the stored record are `<TO SUPPLY>`.
 
+### Screen composition
+
+The Settings page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `form-field`, `text-field` (time and number inputs), `switch`, `button`, `card` (`.well`, export panel), `alert` (invalid), `inline-message` (success), `error-page` (error), `skeleton` (loading).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirement, which refines a level-1 (L1) requirement.

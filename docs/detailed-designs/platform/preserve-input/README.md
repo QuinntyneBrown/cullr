@@ -26,6 +26,13 @@ Behaviour by acceptance criterion:
 
 The mapped message texts for each kind are `<TO SUPPLY>`, apart from the wording in the mocks.
 
+### Screen composition
+
+The Dialog entries entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `alert` (failed), `button`.
+- **Local:** none.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

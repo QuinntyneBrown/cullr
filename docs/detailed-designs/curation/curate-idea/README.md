@@ -33,6 +33,13 @@ The dialog is modal, closes on Escape, and is operable by keyboard (`L1-014`). T
 
 Because the C4 context and container views for this slice carry little detail beyond the fixed Cullr architecture, the component view is the most detailed and the other two stay minimal.
 
+### Screen composition
+
+The Curate idea dialog entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `radio-group` (`.choice`, `.choice__text`), `button`, `alert` (failed).
+- **Local:** none.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirement. The L2 requirement refines a level-1 (L1) requirement, cited by identifier.

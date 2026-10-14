@@ -21,6 +21,13 @@ Rules, by acceptance criterion:
 - Several toasts stack without covering the primary action, and each can be dismissed (`L2-025`, criterion 2).
 - A danger toast does not auto-dismiss. The other variants dismiss after a delay of `<TO SUPPLY>` (`L2-025`, criterion 3).
 
+### Screen composition
+
+The Idea toast and Curation toast entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `toast` (info, success, warning and danger variants, `close`), rendered in the `toast-region` overlay surface.
+- **Local:** none. The `toast__action`, `toast__progress` and `toast__text` parts are catalogue gaps in the design system.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

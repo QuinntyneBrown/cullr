@@ -27,6 +27,13 @@ Key behaviours, by acceptance criterion:
 - A changed email must be confirmed through the link before it replaces the sign-in email (`L2-030`, criterion 4).
 - The save button is busy and disabled in flight. A failed load or save shows an error with retry and keeps the entered values (`L2-030`, criteria 5 and 6).
 
+### Screen composition
+
+The Account page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `avatar` (`avatar--lg`), `form-field`, `text-field`, `textarea`, `button`, `alert` (invalid), `inline-message` (success), `error-page` (error), `skeleton` (loading).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

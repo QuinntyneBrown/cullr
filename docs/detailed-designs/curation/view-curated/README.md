@@ -26,6 +26,13 @@ Screen states, cited by acceptance criterion of `L2-016`:
 
 The top bar bell shown on this screen is described in `notifications/notification-center`.
 
+### Screen composition
+
+The Curated page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `chip`, `card` (`card__title`, overline label), `badge`, `empty-state` (empty and no-results), `error-page` (error), `skeleton` (loading).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirement. The L2 requirement refines a level-1 (L1) requirement, cited by identifier.

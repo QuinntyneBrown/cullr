@@ -26,6 +26,13 @@ Key behaviour, by criterion of `L2-018`:
 3. While the save is in flight, the primary action is busy and disabled.
 4. When the save fails, the dialog stays open, shows a failure message ("Couldn't archive this idea") and keeps the typed reason.
 
+### Screen composition
+
+The Archive idea dialog entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `form-field`, `textarea` (optional reason), `button`, `alert` (failed).
+- **Local:** none.
+
 ## Requirements
 
 | L2 ID | Refines (L1) | Requirement |

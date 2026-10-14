@@ -32,6 +32,13 @@ Key behaviours, by criterion of `L2-013`:
 
 Mocks: `dialogs\edit-idea\default`, `invalid`, `busy` and `failed`.
 
+### Screen composition
+
+The Edit idea dialog entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `dialog`, `form-field`, `text-field`, `textarea`, `select`, `button`, `alert` (failed).
+- **Local:** none. The Score field and the critique notes fields are not in the mock yet and their components are `<TO SUPPLY>`..
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

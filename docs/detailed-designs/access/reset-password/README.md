@@ -28,6 +28,13 @@ Key behaviours, by acceptance criterion:
 - An expired or already-used link shows the error state, which explains that the link is no longer valid and offers a "Request a new link" action. The check runs on open and again on submit (`L2-004`, criterion 3).
 - A successful reset revokes every existing session (`L2-004`, criterion 4).
 
+### Screen composition
+
+The Reset password page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `card`, `form-field`, `text-field`, `button`, `alert` (error and invalid), `dialog` (`.dialog__icon--info`, reused standalone for the success checkmark).
+- **Local:** the Auth shell (`.auth-layout` + `.auth-card`), built once and shared by Sign in, Forgot password and Reset password.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Observability
+
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "withErrorHandling", "Route handler wrapper", "Creates the correlation id and logs failures")
+  Component(a1, "health route handler", "Next.js route handler", "GET /api/health")
+  Component(a2, "HealthCheckUseCase", "Application", "Reports service and database state")
+  Component(a3, "ErrorLogger", "Infrastructure service", "Logs with the correlation id")
+  Component(a4, "MigrationRunner", "Deployment command", "Applies migrations explicitly")
+  Component(r, "DatabaseProbe", "Infrastructure", "Persist and load state")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, a4, "Uses")
+Rel(a1, r, "Loads and saves through")
+Rel(r, db, "Reads and writes", "<TO SUPPLY>")
+@enduml

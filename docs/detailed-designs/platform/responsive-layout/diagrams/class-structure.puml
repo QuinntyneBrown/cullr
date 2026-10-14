@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Responsive layout
+
+enum ViewportClass {
+  XS
+  SM
+  MD
+  LG
+  XL
+}
+class ViewportService {
+  +current: ViewportClass
+  +changes(): Observable<ViewportClass>
+}
+class AppShellComponent {
+  +navigationOpen: boolean
+  +sidebarPinned: boolean
+  +toggleNavigation(): void
+}
+class TableComponent {
+  +presentation: table | cards
+}
+class DialogComponent {
+  +maxHeight: viewport
+  +scrollsInside: boolean
+}
+ViewportService --> ViewportClass
+AppShellComponent --> ViewportService : reads
+TableComponent --> ViewportService : reads
+DialogComponent --> ViewportService : reads
+@enduml

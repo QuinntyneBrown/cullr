@@ -35,6 +35,13 @@ Key behaviours, by acceptance criterion:
 - Results update after a typing pause of at most 300 ms (`L2-010` criterion 4).
 - When filters or a query match nothing, the no-results state names the filter or query and offers "Clear filters" (`L2-010` criterion 5).
 
+### Screen composition
+
+The Ideas page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `tabs` (status filter), `chip`, `select` (sort), `table` (with the `num` and `row-actions` catalogue gaps), `pagination`, `button`, `badge`, `empty-state` (empty and no-results), `error-page` (error), `skeleton` (loading), `checkbox` (row selection).
+- **Local:** the Page shell (`.sidebar-layout`, `.page-header`, `.footer`), built once and shared by every authenticated dashboard page.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

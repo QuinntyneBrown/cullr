@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Credential protection
+
+Container_Boundary(spa, "Cullr web app") {
+  Component(f0, "Password screens", "Angular pages", "Send passwords over HTTPS only")
+}
+Container_Boundary(api, "Cullr API") {
+  Component(a0, "Credential callers", "Application", "Sign-in, reset-password and change-password use cases")
+  Component(a1, "PasswordPolicy", "Domain function", "Applies L2-046")
+  Component(a2, "PasswordHasher", "Infrastructure service", "Salted adaptive hash")
+  Component(a3, "TokenHasher", "Infrastructure service", "Creates tokens and stores their hashes")
+  Component(a4, "LogRedactor", "Infrastructure service", "Removes credentials from logs")
+  Component(a5, "SecretsProvider", "Infrastructure service", "Reads secrets from the environment")
+}
+ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Persists state")
+
+Rel(f0, a0, "Sends request", "JSON/HTTPS")
+Rel(a0, a1, "Invokes")
+Rel(a1, a2, "Uses")
+Rel(a1, a3, "Uses")
+Rel(a1, a4, "Uses")
+Rel(a1, a5, "Uses")
+@enduml

@@ -29,6 +29,13 @@ Key behaviours, by acceptance criterion:
 - Choosing the status the idea already has changes nothing and adds no entry (`L2-052`, criterion 3).
 - An archived idea hides the control and the server rejects the change (`L2-052`, criterion 5).
 
+### Screen composition
+
+The Idea detail page entry of `docs/screen-composition.md` lists the following components. The implementation shall use them and shall build locally only the UI marked local.
+
+- **Library:** `button`, `dialog` for the confirmation, `alert` (failure).
+- **Local:** none. The Building and Built control is not in the mock yet (a follow-up in `docs/specs/L2.md`) and the component that opens it is `<TO SUPPLY>`..
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a level-1 (L1) requirement, cited by identifier.

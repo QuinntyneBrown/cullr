@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Credential protection
+
+Person(owner, "Owner", "Sole user of Cullr")
+System_Boundary(cullr, "Cullr") {
+  Container(spa, "Cullr web app", "Angular single-page app", "Sign-in, reset and change password screens")
+  Container(api, "Cullr API", "Next.js route handlers", "Hashes credentials, applies the policy and redacts logs")
+  ContainerDb(db, "Cullr database", "<TO SUPPLY>", "Hashes and encrypted data")
+}
+
+Rel(owner, spa, "Uses", "HTTPS")
+Rel(spa, api, "Sends credentials over HTTPS to", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "<TO SUPPLY>")
+@enduml
