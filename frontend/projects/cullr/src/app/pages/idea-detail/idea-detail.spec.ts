@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { IdeaDetail, IdeaService } from '@cullr/api';
 import { DialogService, ToastService } from '@cullr/components';
+import { CurateIdeaDialogService } from '../../core/curate/curate-idea-dialog.service';
 import { EditIdeaDialogService } from '../../core/edit/edit-idea-dialog.service';
 import { IdeaDetailPage } from './idea-detail';
 
@@ -75,6 +76,23 @@ describe('IdeaDetailPage', () => {
     expect(button(el, 'Curate')).toBeDefined();
     expect(button(el, 'Archive')).toBeDefined();
     expect(button(el, 'Edit idea')).toBeDefined();
+  });
+
+  it('Given an active idea, When Curate is pressed, Then the curate dialog opens for it', async () => {
+    const { el } = await render();
+
+    button(el, 'Curate')!.click();
+
+    expect(TestBed.inject(CurateIdeaDialogService).ids()).toEqual(['a1']);
+  });
+
+  it('Given the idea is curated, When the dialog reports it, Then the idea reloads', async () => {
+    const { fixture } = await render();
+
+    TestBed.inject(CurateIdeaDialogService).saved();
+    await fixture.whenStable();
+
+    expect(get).toHaveBeenCalledTimes(2);
   });
 
   it('Given the idea is loading, When the page opens, Then a skeleton is shown', async () => {

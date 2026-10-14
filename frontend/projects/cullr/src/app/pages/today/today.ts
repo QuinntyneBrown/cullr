@@ -2,6 +2,7 @@ import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { Category, CATEGORIES, IdeaService, TodaySummary } from '@cullr/api';
 import { Badge, Button, Card, Chip, EmptyState, Skeleton } from '@cullr/components';
 import { CaptureIdeaDialogService } from '../../core/capture/capture-idea-dialog.service';
+import { CurateIdeaDialogService } from '../../core/curate/curate-idea-dialog.service';
 import { categoryTone, statusTone } from '../../core/ideas/tones';
 
 @Component({
@@ -64,7 +65,7 @@ import { categoryTone, statusTone } from '../../core/ideas/tones';
               }
               <div class="card__footer">
                 <span class="text-caption" style="margin-right: auto;">Logged Today, {{ time(idea.loggedAt, d.timeZone) }}</span>
-                <cu-button>Curate</cu-button>
+                <cu-button (click)="curate.open([idea.id])">Curate</cu-button>
                 <cu-button>Archive</cu-button>
               </div>
             </div>
@@ -87,6 +88,7 @@ import { categoryTone, statusTone } from '../../core/ideas/tones';
 export class TodayPage {
   private readonly ideas = inject(IdeaService);
   protected readonly capture = inject(CaptureIdeaDialogService);
+  protected readonly curate = inject(CurateIdeaDialogService);
   protected readonly categories = CATEGORIES;
   protected readonly category = signal<Category | null>(null);
   protected readonly data = signal<TodaySummary | null>(null);
@@ -97,6 +99,7 @@ export class TodayPage {
     effect(() => {
       this.category();
       this.capture.version();
+      this.curate.version();
       untracked(() => void this.load());
     });
   }

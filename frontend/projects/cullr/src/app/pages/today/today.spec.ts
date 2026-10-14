@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { IdeaService, TodaySummary } from '@cullr/api';
 import { CaptureIdeaDialogService } from '../../core/capture/capture-idea-dialog.service';
+import { CurateIdeaDialogService } from '../../core/curate/curate-idea-dialog.service';
 import { TodayPage } from './today';
 
 const idea = (over: object = {}) => ({
@@ -96,6 +97,25 @@ describe('TodayPage', () => {
     const { fixture } = await render();
 
     TestBed.inject(CaptureIdeaDialogService).captured();
+    await fixture.whenStable();
+
+    expect(today).toHaveBeenCalledTimes(2);
+  });
+
+  it('Given an idea card, When Curate is pressed, Then the curate dialog opens for that idea', async () => {
+    today = vi.fn().mockResolvedValue(summary());
+    const { el } = await render();
+
+    Array.from(el.querySelectorAll('.card')[1].querySelectorAll('button')).find((b) => b.textContent?.trim() === 'Curate')!.click();
+
+    expect(TestBed.inject(CurateIdeaDialogService).ids()).toEqual(['b']);
+  });
+
+  it('Given an idea is curated, When the dialog reports it, Then today reloads', async () => {
+    today = vi.fn().mockResolvedValue(summary());
+    const { fixture } = await render();
+
+    TestBed.inject(CurateIdeaDialogService).saved();
     await fixture.whenStable();
 
     expect(today).toHaveBeenCalledTimes(2);

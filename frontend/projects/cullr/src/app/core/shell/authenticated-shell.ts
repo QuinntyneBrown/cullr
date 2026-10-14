@@ -4,10 +4,11 @@ import { AuthService } from '@cullr/api';
 import { Button, NavItem, SidebarNavigation, SkipLink } from '@cullr/components';
 import { CaptureIdeaDialog } from '../capture/capture-idea-dialog';
 import { EditIdeaDialog } from '../edit/edit-idea-dialog';
+import { CurateIdeaDialog } from '../curate/curate-idea-dialog';
 
 @Component({
   selector: 'app-authenticated-shell',
-  imports: [RouterOutlet, Button, CaptureIdeaDialog, EditIdeaDialog, SidebarNavigation, SkipLink],
+  imports: [RouterOutlet, Button, CaptureIdeaDialog, EditIdeaDialog, CurateIdeaDialog, SidebarNavigation, SkipLink],
   template: `
     <cu-skip-link target="main" />
     <div class="sidebar-layout">
@@ -22,6 +23,7 @@ import { EditIdeaDialog } from '../edit/edit-idea-dialog';
     </div>
     <app-capture-idea-dialog />
     <app-edit-idea-dialog />
+    <app-curate-idea-dialog />
   `,
 })
 export class AuthenticatedShell {

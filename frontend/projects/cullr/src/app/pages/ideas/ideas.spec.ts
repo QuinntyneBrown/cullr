@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { IdeaPage, IdeaService } from '@cullr/api';
 import { CaptureIdeaDialogService } from '../../core/capture/capture-idea-dialog.service';
+import { CurateIdeaDialogService } from '../../core/curate/curate-idea-dialog.service';
 import { EditIdeaDialogService } from '../../core/edit/edit-idea-dialog.service';
 import { IdeasPage } from './ideas';
 
@@ -254,6 +255,29 @@ describe('IdeasPage', () => {
 
       expect(button(el, 'Curate selected').disabled).toBe(false);
       expect(bar(el)?.textContent).not.toContain('Select up to 5 ideas to curate');
+    });
+
+    it('Given ideas are selected, When Curate selected is pressed, Then the curate dialog opens for them', async () => {
+      list = vi.fn().mockResolvedValue(page());
+      const { fixture, el } = await render();
+      await tick(fixture, checkbox(el, 'Select Porch Light'));
+      await tick(fixture, checkbox(el, 'Select Vestry'));
+
+      button(el, 'Curate selected').click();
+
+      expect(TestBed.inject(CurateIdeaDialogService).ids()).toEqual(['a', 'b']);
+    });
+
+    it('Given ideas are curated, When the dialog reports it, Then the list reloads and the selection clears', async () => {
+      list = vi.fn().mockResolvedValue(page());
+      const { fixture, el } = await render();
+      await tick(fixture, checkbox(el, 'Select Porch Light'));
+
+      TestBed.inject(CurateIdeaDialogService).saved();
+      await fixture.whenStable();
+
+      expect(list).toHaveBeenCalledTimes(2);
+      expect(bar(el)).toBeNull();
     });
   });
 });

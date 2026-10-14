@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IdeaDetail, IdeaService, IdeaStatus } from '@cullr/api';
 import { Alert, Badge, Breadcrumb, Button, Card, DescriptionList, DialogService, EmptyState, List, Skeleton, ToastService } from '@cullr/components';
 import { EditIdeaDialogService } from '../../core/edit/edit-idea-dialog.service';
+import { CurateIdeaDialogService } from '../../core/curate/curate-idea-dialog.service';
 import { formatLogged } from '../../core/ideas/format-logged';
 import { categoryTone, statusTone } from '../../core/ideas/tones';
 
@@ -44,7 +45,7 @@ const NOT_WRITTEN = 'Not written yet';
             <cu-button>Restore</cu-button>
             <cu-button>Delete permanently</cu-button>
           } @else {
-            <cu-button>Curate</cu-button>
+            <cu-button (click)="curate.open([idea.id])">Curate</cu-button>
             <cu-button>Archive</cu-button>
             <cu-button variant="primary" (click)="edit.open(idea.id)">Edit idea</cu-button>
           }
@@ -99,6 +100,7 @@ export class IdeaDetailPage {
   private readonly toast = inject(ToastService);
   private readonly id = inject(ActivatedRoute).snapshot.paramMap.get('id')!;
   protected readonly edit = inject(EditIdeaDialogService);
+  protected readonly curate = inject(CurateIdeaDialogService);
 
   protected readonly categoryTone = categoryTone;
   protected readonly statusTone = statusTone;
@@ -110,6 +112,7 @@ export class IdeaDetailPage {
   constructor() {
     effect(() => {
       this.edit.version();
+      this.curate.version();
       untracked(() => void this.load());
     });
   }

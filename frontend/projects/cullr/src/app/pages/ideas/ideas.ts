@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Badge, Button, Checkbox, Chip, EmptyState, Pagination, Select, Skeleton, Table, Tabs, TextField, TabItem } from '@cullr/components';
 import { CaptureIdeaDialogService } from '../../core/capture/capture-idea-dialog.service';
 import { EditIdeaDialogService } from '../../core/edit/edit-idea-dialog.service';
+import { CurateIdeaDialogService } from '../../core/curate/curate-idea-dialog.service';
 import { categoryTone, statusTone } from '../../core/ideas/tones';
 import { formatLogged } from '../../core/ideas/format-logged';
 
@@ -60,7 +61,7 @@ const SEARCH_DELAY_MS = 300;
               @if (selected().size > maxCurate) { · Select up to 5 ideas to curate }
             </span>
             <div class="cluster">
-              <cu-button [disabled]="selected().size > maxCurate">Curate selected</cu-button>
+              <cu-button [disabled]="selected().size > maxCurate" (click)="curate.open([...selected()])">Curate selected</cu-button>
               <cu-button>Archive selected</cu-button>
               <cu-button (click)="selected.set(emptySelection)">Clear selection</cu-button>
             </div>
@@ -112,6 +113,7 @@ export class IdeasPage {
   private readonly router = inject(Router);
   protected readonly capture = inject(CaptureIdeaDialogService);
   protected readonly edit = inject(EditIdeaDialogService);
+  protected readonly curate = inject(CurateIdeaDialogService);
 
   protected readonly maxCurate = 5;
   protected readonly emptySelection = new Set<string>();
@@ -150,7 +152,11 @@ export class IdeasPage {
       this.page();
       this.capture.version();
       this.edit.version();
-      untracked(() => void this.load());
+      this.curate.version();
+      untracked(() => {
+        this.selected.set(new Set());
+        void this.load();
+      });
     });
     effect((onCleanup) => {
       const text = this.searchText().trim();
